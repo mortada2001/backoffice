@@ -1,1 +1,15 @@
+(Subject) Incident: (FNJ0157) Zone Down
 
+TO: AlwataniLastmile@earthlink.iq 
+CC: mkhaliq@earthlink.iq ; shassun@earthlink.iq ; hsami@earthlink.iq ; supportftth@earthlink.iq ;arabeea@earthlink.iq ; alkhazraji@hulum.iq ;
+    mbasim@earthlink.iq ; sunajm@earthlink.iq ; itariq@earthlink.iq ; irqnbbnms@earthlink.iq ; fkhazal@hulum.iq ; mufarqad@earthlink.iq
+
+Message:
+
+Dear Team,
+
+We would like to inform you that we have an issue with FNJ0157 (Zone Down).
+
+User Affected: 200
+
+Start ON: Time
