@@ -1,0 +1,14 @@
+(Subject) Incident: Customer Onboarding Request Issue
+
+TO: it-helpdesk@hulum.iq; 
+
+CC: supportftth@earthlink.iq ; mufarqad@earthlink.iq ; hsinan@earthlink.iq ; hsami@earthlink.iq ;
+    maadnan@earthlink.iq; shassun@earthlink.iq ; fsayf@earthlink.iq; mbasim@earthlink.iq ; sunajm@earthlink.iq; azsadun@hulum.iq;
+
+Message:
+
+Dear IT Team,
+
+We have a problem with the Customer Onboarding Request arriving without accounts as shown in the picture.
+
+Start ON: Time
