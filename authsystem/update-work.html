@@ -1,20 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Daily Work</title>
+    <title>Update Daily Work</title>
 </head>
 <body>
-    <h1>Daily Work Page</h1>
-    <p>Welcome, {{ username }}!</p>
-    {% if role == "admin" %}
-        <p><a href="{{ url_for('update_work') }}">Update Daily Work</a></p>
-    {% endif %}
-    <p><a href="{{ url_for('logout') }}">Logout</a></p>
-
-    <h2>Work Content</h2>
-    <pre>
-        {% include 'daily_work_content.txt' %}
-    </pre>
+    <h1>Update Daily Work</h1>
+    <form method="POST">
+        <textarea name="content" rows="10" cols="50">{{ content }}</textarea><br><br>
+        <button type="submit">Save</button>
+    </form>
+    <p><a href="{{ url_for('daily_work') }}">Back to Daily Work</a></p>
 </body>
 </html>
-
