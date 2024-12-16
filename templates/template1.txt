@@ -1,1 +1,11 @@
+(Subject) Incident: Portal Slow TO: it-helpdesk@hulum.iq; CC: supportftth@earthlink.iq ; mufarqad@earthlink.iq ; hsinan@earthlink.iq ; hsami@earthlink.iq ; maadnan@earthlink.iq; shassun@earthlink.iq ; fsayf@earthlink.iq; mbasim@earthlink.iq ; sunajm@earthlink.iq; azsadun@hulum.iq;
 
+Message:
+
+Dear IT Team,
+
+We have a problem with the portal, which is very slow, and it is not possible to send a request and browse it.
+
+admin.ftth.iq
+
+Start ON: Time
