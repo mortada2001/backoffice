@@ -1,1 +1,15 @@
+(Subject) Incident: EXBG20-ATHU (Down) 
 
+TO: metronbb@earthlink.iq 
+
+CC: mbasim@earthlink.iq ; arabeea@earthlink.iq ; mufarqad@earthlink.iq hsami@earthlink.iq ; bhaq@earthlink.iq ; supportftth@earthlink.iq ; shassun@earthlink.iq                   fsayf@earthlink.iq ; sunajm@earthlink.iq; ahisam@earthlink.iq ; irqnbbnms@earthlink.iq
+
+Message:
+
+Dear Metro Team,
+
+We would like to inform you we have an issue in EXBG20-ATHU (Site Down )
+
+Users affected: 4884
+
+Start ON: 8/9/2023 6:55 AM
