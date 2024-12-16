@@ -1,1 +1,14 @@
+(Subject) Incident: OLT Down MGM 
+TO: metronbb@earthlink.iq 
+CC: mbasim@earthlink.iq ; arabeea@earthlink.iq ; mufarqad@earthlink.iq hsami@earthlink.iq ; bhaq@earthlink.iq ;
+    supportftth@earthlink.iq ; shassun@earthlink.iq fsayf@earthlink.iq ; sunajm@earthlink.iq ; ahisam@earthlink.iq
 
+Message:
+
+Dear Metro Team,
+
+We have a problem with the OLT, NASR-M-OLT-MA5608T-PE01 and according to your notified, there is only an MGM problem, but this problem affects the checking of customers when contacting us and affects the adding of new customers.
+
+Start on: 10/05/2023 08:20:37
+
+Zone Effects: FNS1,FNS2..alc
