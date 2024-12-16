@@ -1,1 +1,12 @@
+(Subject) Incident: Problem Refill users 
+TO: it-helpdesk@hulum.iq; 
+CC: hsinan@earthlink.iq ; hsami@earthlink.iq ; shassun@earthlink.iq ; fsayf@earthlink.iq ;
+    mufarqad@earthlink.iq; mbasim@earthlink.iq ; sunajm@earthlink.iq ; azsadun@hulum.iq;
 
+Message:
+
+Dear IT Team,
+
+We have a problem with portal Subscribers cannot be refill users, according to the photo below:
+
+Start ON: Time
