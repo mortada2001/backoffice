@@ -1,1 +1,14 @@
+(Subject) Incident: OTP Service Stopped 
 
+TO: it-helpdesk@hulum.iq; 
+
+CC: shassun@earthlink.iq ; fsayf@earthlink.iq ; mufarqad@earthlink.iq ; hsami@earthlink.iq ; supportftth@earthlink.iq ;
+    alkhazraji@hulum.iq ; mbasim@earthlink.iq ; hsinan@earthlink.iq ; sunajm@earthlink.iq ; azsadun@hulum.iq;
+
+Message:
+
+Dears IT Team
+
+We have encountered a problem with the customer onboarding process. The OTP is not being sent to the customer's phone number, which prevents them from completing the registration.
+
+Start ON: 8/9/2023 6:55 AM
