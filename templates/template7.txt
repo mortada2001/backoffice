@@ -1,1 +1,11 @@
+(Subject) Incident: Attachment issue 
+TO: it-helpdesk@hulum.iq; 
+CC: supportftth@earthlink.iq ; mufarqad@earthlink.iq ; hsinan@earthlink.iq ; hsami@earthlink.iq ; maadnan@earthlink.iq; shassun@earthlink.iq ; fsayf@earthlink.iq;                mbasim@earthlink.iq ; sunajm@earthlink.iq; azsadun@hulum.iq;
 
+Message:
+
+Dear IT Team,
+
+We need your support to fix the issue with agent portal that the attachment does not work for a new request:
+
+Start ON: Time
