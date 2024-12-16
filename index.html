@@ -183,6 +183,16 @@
             document.getElementById('email-templates').classList.remove('hidden');
         }
 
+             function goHome() {
+            document.getElementById('feedback-templates').classList.add('hidden');
+            document.getElementById('main-buttons').classList.remove('hidden');
+        }
+
+        function showFeedBackTemplates() {
+            document.getElementById('main-buttons').classList.add('hidden');
+            document.getElementById('feedback-templates').classList.remove('hidden');
+        }
+
         function fetchTemplate(templatePath, title) {
             fetch(templatePath)
                 .then((response) => {
