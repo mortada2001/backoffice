@@ -99,26 +99,16 @@
 
     <!-- Email Template Buttons -->
     <div id="email-templates" class="hidden">
-        <button class="button" onclick="showPopup(' Incident: Portal Slow', '(Subject) Incident: Portal Slow TO: it-helpdesk@hulum.iq; CC: supportftth@earthlink.iq ; mufarqad@earthlink.iq ; hsinan@earthlink.iq ; hsami@earthlink.iq ; maadnan@earthlink.iq; shassun@earthlink.iq ; fsayf@earthlink.iq; mbasim@earthlink.iq ; sunajm@earthlink.iq; azsadun@hulum.iq;
-
-Message:
-
-Dear IT Team,
-
-We have a problem with the portal, which is very slow, and it is not possible to send a request and browse it.
-
-admin.ftth.iq
-
-Start ON: Time.')">Template 1</button>
-        <button class="button" onclick="showPopup('Template 2', 'This is the content of Email Template 2.')">Template 2</button>
-        <button class="button" onclick="showPopup('Template 3', 'This is the content of Email Template 3.')">Template 3</button>
-        <button class="button" onclick="showPopup('Template 4', 'This is the content of Email Template 4.')">Template 4</button>
-        <button class="button" onclick="showPopup('Template 5', 'This is the content of Email Template 5.')">Template 5</button>
-        <button class="button" onclick="showPopup('Template 6', 'This is the content of Email Template 6.')">Template 6</button>
-        <button class="button" onclick="showPopup('Template 7', 'This is the content of Email Template 7.')">Template 7</button>
-        <button class="button" onclick="showPopup('Template 8', 'This is the content of Email Template 8.')">Template 8</button>
-        <button class="button" onclick="showPopup('Template 9', 'This is the content of Email Template 9.')">Template 9</button>
-        <button class="button" onclick="showPopup('Template 10', 'This is the content of Email Template 10.')">Template 10</button>
+        <button class="button" onclick="fetchTemplate('templates/template1.txt', 'Template 1')">Template 1</button>
+        <button class="button" onclick="fetchTemplate('templates/template2.txt', 'Template 2')">Template 2</button>
+        <button class="button" onclick="fetchTemplate('templates/template3.txt', 'Template 3')">Template 3</button>
+        <button class="button" onclick="fetchTemplate('templates/template4.txt', 'Template 4')">Template 4</button>
+        <button class="button" onclick="fetchTemplate('templates/template5.txt', 'Template 5')">Template 5</button>
+        <button class="button" onclick="fetchTemplate('templates/template6.txt', 'Template 6')">Template 6</button>
+        <button class="button" onclick="fetchTemplate('templates/template7.txt', 'Template 7')">Template 7</button>
+        <button class="button" onclick="fetchTemplate('templates/template8.txt', 'Template 8')">Template 8</button>
+        <button class="button" onclick="fetchTemplate('templates/template9.txt', 'Template 9')">Template 9</button>
+        <button class="button" onclick="fetchTemplate('templates/template10.txt', 'Template 10')">Template 10</button>
     </div>
 
     <!-- Overlay and Popup -->
@@ -135,16 +125,33 @@ Start ON: Time.')">Template 1</button>
             document.getElementById('email-templates').classList.remove('hidden');
         }
 
+        function fetchTemplate(templatePath, title) {
+            fetch(templatePath)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Template not found.");
+                    }
+                    return response.text();
+                })
+                .then((content) => {
+                    showPopup(title, content);
+                })
+                .catch((error) => {
+                    showPopup("Error", "Failed to load the email template.");
+                    console.error("Error fetching template:", error);
+                });
+        }
+
         function showPopup(title, content) {
-            document.getElementById('popup-header').innerText = title;
-            document.getElementById('popup-content').innerText = content;
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('popup').style.display = 'block';
+            document.getElementById("popup-header").innerText = title;
+            document.getElementById("popup-content").innerText = content;
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("popup").style.display = "block";
         }
 
         function closePopup() {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('popup').style.display = 'none';
+            document.getElementById("overlay").style.display = "none";
+            document.getElementById("popup").style.display = "none";
         }
     </script>
 </body>
