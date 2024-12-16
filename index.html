@@ -9,19 +9,46 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f0f8ff;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .home-button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .home-button:hover {
+            background-color: #003d80;
+        }
+
+        main {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            background-color: #f0f8ff;
-        }
-
-        h1 {
-            color: #007BFF;
-            font-size: 3rem;
-            text-align: center;
-            margin-bottom: 20px;
+            height: calc(100vh - 60px); /* Adjust height to exclude header */
         }
 
         .button {
@@ -85,40 +112,48 @@
     </style>
 </head>
 <body>
-    <h1>ALWATANI BACK OFFICE</h1>
+    <!-- Header Section -->
+    <header>
+        <button class="home-button" onclick="goHome()">Home</button>
+        <h1>ALWATANI BACK OFFICE</h1>
+        <div></div> <!-- Empty div for spacing -->
+    </header>
 
-    <!-- Main Buttons -->
-    <div id="main-buttons">
-        <button class="button" onclick="showEmailTemplates()">Email Templates</button>
-        <button class="button">Button 2</button>
-        <button class="button">Button 3</button>
-        <button class="button">Button 4</button>
-        <button class="button">Button 5</button>
-        <button class="button">Button 6</button>
-    </div>
+    <!-- Main Content -->
+    <main>
+        <!-- Main Buttons -->
+        <div id="main-buttons">
+            <button class="button" onclick="showEmailTemplates()">Email Templates</button>
+            <button class="button">Button 2</button>
+            <button class="button">Button 3</button>
+            <button class="button">Button 4</button>
+            <button class="button">Button 5</button>
+            <button class="button">Button 6</button>
+        </div>
 
-    <!-- Email Template Buttons -->
-    <div id="email-templates" class="hidden">
-        <button class="button" onclick="fetchTemplate('templates/template1.txt', 'Portal Slow')">Portal Slow</button>
-        <button class="button" onclick="fetchTemplate('templates/template2.txt', 'DNS Problem')">DNS Problem</button>
-        <button class="button" onclick="fetchTemplate('templates/template3.txt', 'Portal stopped')">Portal stopped</button>
-        <button class="button" onclick="fetchTemplate('templates/template4.txt', 'Problem Refill users')">Problem Refill users</button>
-        <button class="button" onclick="fetchTemplate('templates/template5.txt', 'Drop Services')">Drop Services</button>
-        <button class="button" onclick="fetchTemplate('templates/template6.txt', 'Zone Down')">Zone Down</button>
-        <button class="button" onclick="fetchTemplate('templates/template7.txt', 'Attachment issue')">Attachment issue</button>
-        <button class="button" onclick="fetchTemplate('templates/template8.txt', 'Most GPON Down')">Most GPON Down</button>
-        <button class="button" onclick="fetchTemplate('templates/template9.txt', 'OLT Down MGM')">OLT Down MGM</button>
-        <button class="button" onclick="fetchTemplate('templates/template10.txt','Operation Outage')"> Operation Outage</button>
-        <button class="button" onclick="fetchTemplate('templates/template11.txt', 'Site down')">Site down</button>
-        <button class="button" onclick="fetchTemplate('templates/template12.txt', 'OTP Service Stopped')">OTP Service Stopped</button>
-        <button class="button" onclick="fetchTemplate('templates/template13.txt', 'Alwatani App Stopped')">Alwatani App Stopped</button>
-        <button class="button" onclick="fetchTemplate('templates/template14.txt', 'Wallet transactions Issue')">Wallet transactions Issue</button>
-        <button class="button" onclick="fetchTemplate('templates/template15.txt', 'Sales Portal stopped')">Sales Portal stopped</button>
-        <button class="button" onclick="fetchTemplate('templates/template16.txt', 'Almanasa stopped')">Almanasa stopped</button>
-        <button class="button" onclick="fetchTemplate('templates/template17.txt', 'Creatio stopped')">Creatio stopped</button>
-        <button class="button" onclick="fetchTemplate('templates/template18.txt', 'Customer Onboarding Request Issue')">Customer Onboarding Request Issue</button>
-        <button class="button" onclick="fetchTemplate('templates/template19.txt', 'VLAN Site activation')">VLAN Site activation</button>
-    </div>
+        <!-- Email Template Buttons -->
+        <div id="email-templates" class="hidden">
+            <button class="button" onclick="fetchTemplate('templates/template1.txt', 'Portal Slow')">Portal Slow</button>
+            <button class="button" onclick="fetchTemplate('templates/template2.txt', 'DNS Problem')">DNS Problem</button>
+            <button class="button" onclick="fetchTemplate('templates/template3.txt', 'Portal stopped')">Portal stopped</button>
+            <button class="button" onclick="fetchTemplate('templates/template4.txt', 'Problem Refill users')">Problem Refill users</button>
+            <button class="button" onclick="fetchTemplate('templates/template5.txt', 'Drop Services')">Drop Services</button>
+            <button class="button" onclick="fetchTemplate('templates/template6.txt', 'Zone Down')">Zone Down</button>
+            <button class="button" onclick="fetchTemplate('templates/template7.txt', 'Attachment issue')">Attachment issue</button>
+            <button class="button" onclick="fetchTemplate('templates/template8.txt', 'Most GPON Down')">Most GPON Down</button>
+            <button class="button" onclick="fetchTemplate('templates/template9.txt', 'OLT Down MGM')">OLT Down MGM</button>
+            <button class="button" onclick="fetchTemplate('templates/template10.txt','Operation Outage')">Operation Outage</button>
+            <button class="button" onclick="fetchTemplate('templates/template11.txt', 'Site down')">Site down</button>
+            <button class="button" onclick="fetchTemplate('templates/template12.txt', 'OTP Service Stopped')">OTP Service Stopped</button>
+            <button class="button" onclick="fetchTemplate('templates/template13.txt', 'Alwatani App Stopped')">Alwatani App Stopped</button>
+            <button class="button" onclick="fetchTemplate('templates/template14.txt', 'Wallet transactions Issue')">Wallet transactions Issue</button>
+            <button class="button" onclick="fetchTemplate('templates/template15.txt', 'Sales Portal stopped')">Sales Portal stopped</button>
+            <button class="button" onclick="fetchTemplate('templates/template16.txt', 'Almanasa stopped')">Almanasa stopped</button>
+            <button class="button" onclick="fetchTemplate('templates/template17.txt', 'Creatio stopped')">Creatio stopped</button>
+            <button class="button" onclick="fetchTemplate('templates/template18.txt', 'Customer Onboarding Request Issue')">Customer Onboarding Request Issue</button>
+            <button class="button" onclick="fetchTemplate('templates/template19.txt', 'VLAN Site activation')">VLAN Site activation</button>
+        </div>
+    </main>
 
     <!-- Overlay and Popup -->
     <div id="overlay"></div>
@@ -129,6 +164,11 @@
     </div>
 
     <script>
+        function goHome() {
+            document.getElementById('email-templates').classList.add('hidden');
+            document.getElementById('main-buttons').classList.remove('hidden');
+        }
+
         function showEmailTemplates() {
             document.getElementById('main-buttons').classList.add('hidden');
             document.getElementById('email-templates').classList.remove('hidden');
