@@ -1,5 +1,7 @@
 (Subject) Incident: Almanasa stopped
-TO: it-helpdesk@hulum.iq; CC: supportftth@earthlink.iq ; mufarqad@earthlink.iq ; hsinan@earthlink.iq ; hsami@earthlink.iq ;
+TO: it-helpdesk@hulum.iq; 
+
+CC: supportftth@earthlink.iq ; mufarqad@earthlink.iq ; hsinan@earthlink.iq ; hsami@earthlink.iq ;
     maadnan@earthlink.iq; shassun@earthlink.iq ; fsayf@earthlink.iq; mbasim@earthlink.iq ; sunajm@earthlink.iq; azsadun@hulum.iq;
 
 Message:
