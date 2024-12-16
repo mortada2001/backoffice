@@ -1,1 +1,14 @@
+(Subject) Incident: (FBG1705) Most GPON Down
 
+TO: AlwataniLastmile@earthlink.iq 
+CC: mkhaliq@earthlink.iq ; shassun@earthlink.iq ; hsami@earthlink.iq ; supportftth@earthlink.iq ;arabeea@earthlink.iq ; alkhazraji@hulum.iq ; mbasim@earthlink.iq ;               sunajm@earthlink.iq ; itariq@earthlink.iq ; irqnbbnms@earthlink.iq ; fkhazal@hulum.iq mufarqad@earthlink.iq
+
+Message:
+
+Dear Team,
+
+We would like to inform you have issue in ZONE FBG1705 Most GPON Down.
+
+Users affected: 294
+
+Start on: 10/05/2023 08:20:37
