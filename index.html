@@ -180,6 +180,20 @@
 
 
     <script>
+
+function copyToClipboard() {
+    const content = document.getElementById("popup-content").innerText; // Get popup content
+    navigator.clipboard.writeText(content) // Copy to clipboard
+        .then(() => {
+            alert("Content copied to clipboard!");
+        })
+        .catch((err) => {
+            console.error("Error copying text: ", err);
+            alert("Failed to copy content.");
+        });
+}
+
+
     function goHome() {
         document.getElementById('email-templates').classList.add('hidden'); 
         document.getElementById('feedback-templates').classList.add('hidden'); 
@@ -240,5 +254,5 @@
                 alert("Failed to copy content.");
             });
     }
-
+</script>
 
