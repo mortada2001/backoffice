@@ -171,6 +171,14 @@
         <div id="popup-content"></div>
     </div>
 
+<div id="popup" class="popup">
+    <button class="popup-close" onclick="closePopup()">X</button>
+    <div class="popup-header" id="popup-header"></div>
+    <div id="popup-content"></div>
+    <button class="button" onclick="copyToClipboard()">Copy Content</button> <!-- Copy Button -->
+</div>
+
+
     <script>
         function goHome() {
             document.getElementById('email-templates').classList.add('hidden'); // Hide email templates
