@@ -173,8 +173,11 @@
 
     <script>
         function goHome() {
-            document.getElementById('email-templates').classList.add('hidden');
+            document.getElementById('email-templates').classList.add('hidden'); // Hide email templates
+            document.getElementById('feedback-templates').classList.add('hidden'); // Hide feedback templates
+
             document.getElementById('main-buttons').classList.remove('hidden');
+
         }
 
         function showEmailTemplates() {
