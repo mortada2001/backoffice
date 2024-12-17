@@ -1,147 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alwatani Back Office</title>
-    <style>
-        /* General body style */
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f0f8ff;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automated Activated Zone</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #e0f7fa;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
 
-        /* Header styling */
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between; /* Home button to the left, title centered */
-            background-color: #007bff;
-            padding: 10px 20px;
-            color: white;
-        }
+    h1 {
+      text-align: center;
+      color: #007bff;
+    }
 
-        /* Home button styling */
-        .home-button {
-            background-color: #0056b3;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 1rem;
-            border-radius: 5px;
-        }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 1s ease;
+    }
 
-        .home-button:hover {
-            background-color: #003d80;
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
 
-        /* Title styling */
-        .header-title {
-            flex-grow: 1; /* Allow title to use space */
-            text-align: center;
-            margin: 0;
-            font-size: 1.5rem;
-        }
+    input, select {
+      display: block;
+      width: calc(100% - 40px);
+      margin: 10px 20px;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #007bff;
+      border-radius: 5px;
+      transition: border-color 0.3s;
+    }
 
-        /* Form container */
-        .form-container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-        }
+    input:disabled, select:disabled {
+      background-color: #f0f0f0;
+      cursor: not-allowed;
+    }
 
-        /* Form styling */
-        .form-container h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
+    button {
+      display: block;
+      width: calc(100% - 40px);
+      margin: 20px;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
 
-        .form-container input,
-        .form-container select,
-        .form-container button {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
+    button:hover {
+      background-color: #0056b3;
+    }
 
-        .form-container input[type="file"] {
-            border: none;
-        }
-
-        .form-container button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .form-container button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Reset button styling */
-        .form-container .reset {
-            background-color: #ff4747;
-        }
-
-        .form-container .reset:hover {
-            background-color: #d62626;
-        }
-
-        /* File upload message */
-        .form-container p {
-            color: red;
-            text-align: center;
-        }
-    </style>
+    .message {
+      text-align: center;
+      color: red;
+      margin: 5px 0;
+    }
+  </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <div class="header">
-        <!-- Home button aligned to the left -->
-        <a href="#" class="home-button">Home</a>
-        <!-- Centered title -->
-        <h1 class="header-title">ALWATANI BACK OFFICE</h1>
-    </div>
+<div class="container">
+  <h1>ADD ZONE</h1>
+  <input type="text" id="manualValue" placeholder="ZONE" />
+  <input type="text" id="FDT" placeholder="FDT" />
+  <input type="text" id="oltip" placeholder="OltIP" />
+  <select id="oltType">
+    <option value="">OLT TYPE</option>
+    <option value="HWOLT ">Old-Huawei</option>
+    <option value="NKOLT">Nokia</option>
+    <option value="HWOLT">Huawei</option>
+  </select>
+  <input type="text" id="mainvlan" placeholder="Main VLAN" />
+  <input type="file" id="upload" accept=".xlsx, .xls" disabled />
+  <div id="warning-message" class="message">Please enter all data to activate file upload.</div>
 
-    <!-- Form Section -->
-    <div class="form-container">
-        <h2>ADD ZONE</h2>
-        <form>
-            <!-- Input fields -->
-            <input type="text" placeholder="ZONE" required>
-            <input type="text" placeholder="FDT" required>
-            <input type="text" placeholder="OltIP" required>
+  <button id="download" disabled>Download Connectivity</button>
+  <button id="reset">Reset</button>
+</div>
 
-            <!-- Dropdown for OLT TYPE -->
-            <select required>
-                <option value="" disabled selected>OLT TYPE</option>
-                <option value="type1">Type 1</option>
-                <option value="type2">Type 2</option>
-            </select>
+<script>
+  const uploadInput = document.getElementById("upload");
+  const downloadButton = document.getElementById("download");
+  const warningMessage = document.getElementById("warning-message");
+  let mergedData = [];
 
-            <!-- VLAN Input -->
-            <input type="text" placeholder="Main VLAN" required>
+  // Input validation to enable file upload and download
+  function validateInputs() {
+    const inputs = ["manualValue", "FDT", "oltip", "oltType", "mainvlan"];
+    const allFilled = inputs.every(id => document.getElementById(id).value.trim());
 
-            <!-- File upload -->
-            <input type="file" required>
-            <p>Please enter all data to activate file upload.</p>
+    uploadInput.disabled = !allFilled;
+    downloadButton.disabled = !allFilled;
+    warningMessage.style.display = allFilled ? "none" : "block";
+  }
 
-            <!-- Buttons -->
-            <button type="submit">Download Connectivity</button>
-            <button type="reset" class="reset">Reset</button>
-        </form>
-    </div>
+  document.querySelectorAll("#manualValue, #FDT, #oltip, #oltType, #mainvlan").forEach(input => {
+    input.addEventListener("input", validateInputs);
+    input.addEventListener("change", validateInputs);
+  });
+
+  document.getElementById("upload").addEventListener("change", handleFile);
+  document.getElementById("reset").addEventListener("click", resetFields);
+  document.getElementById("download").addEventListener("click", downloadFile);
+
+  function handleFile(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+      mergedData = processSheetData(sheet);
+    };
+
+    reader.readAsArrayBuffer(file);
+  }
+
+  function processSheetData(sheet) {
+    const headers = ["OLT Slot", "Gpon", "VLAN", "FAT NO."];
+    const cleanData = [];
+    cleanData.push(["Zone", "FDT", "FAT", "OltIP", "OltType", "OltUser", "OltPass", "OltGpon", "OltGponPort", "MainVlan", "InnerVlan", "AlwaysSuccess"]);
+
+    const inputs = {
+      manualValue: document.getElementById("manualValue").value.trim(),
+      FDT: document.getElementById("FDT").value.trim(),
+      oltip: document.getElementById("oltip").value.trim(),
+      oltType: document.getElementById("oltType").value,
+      mainvlan: document.getElementById("mainvlan").value.trim(),
+    };
+
+    const userPass = inputs.oltType.includes("HWOLT") ? "ftthpostman@ftth.iq" : "ftthpostman";
+    const userPassword = "rKYAYki0k8POhwf";
+
+    sheet.slice(1).forEach(row => {
+      if (row.length >= 4) {
+        cleanData.push([
+          inputs.manualValue,
+          inputs.FDT,
+          row[3], // FAT
+          inputs.oltip,
+          inputs.oltType,
+          userPass,
+          userPassword,
+          `gpon 0/${row[0]}`,
+          row[1], // Gpon
+          inputs.mainvlan,
+          row[2], // VLAN
+          0 // AlwaysSuccess
+        ]);
+      }
+    });
+
+    return cleanData;
+  }
+
+  function downloadFile() {
+    if (mergedData.length === 0) {
+      alert("No data to download. Upload a valid file first.");
+      return;
+    }
+
+    const manualValue = document.getElementById("manualValue").value.trim();
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(mergedData);
+    XLSX.utils.book_append_sheet(wb, ws, "Processed Data");
+
+    XLSX.writeFile(wb, `ZONE_${manualValue || "Output"}.csv`);
+    resetFields();
+  }
+
+  function resetFields() {
+    document.querySelectorAll("#manualValue, #FDT, #oltip, #mainvlan").forEach(input => input.value = "");
+    document.getElementById("oltType").selectedIndex = 0;
+    uploadInput.value = "";
+    mergedData = [];
+    validateInputs();
+  }
+</script>
 </body>
 </html>
