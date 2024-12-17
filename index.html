@@ -128,7 +128,7 @@
             <button class="button" onclick="showFeedBackTemplates()">Feed Back Templates</button>
             <button class="button" onclick="redirectToDailyWork()">Daily Work</button>
             <button class="button" onclick="redirectToAddZone()">Add Zone</button>
-            <button class="button"onclick="window.open('https://docs.google.com/spreadsheets/d/1-Rf8ZZvAeeuSL8d3HTd7YyMk8TIiu64P-Uyn4BCOfLI/edit?usp=sharing', '_blank')">Escalation</button>
+            <button class="button" id="escalationButton">Escalation</button>
             <button class="button">Button 6</button>
         </div>
 
@@ -249,6 +249,32 @@ function redirectToAddZone() {
     }
 
 
+        //محمد 
+// Function to handle escalation logic within the current page
+function handleEscalation() {
+  // Implement your escalation logic here, such as:
+  // - Displaying a modal dialog with escalation options
+  // - Triggering an AJAX request to update data on the page
+  // - Performing other actions without opening a new window
+
+  // Example: Display a simple alert for now
+  alert("Escalation initiated!");
+
+  // You can further enhance this logic based on your specific requirements
+}
+
+// Attach event listener to the escalation button
+document.getElementById("https://docs.google.com/spreadsheets/d/1-Rf8ZZvAeeuSL8d3HTd7YyMk8TIiu64P-Uyn4BCOfLI/edit?usp=sharing").addEventListener("click", handleEscalation);
+
+
+
+
+
+
+
+
+
+        
     function copyToClipboard() {
         const content = document.getElementById("popup-content").innerText;
         navigator.clipboard.writeText(content)
