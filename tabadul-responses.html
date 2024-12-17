@@ -10,6 +10,9 @@
             margin: 0;
             padding: 0;
             background-color: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         header {
@@ -45,16 +48,16 @@
 
         main {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: calc(100vh - 60px); /* Exclude header height */
+            justify-content: center;
+            flex-grow: 1;
         }
 
         .button {
-            width: 200px; /* Same width for all buttons */
-            height: 60px; /* Same height for all buttons */
-            margin: 10px; /* Space between buttons */
+            width: 300px; /* Uniform width */
+            height: 60px; /* Uniform height */
+            margin: 10px 0; /* Space between buttons */
             background-color: #007BFF;
             color: white;
             border: none;
