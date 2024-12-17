@@ -1,1 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabadul Responses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+        }
 
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .home-button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .home-button:hover {
+            background-color: #003d80;
+        }
+
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 60px); /* Exclude header height */
+        }
+
+        .button {
+            width: 200px; /* Same width for all buttons */
+            height: 60px; /* Same height for all buttons */
+            margin: 10px; /* Space between buttons */
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <button class="home-button" onclick="window.location.href='index.html'">Home</button>
+        <h1>Tabadul Responses</h1>
+        <div></div> <!-- Empty div for spacing -->
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <button class="button">Response 1</button>
+        <button class="button">Response 2</button>
+        <button class="button">Response 3</button>
+        <button class="button">Response 4</button>
+        <button class="button">Response 5</button>
+        <button class="button">Response 6</button>
+        <button class="button">Response 7</button>
+        <button class="button">Response 8</button>
+        <button class="button">Response 9</button>
+        <button class="button">Response 10</button>
+        <button class="button">Response 11</button>
+    </main>
+</body>
+</html>
