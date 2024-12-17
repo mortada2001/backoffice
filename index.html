@@ -109,6 +109,14 @@
             z-index: 999;
             display: none;
         }
+
+iframe {
+            width: 100%;
+            height: 80vh;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+
     </style>
 </head>
 <body>
@@ -167,6 +175,12 @@
                 <button class="button" onclick="fetchTemplate('feedtemplates/template5.txt', 'رفض الصيانة ')">رفض الصيانة </button>
                 <button class="button" onclick="fetchTemplate('feedtemplates/template5.txt', 'رفض الصيانة ')">رفض الصيانة </button>
         </div>
+
+<!-- Daily Work Embed Section -->
+        <div id="daily-work" class="hidden">
+            <iframe src="<iframe width="402" height="346" frameborder="0" scrolling="no" src="https://earthlinktel-my.sharepoint.com/personal/mmkuaaim_earthlink_iq/_layouts/15/Doc.aspx?sourcedoc={30c7564e-445b-4656-89ac-2a6b7bd3b446}&action=embedview&wdAllowInteractivity=False&wdHideGridlines=True&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True"></iframe>" id="daily-work-iframe"></iframe>
+        </div>
+
     </main>
 
     <!-- Overlay and Popup -->
