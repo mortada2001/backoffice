@@ -1,378 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Activated Zone</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
+        }
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Automated Activated Zone</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #e0f7fa;
-    margin: 0;
-    padding: 20px;
-    color: #333;
-  }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+        }
 
-  h1 {
-    text-align: center;
-    color: #007bff;
-  }
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            text-align: center;
+            flex-grow: 1;
+        }
 
-  .container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 1s ease;
-  }
+        .home-button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
+        .home-button:hover {
+            background-color: #003d80;
+        }
 
-  input,
-  select {
-    display: block;
-    width: calc(100% - 40px);
-    margin: 10px 20px;
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #007bff;
-    border-radius: 5px;
-    transition: border-color 0.3s;
-  }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease;
+        }
 
-  input:disabled, select:disabled {
-    background-color: #f0f0f0;
-    cursor: not-allowed;
-  }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
-  #download,
-  #reset {
-    display: block;
-    width: calc(100% - 40px);
-    margin: 20px;
-    padding: 12px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
+        input,
+        select {
+            display: block;
+            width: calc(100% - 40px);
+            margin: 10px 20px;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
 
-  #download:hover, #reset:hover {
-    background-color: #0056b3;
-  }
+        input:disabled, select:disabled {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+        }
 
-  .message {
-    text-align: center;
-    color: red;
-    margin: 5px 0;
-  }
-  .message {
-    text-align: center;
-    color: red;
-    margin: 5px 0;
-  }
+        #download,
+        #reset {
+            display: block;
+            width: calc(100% - 40px);
+            margin: 20px;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
 
-</style>
+        #download:hover, #reset:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            text-align: center;
+            color: red;
+            margin: 5px 0;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-  <h1>ADD ZONE </h1>
-  <input type="text" id="manualValue" placeholder=" ZONE " />
-  <input type="text" id="FDT" placeholder="   FDT " />
-  <input type="text" id="oltip" placeholder="   OltIP " />
-  <select id="oltType">
-    <option value="">  OLT TYPE</option>
-    <option value="HWOLT ">Old-huawei</option>
-    <option value="NKOLT">Nokia </option>
-    <option value="HWOLT">huawei</option>
-  </select>
-  <input type="text" id="mainvlan" placeholder="   mainvlan " />
+    <header>
+        <h1>ALWATANI BACK OFFICE</h1>
+        <button class="home-button">Home</button>
+    </header>
 
+    <div class="container">
+        <h1>ADD ZONE</h1>
+        <input type="text" id="manualValue" placeholder="ZONE" />
+        <input type="text" id="FDT" placeholder="FDT" />
+        <input type="text" id="oltip" placeholder="OltIP" />
+        <select id="oltType">
+            <option value="">OLT TYPE</option>
+            <option value="HWOLT">Old-huawei</option>
+            <option value="NKOLT">Nokia</option>
+            <option value="HWOLT">Huawei</option>
+        </select>
+        <input type="text" id="mainvlan" placeholder="Main VLAN" />
+        <input type="file" id="upload" accept=".xlsx, .xls" disabled />
+        <div id="warning-message" class="message">Please enter all data to activate file upload.</div>
+        <button id="download">Download Connectivity</button>
+        <button id="reset">Reset</button>
+    </div>
 
-  <input type="file" id="upload" accept=".xlsx, .xls" disabled />
-  <div id="warning-message" class="message">Please enter all data to activate file upload.</div>
+    <script>
+        const uploadInput = document.getElementById("upload");
+        const downloadButton = document.getElementById("download");
+        const warningMessage = document.getElementById("warning-message");
 
-  <button id="download">Download Connectivity</button>
-  <button id="reset">Reset cell</button>
+        uploadInput.disabled = true;
+        downloadButton.disabled = true;
+        warningMessage.style.display = "block";
 
-</div>
+        function validateInputs() {
+            const manualValue = document.getElementById("manualValue").value.trim();
+            const FDT = document.getElementById("FDT").value.trim();
+            const oltip = document.getElementById("oltip").value.trim();
+            const oltType = document.getElementById("oltType").value.trim();
+            const mainvlan = document.getElementById("mainvlan").value.trim();
 
-<script>
-   // مرجع لحقل رفع الملف وزر التحميل
-   const uploadInput = document.getElementById("upload");
-  const downloadButton = document.getElementById("download");
-  const warningMessage = document.getElementById("warning-message");
-
-  // في البداية يتم تعطيل زر تحميل الملف وحقل رفع الملف
-  uploadInput.disabled = true;
-  downloadButton.disabled = true;
-  warningMessage.style.display = "block"; // إظهار الرسالة
-  // التحقق من أن الحقول مطلوبة قبل تمكين رفع الملف
-  function validateInputs() {
-    const manualValue = document.getElementById("manualValue").value.trim();
-    const FDT = document.getElementById("FDT").value.trim();
-    const oltip = document.getElementById("oltip").value.trim();
-    const oltType = document.getElementById("oltType").value.trim();
-    const mainvlan = document.getElementById("mainvlan").value.trim();
-
-    // إذا كانت جميع الحقول مملوءة، قم بتمكين رفع الملف وزر التحميل
-    if (manualValue && FDT && oltip && oltType && mainvlan) {
-      uploadInput.disabled = false;
-      downloadButton.disabled = false;
-      warningMessage.style.display = "none"; // إخفاء الرسالة
-
-    } else {
-      uploadInput.disabled = true;
-      downloadButton.disabled = true;
-      warningMessage.style.display = "block"; // إظهار الرسالة
-
-    }
-  }
-
-  // إضافة مراقبين على الحقول للتحقق من صحتها بعد كل تغيير
-  document.getElementById("manualValue").addEventListener("input", validateInputs);
-  document.getElementById("FDT").addEventListener("input", validateInputs);
-  document.getElementById("oltip").addEventListener("input", validateInputs);
-  document.getElementById("oltType").addEventListener("change", validateInputs);
-  document.getElementById("mainvlan").addEventListener("input", validateInputs);
-
-  let mergedData = [];
-
-  document.getElementById("upload").addEventListener("change", handleFile);
-  document.getElementById("reset").addEventListener("click", resetFields);
-  document.getElementById("download").addEventListener("click", downloadFile);
-
-
-  function handleFile(event) {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = function (event) {
-      const data = new Uint8Array(event.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      const jsonSheet = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-      // Extract the columns and clean data
-      mergedData = mergeAndCleanColumns(jsonSheet, [
-        "OLT Slot",
-        "Gpon",
-        "VLAN",
-        "FAT NO.",
-      ]);
-    };
-
-    reader.readAsArrayBuffer(file);
-  }
-  function resetFields() {
-    // إعادة تعيين حقول المدخلات إلى حالتها الأولية
-    document.getElementById("manualValue").value = "";
-    document.getElementById("FDT").value = "";
-    document.getElementById("oltip").value = "";
-    document.getElementById("oltType").selectedIndex = 0;
-    document.getElementById("mainvlan").value = "";
-
-    document.getElementById("upload").value = ""; // لإعادة تعيين اختيار الملف
-    mergedData = []; // إعادة تعيين بيانات الدمج
-
-    // تعطيل رفع الملف وزر التحميل مجددًا
-    uploadInput.disabled = true;
-    downloadButton.disabled = true;
-    warningMessage.style.display = "block"; // إظهار الرسالة
-
-  }
-  function downloadFile() {
-  if (mergedData.length === 0) {
-    alert("يرجى تحميل ملف أولاً.");
-    return;
-  }
-
-  const manualValue = document.getElementById("manualValue").value.trim() || "NoValue"; // Get the manual value for file name
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet(mergedData);
-  XLSX.utils.book_append_sheet(wb, ws, "البيانات المنظفة");
-
-  // Use manualValue in the file name
-  const fileName = `ZONE_${manualValue}.csv`;
-  XLSX.writeFile(wb, fileName);
-  resetFields();
-}
-function mergeAndCleanColumns(sheet, keywords) {
-    let headerRowIndex = -1;
-    let columnIndexes1 = [];
-    let columnIndexes2 = [];
-
-    // البحث عن صف العناوين وتحديد الأعمدة
-    for (let i = 0; i < sheet.length; i++) {
-        for (let j = 0; j < sheet[i].length; j++) {
-            const cellValue = String(sheet[i][j] || "").toLowerCase();
-            for (const keyword of keywords) {
-                if (cellValue.includes(keyword.toLowerCase())) {
-                    headerRowIndex = i;
-                    if (columnIndexes1.length < 4) {
-                        columnIndexes1.push(j); // أول مجموعة من الأعمدة
-                    } else {
-                        columnIndexes2.push(j); // ثاني مجموعة من الأعمدة
-                    }
-                    break;
-                }
+            if (manualValue && FDT && oltip && oltType && mainvlan) {
+                uploadInput.disabled = false;
+                downloadButton.disabled = false;
+                warningMessage.style.display = "none";
+            } else {
+                uploadInput.disabled = true;
+                downloadButton.disabled = true;
+                warningMessage.style.display = "block";
             }
         }
-        if (headerRowIndex !== -1) break; // التوقف بعد العثور على صف العناوين
-    }
 
-    if (headerRowIndex === -1 || columnIndexes1.length === 0) {
-        alert(
-            "لم يتم العثور على الأعمدة المطلوبة: OLT Slot, Gpon, VLAN, FAT NO."
-        );
-        return [];
-    }
+        document.getElementById("manualValue").addEventListener("input", validateInputs);
+        document.getElementById("FDT").addEventListener("input", validateInputs);
+        document.getElementById("oltip").addEventListener("input", validateInputs);
+        document.getElementById("oltType").addEventListener("change", validateInputs);
+        document.getElementById("mainvlan").addEventListener("input", validateInputs);
 
-    const mergedData = [];
+        document.getElementById("reset").addEventListener("click", () => {
+            document.getElementById("manualValue").value = "";
+            document.getElementById("FDT").value = "";
+            document.getElementById("oltip").value = "";
+            document.getElementById("oltType").selectedIndex = 0;
+            document.getElementById("mainvlan").value = "";
+            document.getElementById("upload").value = "";
+            uploadInput.disabled = true;
+            downloadButton.disabled = true;
+            warningMessage.style.display = "block";
+        });
 
-    // **تغيير ترتيب العناوين هنا**
-    mergedData.push([
-        "Zone",
-        "FDT",
-        "FAT",
-        "OltIP",
-        "OltType",
-        "OltUser",
-        "OltPass",
-        "OltGpon",
-        "OltGponPort",
-        "MainVlan",
-        "InnerVlan",
-        "AlwaysSuccess",
-    ]);
-
-    // الحصول على القيمة المدخلة يدويًا
-    const manualValue =
-        document.getElementById("manualValue").value.trim() || "لا توجد قيمة";
-    const FDT =
-        document.getElementById("FDT").value.trim() || "لا توجد قيمة";
-    const oltip =
-        document.getElementById("oltip").value.trim() || "لا توجد قيمة";
-    const oltType = document.getElementById("oltType").value;
-    const mainvlan =
-        document.getElementById("mainvlan").value.trim() || "لا توجد قيمة";
-
-    // استخراج البيانات من أول 4 أعمدة
-    for (let i = headerRowIndex + 1; i < sheet.length; i++) {
-        const row1 = columnIndexes1.map((index) => sheet[i][index]);
-
-        // إضافة الصفوف غير الفارغة والتي لا تحتوي على العناوين
-        if (
-            row1.some((cell) => cell !== undefined) &&
-            !isHeaderRow(row1, keywords)
-        ) {
-            // **تغيير ترتيب الأعمدة هنا أيضًا**
-            const oltSlotValue = (oltType === "NKOLT") 
-            ? row1[0] 
-            : (row1[0] !== undefined && !isNaN(row1[0])) ? `gpon 0/${row1[0]}` : row1[0]; // إضافة "gpon 0/" إذا كان الرقم
-
-            mergedData.push([
-                manualValue,
-                FDT,
-                row1[3],
-                oltip,
-                oltType, // إضافة الخيار المحدد هنا
-                oltType === "HWOLT " ? "ftthpostman@ftth.iq" : oltType === "NKOLT" ? "ftthpostman" : "ftthpostman",
-                oltType === "HWOLT " ? "rKYAYki0k8POhwf" : oltType === "NKOLT" ? "rKYAYki0k8POhwf" : "rKYAYki0k8POhwf",
-                oltSlotValue,
-                row1[1],
-                mainvlan,
-                row1[2],
-                0,
-            ]);
-        }
-    }
-
-    // استخراج البيانات من الأعمدة الثانية وإضافتها أسفل الأعمدة الأولى
-    for (let i = headerRowIndex + 1; i < sheet.length; i++) {
-        const row2 = columnIndexes2.map((index) => sheet[i][index]);
-
-        // إضافة الصفوف غير الفارغة والتي لا تحتوي على العناوين
-        if (
-            row2.some((cell) => cell !== undefined) &&
-            !isHeaderRow(row2, keywords)
-        ) {
-          const oltSlotValue = (oltType === "NKOLT") 
-            ? row2[0] 
-            : (row2[0] !== undefined && !isNaN(row2[0])) ? `gpon 0/${row2[0]}` : row2[0]; // إضافة "gpon 0/" إذا كان الرقم
-
-            mergedData.push([
-            manualValue, // استخدام القيمة المعدلة هنا
-                FDT,
-                row2[3],
-                oltip,
-                oltType, // إضافة الخيار المحدد هنا
-                oltType === "HWOLT " ? "ftthpostman@ftth.iq" : oltType === "NKOLT" ? "ftthpostman" : "ftthpostman",
-                oltType === "HWOLT " ? "rKYAYki0k8POhwf" : oltType === "NKOLT" ? "rKYAYki0k8POhwf" : "rKYAYki0k8POhwf",
-                oltSlotValue,
-                row2[1],
-                mainvlan,
-                row2[2],
-                0,
-            ]);
-        }
-    }
-
-    // ملء الخلايا الفارغة في الأعمدة الثلاثة الأولى
-    const fatNoIndex = mergedData[0].indexOf("FAT");
-
-    for (let i = 1; i < mergedData.length; i++) {
-        for (let j = 0; j < mergedData[i].length; j++) {
-            if (j !== fatNoIndex) {
-                if (mergedData[i][j] === undefined || mergedData[i][j] === "") {
-                    mergedData[i][j] = mergedData[i - 1][j]; // خذ القيمة من الصف السابق
-                }
-            }
-        }
-    }
-
-    // الآن نضيف "FAT" قبل كل رقم في عمود FAT NO.
-    for (let i = 1; i < mergedData.length; i++) {
-    if (
-        mergedData[i][fatNoIndex] !== undefined &&
-        (
-            // تحقق إذا كانت القيمة رقمية فقط
-            !isNaN(mergedData[i][fatNoIndex]) ||
-            // تحقق إذا كان الرقم يحتوي على حرف "E" بعده
-            /^[0-9]+E$/i.test(mergedData[i][fatNoIndex])
-        )
-    ) {
-        mergedData[i][fatNoIndex] = "FAT" + mergedData[i][fatNoIndex];
-    }
-}
-
-    // حذف أي صف يحتوي على الكلمة "empty" بعد معالجة النتائج
-    const cleanedData = mergedData.filter((row) =>
-        row.every((cell) => String(cell).toLowerCase() !== "empty")
-    );
-
-    return cleanedData;
-}
-
-
-  // وظيفة مساعدة للتحقق مما إذا كان الصف يحتوي على العناوين
-  function isHeaderRow(row, keywords) {
-    return keywords.every((keyword, index) =>
-      String(row[index] || "")
-        .toLowerCase()
-        .includes(keyword.toLowerCase())
-    );
-  }
-
-  
-    
-</script>
+        document.getElementById("download").addEventListener("click", () => {
+            alert("Download functionality coming soon!");
+        });
+    </script>
 </body>
 </html>
