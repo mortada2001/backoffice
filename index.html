@@ -240,18 +240,5 @@
                 alert("Failed to copy content.");
             });
     }
-</script>
-
-function copyToClipboard() {
-    const content = document.getElementById("popup-content").innerText; // Get popup content
-    navigator.clipboard.writeText(content) // Copy to clipboard
-        .then(() => {
-            alert("Content copied to clipboard!");
-        })
-        .catch((err) => {
-            console.error("Error copying text: ", err);
-            alert("Failed to copy content.");
-        });
-}
 
 
