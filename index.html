@@ -180,57 +180,65 @@
 
 
     <script>
-        function goHome() {
-            document.getElementById('email-templates').classList.add('hidden'); // Hide email templates
-            document.getElementById('feedback-templates').classList.add('hidden'); // Hide feedback templates
+    function goHome() {
+        document.getElementById('email-templates').classList.add('hidden'); 
+        document.getElementById('feedback-templates').classList.add('hidden'); 
+        document.getElementById('main-buttons').classList.remove('hidden');
+    }
 
-            document.getElementById('main-buttons').classList.remove('hidden');
+    function showEmailTemplates() {
+        document.getElementById('main-buttons').classList.add('hidden');
+        document.getElementById('email-templates').classList.remove('hidden');
+    }
 
-        }
+    function showFeedBackTemplates() {
+        document.getElementById('main-buttons').classList.add('hidden');
+        document.getElementById('feedback-templates').classList.remove('hidden');
+    }
 
-        function showEmailTemplates() {
-            document.getElementById('main-buttons').classList.add('hidden');
-            document.getElementById('email-templates').classList.remove('hidden');
-        }
+    function fetchTemplate(templatePath, title) {
+        fetch(templatePath)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Template not found.");
+                }
+                return response.text();
+            })
+            .then((content) => {
+                showPopup(title, content);
+            })
+            .catch((error) => {
+                showPopup("Error", "Failed to load the email template.");
+                console.error("Error fetching template:", error);
+            });
+    }
 
-        function showFeedBackTemplates() {
-            document.getElementById('main-buttons').classList.add('hidden');
-            document.getElementById('feedback-templates').classList.remove('hidden');
-        }
+    function showPopup(title, content) {
+        document.getElementById("popup-header").innerText = title;
+        document.getElementById("popup-content").innerText = content;
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("popup").style.display = "block";
+    }
 
-        function fetchTemplate(templatePath, title) {
-            fetch(templatePath)
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Template not found.");
-                    }
-                    return response.text();
-                })
-                .then((content) => {
-                    showPopup(title, content);
-                })
-                .catch((error) => {
-                    showPopup("Error", "Failed to load the email template.");
-                    console.error("Error fetching template:", error);
-                });
-        }
+    function closePopup() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("popup").style.display = "none";
+    }
 
-        function showPopup(title, content) {
-            document.getElementById("popup-header").innerText = title;
-            document.getElementById("popup-content").innerText = content;
-            document.getElementById("overlay").style.display = "block";
-            document.getElementById("popup").style.display = "block";
-        }
+    function redirectToDailyWork() {
+        window.location.href = "daily-work.html";
+    }
 
-        function closePopup() {
-            document.getElementById("overlay").style.display = "none";
-            document.getElementById("popup").style.display = "none";
-        }
+    function copyToClipboard() {
+        const content = document.getElementById("popup-content").innerText;
+        navigator.clipboard.writeText(content)
+            .then(() => {
+                alert("Content copied to clipboard!");
+            })
+            .catch((err) => {
+                console.error("Error copying text: ", err);
+                alert("Failed to copy content.");
+            });
+    }
+</script>
 
-        function redirectToDailyWork() {
-            // Redirect to the daily work page
-            window.location.href = "daily-work.html";
-        }
-    </script>
-</body>
-</html>
