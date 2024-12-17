@@ -16,7 +16,7 @@
         .header {
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Home button to the left, title in the center */
+            justify-content: space-between; /* Home button to the left, title centered */
             background-color: #007bff;
             padding: 10px 20px;
             color: white;
@@ -40,158 +40,108 @@
 
         /* Title styling */
         .header-title {
-            flex-grow: 1; /* Take available space */
+            flex-grow: 1; /* Allow title to use space */
             text-align: center;
             margin: 0;
             font-size: 1.5rem;
+        }
+
+        /* Form container */
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        /* Form styling */
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-container input,
+        .form-container select,
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-container input[type="file"] {
+            border: none;
+        }
+
+        .form-container button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Reset button styling */
+        .form-container .reset {
+            background-color: #ff4747;
+        }
+
+        .form-container .reset:hover {
+            background-color: #d62626;
+        }
+
+        /* File upload message */
+        .form-container p {
+            color: red;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <!-- Header Section -->
     <div class="header">
+        <!-- Home button aligned to the left -->
         <a href="#" class="home-button">Home</a>
+        <!-- Centered title -->
         <h1 class="header-title">ALWATANI BACK OFFICE</h1>
     </div>
 
+    <!-- Form Section -->
+    <div class="form-container">
+        <h2>ADD ZONE</h2>
+        <form>
+            <!-- Input fields -->
+            <input type="text" placeholder="ZONE" required>
+            <input type="text" placeholder="FDT" required>
+            <input type="text" placeholder="OltIP" required>
 
-        header h1 {
-            margin: 0;
-            font-size: 2rem;
-            text-align: center;
-            flex-grow: 1;
-        }
+            <!-- Dropdown for OLT TYPE -->
+            <select required>
+                <option value="" disabled selected>OLT TYPE</option>
+                <option value="type1">Type 1</option>
+                <option value="type2">Type 2</option>
+            </select>
 
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 1s ease;
-        }
+            <!-- VLAN Input -->
+            <input type="text" placeholder="Main VLAN" required>
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+            <!-- File upload -->
+            <input type="file" required>
+            <p>Please enter all data to activate file upload.</p>
 
-        input,
-        select {
-            display: block;
-            width: calc(100% - 40px);
-            margin: 10px 20px;
-            padding: 12px;
-            font-size: 16px;
-            border: 1px solid #007bff;
-            border-radius: 5px;
-            transition: border-color 0.3s;
-        }
-
-        input:disabled, select:disabled {
-            background-color: #f0f0f0;
-            cursor: not-allowed;
-        }
-
-        #download,
-        #reset {
-            display: block;
-            width: calc(100% - 40px);
-            margin: 20px;
-            padding: 12px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        #download:hover, #reset:hover {
-            background-color: #0056b3;
-        }
-
-        .message {
-            text-align: center;
-            color: red;
-            margin: 5px 0;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>ALWATANI BACK OFFICE</h1>
-        <button class="home-button">Home</button>
-    </header>
-
-    <div class="container">
-        <h1>ADD ZONE</h1>
-        <input type="text" id="manualValue" placeholder="ZONE" />
-        <input type="text" id="FDT" placeholder="FDT" />
-        <input type="text" id="oltip" placeholder="OltIP" />
-        <select id="oltType">
-            <option value="">OLT TYPE</option>
-            <option value="HWOLT">Old-huawei</option>
-            <option value="NKOLT">Nokia</option>
-            <option value="HWOLT">Huawei</option>
-        </select>
-        <input type="text" id="mainvlan" placeholder="Main VLAN" />
-        <input type="file" id="upload" accept=".xlsx, .xls" disabled />
-        <div id="warning-message" class="message">Please enter all data to activate file upload.</div>
-        <button id="download">Download Connectivity</button>
-        <button id="reset">Reset</button>
+            <!-- Buttons -->
+            <button type="submit">Download Connectivity</button>
+            <button type="reset" class="reset">Reset</button>
+        </form>
     </div>
-
-    <script>
-        const uploadInput = document.getElementById("upload");
-        const downloadButton = document.getElementById("download");
-        const warningMessage = document.getElementById("warning-message");
-
-        uploadInput.disabled = true;
-        downloadButton.disabled = true;
-        warningMessage.style.display = "block";
-
-        function validateInputs() {
-            const manualValue = document.getElementById("manualValue").value.trim();
-            const FDT = document.getElementById("FDT").value.trim();
-            const oltip = document.getElementById("oltip").value.trim();
-            const oltType = document.getElementById("oltType").value.trim();
-            const mainvlan = document.getElementById("mainvlan").value.trim();
-
-            if (manualValue && FDT && oltip && oltType && mainvlan) {
-                uploadInput.disabled = false;
-                downloadButton.disabled = false;
-                warningMessage.style.display = "none";
-            } else {
-                uploadInput.disabled = true;
-                downloadButton.disabled = true;
-                warningMessage.style.display = "block";
-            }
-        }
-
-        document.getElementById("manualValue").addEventListener("input", validateInputs);
-        document.getElementById("FDT").addEventListener("input", validateInputs);
-        document.getElementById("oltip").addEventListener("input", validateInputs);
-        document.getElementById("oltType").addEventListener("change", validateInputs);
-        document.getElementById("mainvlan").addEventListener("input", validateInputs);
-
-        document.getElementById("reset").addEventListener("click", () => {
-            document.getElementById("manualValue").value = "";
-            document.getElementById("FDT").value = "";
-            document.getElementById("oltip").value = "";
-            document.getElementById("oltType").selectedIndex = 0;
-            document.getElementById("mainvlan").value = "";
-            document.getElementById("upload").value = "";
-            uploadInput.disabled = true;
-            downloadButton.disabled = true;
-            warningMessage.style.display = "block";
-        });
-
-        document.getElementById("download").addEventListener("click", () => {
-            alert("Download functionality coming soon!");
-        });
-    </script>
 </body>
 </html>
