@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Automated Activated Zone</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
   <style>
@@ -10,18 +9,43 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #e0f7fa;
       margin: 0;
-      padding: 20px;
+      padding: 0;
       color: #333;
     }
 
-    h1 {
-      text-align: center;
-      color: #007bff;
+    /* Header Styles */
+    .header {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .header a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .header h1 {
+      margin: 0 auto;
+      font-size: 24px;
+    }
+
+    .home-btn {
+      background-color: #0056b3;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
     }
 
     .container {
       max-width: 600px;
-      margin: 0 auto;
+      margin: 20px auto;
       padding: 20px;
       background-color: white;
       border-radius: 10px;
@@ -34,6 +58,11 @@
       to { opacity: 1; }
     }
 
+    h2 {
+      text-align: center;
+      color: #007bff;
+    }
+
     input, select {
       display: block;
       width: calc(100% - 40px);
@@ -42,7 +71,6 @@
       font-size: 16px;
       border: 1px solid #007bff;
       border-radius: 5px;
-      transition: border-color 0.3s;
     }
 
     input:disabled, select:disabled {
@@ -50,7 +78,7 @@
       cursor: not-allowed;
     }
 
-    button {
+    #download, #reset {
       display: block;
       width: calc(100% - 40px);
       margin: 20px;
@@ -61,10 +89,9 @@
       background-color: #007bff;
       color: white;
       cursor: pointer;
-      transition: background-color 0.3s;
     }
 
-    button:hover {
+    #download:hover, #reset:hover {
       background-color: #0056b3;
     }
 
@@ -76,125 +103,78 @@
   </style>
 </head>
 <body>
-<div class="container">
-  <h1>ADD ZONE</h1>
-  <input type="text" id="manualValue" placeholder="ZONE" />
-  <input type="text" id="FDT" placeholder="FDT" />
-  <input type="text" id="oltip" placeholder="OltIP" />
-  <select id="oltType">
-    <option value="">OLT TYPE</option>
-    <option value="HWOLT ">Old-Huawei</option>
-    <option value="NKOLT">Nokia</option>
-    <option value="HWOLT">Huawei</option>
-  </select>
-  <input type="text" id="mainvlan" placeholder="Main VLAN" />
-  <input type="file" id="upload" accept=".xlsx, .xls" disabled />
-  <div id="warning-message" class="message">Please enter all data to activate file upload.</div>
 
-  <button id="download" disabled>Download Connectivity</button>
-  <button id="reset">Reset</button>
-</div>
+  <!-- Header with Home Button -->
+  <div class="header">
+    <a href="index.html" class="home-btn">&larr; Home</a>
+    <h1>Automated Activated Zone</h1>
+  </div>
 
-<script>
-  const uploadInput = document.getElementById("upload");
-  const downloadButton = document.getElementById("download");
-  const warningMessage = document.getElementById("warning-message");
-  let mergedData = [];
+  <div class="container">
+    <h2>ADD ZONE</h2>
+    <input type="text" id="manualValue" placeholder="ZONE" />
+    <input type="text" id="FDT" placeholder="FDT" />
+    <input type="text" id="oltip" placeholder="OltIP" />
+    <select id="oltType">
+      <option value="">OLT TYPE</option>
+      <option value="HWOLT">Old-Huawei</option>
+      <option value="NKOLT">Nokia</option>
+      <option value="HWOLT">Huawei</option>
+    </select>
+    <input type="text" id="mainvlan" placeholder="mainvlan" />
 
-  // Input validation to enable file upload and download
-  function validateInputs() {
-    const inputs = ["manualValue", "FDT", "oltip", "oltType", "mainvlan"];
-    const allFilled = inputs.every(id => document.getElementById(id).value.trim());
+    <input type="file" id="upload" accept=".xlsx, .xls" disabled />
+    <div id="warning-message" class="message">Please enter all data to activate file upload.</div>
 
-    uploadInput.disabled = !allFilled;
-    downloadButton.disabled = !allFilled;
-    warningMessage.style.display = allFilled ? "none" : "block";
-  }
+    <button id="download">Download Connectivity</button>
+    <button id="reset">Reset Cell</button>
+  </div>
 
-  document.querySelectorAll("#manualValue, #FDT, #oltip, #oltType, #mainvlan").forEach(input => {
-    input.addEventListener("input", validateInputs);
-    input.addEventListener("change", validateInputs);
-  });
+  <script>
+    const uploadInput = document.getElementById("upload");
+    const downloadButton = document.getElementById("download");
+    const warningMessage = document.getElementById("warning-message");
 
-  document.getElementById("upload").addEventListener("change", handleFile);
-  document.getElementById("reset").addEventListener("click", resetFields);
-  document.getElementById("download").addEventListener("click", downloadFile);
+    uploadInput.disabled = true;
+    downloadButton.disabled = true;
+    warningMessage.style.display = "block";
 
-  function handleFile(event) {
-    const file = event.target.files[0];
-    const reader = new FileReader();
+    function validateInputs() {
+      const manualValue = document.getElementById("manualValue").value.trim();
+      const FDT = document.getElementById("FDT").value.trim();
+      const oltip = document.getElementById("oltip").value.trim();
+      const oltType = document.getElementById("oltType").value.trim();
+      const mainvlan = document.getElementById("mainvlan").value.trim();
 
-    reader.onload = function (e) {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
-      mergedData = processSheetData(sheet);
-    };
-
-    reader.readAsArrayBuffer(file);
-  }
-
-  function processSheetData(sheet) {
-    const headers = ["OLT Slot", "Gpon", "VLAN", "FAT NO."];
-    const cleanData = [];
-    cleanData.push(["Zone", "FDT", "FAT", "OltIP", "OltType", "OltUser", "OltPass", "OltGpon", "OltGponPort", "MainVlan", "InnerVlan", "AlwaysSuccess"]);
-
-    const inputs = {
-      manualValue: document.getElementById("manualValue").value.trim(),
-      FDT: document.getElementById("FDT").value.trim(),
-      oltip: document.getElementById("oltip").value.trim(),
-      oltType: document.getElementById("oltType").value,
-      mainvlan: document.getElementById("mainvlan").value.trim(),
-    };
-
-    const userPass = inputs.oltType.includes("HWOLT") ? "ftthpostman@ftth.iq" : "ftthpostman";
-    const userPassword = "rKYAYki0k8POhwf";
-
-    sheet.slice(1).forEach(row => {
-      if (row.length >= 4) {
-        cleanData.push([
-          inputs.manualValue,
-          inputs.FDT,
-          row[3], // FAT
-          inputs.oltip,
-          inputs.oltType,
-          userPass,
-          userPassword,
-          `gpon 0/${row[0]}`,
-          row[1], // Gpon
-          inputs.mainvlan,
-          row[2], // VLAN
-          0 // AlwaysSuccess
-        ]);
+      if (manualValue && FDT && oltip && oltType && mainvlan) {
+        uploadInput.disabled = false;
+        downloadButton.disabled = false;
+        warningMessage.style.display = "none";
+      } else {
+        uploadInput.disabled = true;
+        downloadButton.disabled = true;
+        warningMessage.style.display = "block";
       }
-    });
-
-    return cleanData;
-  }
-
-  function downloadFile() {
-    if (mergedData.length === 0) {
-      alert("No data to download. Upload a valid file first.");
-      return;
     }
 
-    const manualValue = document.getElementById("manualValue").value.trim();
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(mergedData);
-    XLSX.utils.book_append_sheet(wb, ws, "Processed Data");
+    document.getElementById("manualValue").addEventListener("input", validateInputs);
+    document.getElementById("FDT").addEventListener("input", validateInputs);
+    document.getElementById("oltip").addEventListener("input", validateInputs);
+    document.getElementById("oltType").addEventListener("change", validateInputs);
+    document.getElementById("mainvlan").addEventListener("input", validateInputs);
 
-    XLSX.writeFile(wb, `ZONE_${manualValue || "Output"}.csv`);
-    resetFields();
-  }
-
-  function resetFields() {
-    document.querySelectorAll("#manualValue, #FDT, #oltip, #mainvlan").forEach(input => input.value = "");
-    document.getElementById("oltType").selectedIndex = 0;
-    uploadInput.value = "";
-    mergedData = [];
-    validateInputs();
-  }
-</script>
+    document.getElementById("reset").addEventListener("click", resetFields);
+    function resetFields() {
+      document.getElementById("manualValue").value = "";
+      document.getElementById("FDT").value = "";
+      document.getElementById("oltip").value = "";
+      document.getElementById("oltType").selectedIndex = 0;
+      document.getElementById("mainvlan").value = "";
+      document.getElementById("upload").value = "";
+      uploadInput.disabled = true;
+      downloadButton.disabled = true;
+      warningMessage.style.display = "block";
+    }
+  </script>
 </body>
 </html>
