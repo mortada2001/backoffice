@@ -76,3 +76,22 @@
         <h1>ALWATANI BACK OFFICE</h1>
         <div></div> <!-- Empty div for spacing -->
     </header>
+
+
+// Function to display the Google Sheet within the current page
+function showEscalationSheet() {
+  const sheetContainer = document.getElementById('sheetContainer');
+  const sheetId = 'YOUR_SHEET_ID'; // Replace with your actual Google Sheet ID
+  const sheetUrl = `https://docs.google.com/spreadsheets/d/1-Rf8ZZvAeeuSL8d3HTd7YyMk8TIiu64P-Uyn4BCOfLI/edit?usp=sharing`;
+
+  // Create iframe element for Google Sheet
+  const iframe = document.createElement('iframe');
+  iframe.src = sheetUrl;
+  iframe.width = '100%'; // Adjust width as needed
+  iframe.height = '500px'; // Adjust height as needed
+  iframe.frameBorder = 0; // Remove frame border for cleaner appearance
+
+  // Append iframe to container and show it
+  sheetContainer.appendChild(iframe);
+  sheetContainer.style.display = 'block';
+}
