@@ -66,7 +66,24 @@
         .button:hover {
             background-color: #0056b3;
         }
-<div id="sheetContainer" style="display: none;"></div>  </div>
+h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #sheetContainer {
+            display: block; /* Container visible by default */
+            width: 100%;
+            height: 600px; /* Adjust as needed */
+            margin: 20px auto; /* Center the container */
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none; /* Remove iframe border */
+        }
+
 </style>
 </head>
 <body>
@@ -78,26 +95,24 @@
     </header>
 
 <script>
+        // Function to load the Google Sheet when the page loads
+        function loadEscalationSheet() {
+            const sheetContainer = document.getElementById('sheetContainer');
+            const sheetUrl = 'https://docs.google.com/spreadsheets/d/1-Rf8ZZvAeeuSL8d3HTd7YyMk8TIiu64P-Uyn4BCOfLI/edit?usp=sharing';
 
-// Function to display the Google Sheet within the current page
-function showEscalationSheet() {
-  const sheetContainer = document.getElementById('sheetContainer');
-  const sheetId = 'YOUR_SHEET_ID'; // Replace with your actual Google Sheet ID
-  const sheetUrl = `https://docs.google.com/spreadsheets/d/1-Rf8ZZvAeeuSL8d3HTd7YyMk8TIiu64P-Uyn4BCOfLI/edit?usp=sharing`;
+            // Create iframe element for Google Sheet
+            const iframe = document.createElement('iframe');
+            iframe.src = sheetUrl;
+            iframe.width = '100%';
+            iframe.height = '100%';
+            iframe.frameBorder = 0;
 
-  // Create iframe element for Google Sheet
-  const iframe = document.createElement('iframe');
-  iframe.src = sheetUrl;
-  iframe.width = '100%'; // Adjust width as needed
-  iframe.height = '500px'; // Adjust height as needed
-  iframe.frameBorder = 0; // Remove frame border for cleaner appearance
+            // Append iframe to container
+            sheetContainer.appendChild(iframe);
+        }
 
-  // Append iframe to container and show it
-  sheetContainer.appendChild(iframe);
-  sheetContainer.style.display = 'block';
-}
-
-// Attach click event listener to the escalation button
-document.getElementById('escalationButton').addEventListener('click', showEscalationSheet);
-
-</script>
+        // Load the sheet when the page fully loads
+        window.addEventListener('DOMContentLoaded', loadEscalationSheet);
+    </script>
+</body>
+</html>
