@@ -48,16 +48,16 @@
 
         main {
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-wrap: wrap;
             justify-content: center;
+            align-items: center;
             flex-grow: 1;
+            gap: 10px; /* Space between buttons */
         }
 
         .button {
-            width: 300px; /* Uniform width */
-            height: 60px; /* Uniform height */
-            margin: 10px 0; /* Space between buttons */
+            width: 200px; /* Fixed button width */
+            height: 60px; /* Fixed button height */
             background-color: #007BFF;
             color: white;
             border: none;
@@ -70,6 +70,12 @@
 
         .button:hover {
             background-color: #0056b3;
+        }
+
+        /* Center the 11th button */
+        .centered {
+            width: 200px;
+            margin-left: calc(50% - 110px); /* Centers it between the last two buttons */
         }
     </style>
 </head>
@@ -93,7 +99,7 @@
         <button class="button">Response 8</button>
         <button class="button">Response 9</button>
         <button class="button">Response 10</button>
-        <button class="button">Response 11</button>
+        <button class="button centered">Response 11</button>
     </main>
 </body>
 </html>
