@@ -128,8 +128,8 @@
             <button class="button" onclick="showFeedBackTemplates()">Feed Back Templates</button>
             <button class="button" onclick="redirectToDailyWork()">Daily Work</button>
             <button class="button" onclick="redirectToAddZone()">Add Zone</button>
+            <button class="button" onclick="redirectToEscalation()">Escalation</button>
             <button class="button" id="escalationButton">Escalation</button>
-            <button class="button">Button 6</button>
             <div id="sheetContainer" style="display: none;"></div>  </div>
         </div>
 
@@ -247,6 +247,10 @@ function copyToClipboard() {
 
 function redirectToAddZone() {
         window.location.href = "add-zone.html";
+    }
+
+function redirectToEscalation() {
+        window.location.href = "escalation.html";
     }
 
 // Function to display the Google Sheet within the current page
