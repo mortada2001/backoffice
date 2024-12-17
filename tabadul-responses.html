@@ -18,7 +18,7 @@
         header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             padding: 10px 20px;
             background-color: #007BFF;
             color: white;
@@ -28,31 +28,16 @@
             margin: 0;
             font-size: 2rem;
             text-align: center;
-            flex-grow: 1;
-        }
-
-        .home-button {
-            background-color: #0056b3;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        .home-button:hover {
-            background-color: #003d80;
         }
 
         main {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns for buttons */
+            justify-items: center;
             align-items: center;
+            gap: 20px; /* Space between buttons */
             flex-grow: 1;
-            gap: 10px; /* Space between buttons */
+            margin: 20px 0;
         }
 
         .button {
@@ -72,19 +57,16 @@
             background-color: #0056b3;
         }
 
-        /* Center the 11th button */
         .centered {
-            width: 200px;
-            margin-left: calc(50% - 110px); /* Centers it between the last two buttons */
+            grid-column: 1 / span 2; /* Makes button take up two columns */
+            justify-self: center; /* Centers it in the middle */
         }
     </style>
 </head>
 <body>
     <!-- Header Section -->
     <header>
-        <button class="home-button" onclick="window.location.href='index.html'">Home</button>
         <h1>Tabadul Responses</h1>
-        <div></div> <!-- Empty div for spacing -->
     </header>
 
     <!-- Main Content -->
