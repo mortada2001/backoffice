@@ -48,7 +48,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: calc(100vh - 60px); /* Adjust height to exclude header */
+            height: calc(100vh - 60px);
         }
 
         .button {
@@ -71,45 +71,11 @@
             display: none;
         }
 
-        .popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            z-index: 1000;
-            display: none;
-        }
-
-        .popup-header {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        .popup-close {
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            float: right;
-        }
-
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
+        #sheetContainer iframe {
             width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            display: none;
+            height: 500px;
+            border: none;
         }
-
     </style>
 </head>
 <body>
@@ -129,8 +95,6 @@
             <button class="button" onclick="redirectToDailyWork()">Daily Work</button>
             <button class="button" onclick="redirectToAddZone()">Add Zone</button>
             <button class="button" id="escalationButton">Escalation</button>
-            <button class="button">Button 6</button>
-            <div id="sheetContainer" style="display: none;"></div>  </div>
         </div>
 
         <!-- Email Template Buttons -->
@@ -141,155 +105,74 @@
             <button class="button" onclick="fetchTemplate('templates/template4.txt', 'Problem Refill users')">Problem Refill users</button>
             <button class="button" onclick="fetchTemplate('templates/template5.txt', 'Drop Services')">Drop Services</button>
             <button class="button" onclick="fetchTemplate('templates/template6.txt', 'Zone Down')">Zone Down</button>
-            <button class="button" onclick="fetchTemplate('templates/template7.txt', 'Attachment issue')">Attachment issue</button>
-            <button class="button" onclick="fetchTemplate('templates/template8.txt', 'Most GPON Down')">Most GPON Down</button>
-            <button class="button" onclick="fetchTemplate('templates/template9.txt', 'OLT Down MGM')">OLT Down MGM</button>
-            <button class="button" onclick="fetchTemplate('templates/template10.txt','Operation Outage')">Operation Outage</button>
-            <button class="button" onclick="fetchTemplate('templates/template11.txt', 'Site down')">Site down</button>
-            <button class="button" onclick="fetchTemplate('templates/template12.txt', 'OTP Service Stopped')">OTP Service Stopped</button>
-            <button class="button" onclick="fetchTemplate('templates/template13.txt', 'Alwatani App Stopped')">Alwatani App Stopped</button>
-            <button class="button" onclick="fetchTemplate('templates/template14.txt', 'Wallet transactions Issue')">Wallet transactions Issue</button>
-            <button class="button" onclick="fetchTemplate('templates/template15.txt', 'Sales Portal stopped')">Sales Portal stopped</button>
-            <button class="button" onclick="fetchTemplate('templates/template16.txt', 'Almanasa stopped')">Almanasa stopped</button>
-            <button class="button" onclick="fetchTemplate('templates/template17.txt', 'Creatio stopped')">Creatio stopped</button>
-            <button class="button" onclick="fetchTemplate('templates/template18.txt', 'Customer Onboarding Request Issue')">Customer Onboarding Request Issue</button>
-            <button class="button" onclick="fetchTemplate('templates/template19.txt', 'VLAN Site activation')">VLAN Site activation</button>
         </div>
 
-<div id="feedback-templates" class="hidden">
-            <button class="button" onclick="fetchTemplate('feedtemplates/templates1.txt', ' حل مشكلة الباور والقطع ')">حل مشكلة الباور والقطع  </button>
-            <button class="button" onclick="fetchTemplate('feedtemplates/template3.txt', ' تجديد اشتراك ')">تجديد اشتراك  </button>
-            <button class="button" onclick="fetchTemplate('feedtemplates/template4.txt', 'تأجيل الصيانة ')">تأجيل الصيانة </button>
-            <button class="button" onclick="fetchTemplate('feedtemplates/template5.txt', 'رفض الصيانة ')">رفض الصيانة </button>
-            <button class="button" onclick="fetchTemplate('feedtemplates/template6.txt', 'عدم الرد على الاتصال')">عدم الرد على الاتصال</button>
-                <button class="button" onclick="fetchTemplate('feedtemplates/template7.txt', 'ضعف الخدمة  ')">ضعف الخدمة  </button>
-                <button class="button" onclick="fetchTemplate('feedtemplates/template8.txt', 'اليوزر اوفلاين  ')">اليوزر اوفلاين </button>
-               
+        <!-- Feedback Template Buttons -->
+        <div id="feedback-templates" class="hidden">
+            <button class="button" onclick="fetchTemplate('feedtemplates/template1.txt', 'حل مشكلة الباور والقطع')">حل مشكلة الباور والقطع</button>
+            <button class="button" onclick="fetchTemplate('feedtemplates/template2.txt', 'تجديد اشتراك')">تجديد اشتراك</button>
+            <button class="button" onclick="fetchTemplate('feedtemplates/template3.txt', 'تأجيل الصيانة')">تأجيل الصيانة</button>
+            <button class="button" onclick="fetchTemplate('feedtemplates/template4.txt', 'رفض الصيانة')">رفض الصيانة</button>
+            <button class="button" onclick="fetchTemplate('feedtemplates/template5.txt', 'ضعف الخدمة')">ضعف الخدمة</button>
         </div>
 
+        <!-- Google Sheet Container -->
+        <div id="sheetContainer" class="hidden"></div>
 
+        <!-- Back Button -->
+        <button id="backButton" class="button hidden" onclick="goHome()">Back</button>
     </main>
 
-    <!-- Overlay and Popup -->
-    <div id="overlay"></div>
-    <div id="popup" class="popup">
-    <button class="popup-close" onclick="closePopup()">X</button>
-    <div class="popup-header" id="popup-header"></div>
-    <div id="popup-content"></div>
-    <button class="button" onclick="copyToClipboard()">Copy Content</button> <!-- Copy Button -->
-</div>
-
-
-
     <script>
+        function goHome() {
+            document.getElementById('main-buttons').classList.remove('hidden');
+            document.getElementById('email-templates').classList.add('hidden');
+            document.getElementById('feedback-templates').classList.add('hidden');
+            document.getElementById('sheetContainer').classList.add('hidden');
+            document.getElementById('backButton').classList.add('hidden');
+            document.getElementById('sheetContainer').innerHTML = '';
+        }
 
-function copyToClipboard() {
-    const content = document.getElementById("popup-content").innerText; // Get popup content
-    navigator.clipboard.writeText(content) // Copy to clipboard
-        .then(() => {
-            alert("Content copied to clipboard!");
-        })
-        .catch((err) => {
-            console.error("Error copying text: ", err);
-            alert("Failed to copy content.");
-        });
-}
+        function showEscalationSheet() {
+            document.getElementById('main-buttons').classList.add('hidden');
+            document.getElementById('backButton').classList.remove('hidden');
+            const sheetContainer = document.getElementById('sheetContainer');
+            if (!sheetContainer.hasChildNodes()) {
+                const iframe = document.createElement('iframe');
+                iframe.src = 'https://docs.google.com/spreadsheets/d/1-Rf8ZZvAeeuSL8d3HTd7YyMk8TIiu64P-Uyn4BCOfLI/edit?usp=sharing';
+                sheetContainer.appendChild(iframe);
+            }
+            sheetContainer.classList.remove('hidden');
+        }
 
+        function showEmailTemplates() {
+            document.getElementById('main-buttons').classList.add('hidden');
+            document.getElementById('email-templates').classList.remove('hidden');
+            document.getElementById('backButton').classList.remove('hidden');
+        }
 
-    function goHome() {
-        document.getElementById('email-templates').classList.add('hidden'); 
-        document.getElementById('feedback-templates').classList.add('hidden'); 
-        document.getElementById('main-buttons').classList.remove('hidden');
-    }
+        function showFeedBackTemplates() {
+            document.getElementById('main-buttons').classList.add('hidden');
+            document.getElementById('feedback-templates').classList.remove('hidden');
+            document.getElementById('backButton').classList.remove('hidden');
+        }
 
-    function showEmailTemplates() {
-        document.getElementById('main-buttons').classList.add('hidden');
-        document.getElementById('email-templates').classList.remove('hidden');
-    }
+        function redirectToDailyWork() {
+            window.location.href = "daily-work.html";
+        }
 
-    function showFeedBackTemplates() {
-        document.getElementById('main-buttons').classList.add('hidden');
-        document.getElementById('feedback-templates').classList.remove('hidden');
-    }
+        function redirectToAddZone() {
+            window.location.href = "add-zone.html";
+        }
 
-    function fetchTemplate(templatePath, title) {
-        fetch(templatePath)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Template not found.");
-                }
-                return response.text();
-            })
-            .then((content) => {
-                showPopup(title, content);
-            })
-            .catch((error) => {
-                showPopup("Error", "Failed to load the email template.");
-                console.error("Error fetching template:", error);
-            });
-    }
+        function fetchTemplate(templatePath, title) {
+            fetch(templatePath)
+                .then(response => response.text())
+                .then(content => alert(`${title}:\n\n${content}`))
+                .catch(error => alert('Failed to load template.'));
+        }
 
-    function showPopup(title, content) {
-        document.getElementById("popup-header").innerText = title;
-        document.getElementById("popup-content").innerText = content;
-        document.getElementById("overlay").style.display = "block";
-        document.getElementById("popup").style.display = "block";
-    }
-
-    function closePopup() {
-        document.getElementById("overlay").style.display = "none";
-        document.getElementById("popup").style.display = "none";
-    }
-
-    function redirectToDailyWork() {
-        window.location.href = "daily-work.html";
-    }
-
-function redirectToAddZone() {
-        window.location.href = "add-zone.html";
-    }
-
-// Function to display the Google Sheet within the current page
-function showEscalationSheet() {
-  const sheetContainer = document.getElementById('sheetContainer');
-  const sheetId = 'YOUR_SHEET_ID'; // Replace with your actual Google Sheet ID
-  const sheetUrl = `https://docs.google.com/spreadsheets/d/1-Rf8ZZvAeeuSL8d3HTd7YyMk8TIiu64P-Uyn4BCOfLI/edit?usp=sharing`;
-
-  // Create iframe element for Google Sheet
-  const iframe = document.createElement('iframe');
-  iframe.src = sheetUrl;
-  iframe.width = '100%'; // Adjust width as needed
-  iframe.height = '500px'; // Adjust height as needed
-  iframe.frameBorder = 0; // Remove frame border for cleaner appearance
-
-  // Append iframe to container and show it
-  sheetContainer.appendChild(iframe);
-  sheetContainer.style.display = 'block';
-}
-
-// Attach click event listener to the escalation button
-document.getElementById('escalationButton').addEventListener('click', showEscalationSheet);
-
-
-
-
-
-
-
-
-
-
-
-        
-    function copyToClipboard() {
-        const content = document.getElementById("popup-content").innerText;
-        navigator.clipboard.writeText(content)
-            .then(() => {
-                alert("Content copied to clipboard!");
-            })
-            .catch((err) => {
-                console.error("Error copying text: ", err);
-                alert("Failed to copy content.");
-            });
-    }
-</script>
+        document.getElementById('escalationButton').addEventListener('click', showEscalationSheet);
+    </script>
+</body>
+</html>
