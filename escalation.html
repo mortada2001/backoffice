@@ -21,6 +21,8 @@
             padding: 10px 20px;
             background-color: #007BFF;
             color: white;
+            height: 60px; /* Fixed height for the header */
+            box-sizing: border-box;
         }
 
         header h1 {
@@ -47,19 +49,17 @@
 
         /* Main Content Styling */
         main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
+            height: calc(100vh - 60px); /* Full page height minus header height */
+            box-sizing: border-box;
         }
 
         #sheetContainer {
-            display: block; /* Container visible by default */
             width: 100%;
-            max-width: 1200px; /* Limit width for better readability */
-            height: 600px; /* Adjust height as needed */
-            margin: 20px auto; /* Center the container */
+            height: 100%; /* Fill remaining space */
+            margin: 0;
+            padding: 0;
         }
 
         iframe {
@@ -79,7 +79,6 @@
 
     <!-- Main Content Section -->
     <main>
-        
         <!-- Google Sheet Container -->
         <div id="sheetContainer"></div>
     </main>
@@ -93,8 +92,6 @@
             // Create iframe element for Google Sheet
             const iframe = document.createElement('iframe');
             iframe.src = sheetUrl;
-            iframe.width = '100%';
-            iframe.height = '100%';
             iframe.frameBorder = 0;
 
             // Append iframe to container
