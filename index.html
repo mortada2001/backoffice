@@ -192,6 +192,16 @@
 
         </div>
 
+        <div id="showJW" class="hidden">
+    <button class="button"onclick="window.location.href='https://jwdx.earthlink.iq/jw/web/userview/FTTH_SiteDelivery/FTTH_SiteDeliveryView/_/inbox';">ZONE Delivery #24
+        <button class="button"onclick="window.location.href='https://jwdx.earthlink.iq/jw/web/userview/virtualZoneOnboarding/virtualZoneOnboarding/_/inbox';">virtual ZONE #77
+            <button class="button"onclick="window.location.href='https://jwdx.earthlink.iq/jw/web/userview/FTTH_ZoneUpgrade/FTTH_ZoneUpgradeView/_/inbox';">ZONE Upgrade #67
+                <button class="button"onclick="window.location.href='https://jwdx.earthlink.iq/jw/web/userview/fdtDeactivationProcess/fdtDeactivationProcess/_/inbox';">Deactivation ZONE #24
+
+    </button>
+      
+    </div>
+
 
 
     </main>
@@ -238,6 +248,13 @@ function copyToClipboard() {
         document.getElementById('main-buttons').classList.add('hidden');
         document.getElementById('feedback-templates').classList.remove('hidden');
     }
+
+        
+    function showJW() {
+        document.getElementById('main-buttons').classList.add('hidden');
+        document.getElementById('showJW').classList.remove('hidden');
+    }
+        
 
 function showTabadulResponse() {
         document.getElementById('main-buttons').classList.add('hidden');
