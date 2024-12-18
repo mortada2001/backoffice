@@ -201,6 +201,7 @@
             <button class="button" onclick="showJW()">JW</button>
             <button class="button" onclick="openInNewTab('https://ticket.earthlink.iq/Tickets/AddTicket.aspx?showpage=add&tickettype=pointticket&ID=90671')">New Ticket DEV </button>
             <button class="button" onclick="openInNewTab('https://sso.ftth.iq/auth/admin/master/console/#/realms/Customers/users')">RED HAT SSO</button>
+            <button class="button" onclick="showIT()">IT HELPDESK</button>
 
             
         </div>
@@ -253,6 +254,15 @@
             <button class="button" onclick="openInNewTab('https://jwdx.earthlink.iq/jw/web/userview/fdtDeactivationProcess/fdtDeactivationProcess/_/inbox')">Deactivation ZONE #74</button>
         </div>
 
+        
+   <div id="showIT" class="hidden">
+    <button class="button" onclick="openInNewTab('https://pwm.earthlink.iq/pwm/private/login')">PWM</button>
+    <button class="button" onclick="openInNewTab('https://vpn.earthlink.iq/')">VPN</button>
+    <button class="button" onclick="openInNewTab('https://otp.el.earthlink.iq/#!/login')">PRIVACY IDEA AUTHENTICATOR</button>
+    <button class="button" onclick="openInNewTab('https://ipa01.el.earthlink.iq/ipa/ui/')">HRMS</button>
+</div>
+
+
 
 
 
@@ -298,6 +308,10 @@
         document.getElementById('showJW').classList.remove('hidden');
     }
 
+    function showIT() {
+        document.getElementById('main-buttons').classList.add('hidden');
+        document.getElementById('showJW').classList.remove('hidden');
+    }
 
     function fetchTemplate(templatePath, title) {
         fetch(templatePath)
