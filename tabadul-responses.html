@@ -30,19 +30,32 @@
             text-align: center;
         }
 
+        .home-button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .home-button:hover {
+            background-color: #003d80;
+        }
+
         main {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* Four columns for buttons */
-            justify-items: center;
+            grid-template-columns: repeat(2, 300px); /* 2 columns */
+            gap: 10px; /* Space between buttons */
+            justify-content: center;
             align-items: center;
-            gap: 5px; /* Reduced space between buttons */
-            flex-grow: 1;
             margin: 20px 0;
         }
 
         .button {
-            width: 200px; /* Fixed button width */
-            height: 60px; /* Fixed button height */
+            height: 60px; /* Uniform height */
             background-color: #007BFF;
             color: white;
             border: none;
@@ -56,16 +69,12 @@
         .button:hover {
             background-color: #0056b3;
         }
-
-        .centered {
-            grid-column: span 2; /* Makes button take up both columns */
-            justify-self: center; /* Centers it */
-        }
     </style>
 </head>
 <body>
     <!-- Header Section -->
     <header>
+        <button class="home-button" onclick="window.location.href='index.html'">Home</button>
         <h1>Tabadul Responses</h1>
     </header>
 
@@ -81,7 +90,7 @@
         <button class="button">Response 8</button>
         <button class="button">Response 9</button>
         <button class="button">Response 10</button>
-        <button class="button centered">Response 11</button>
+        <button class="button">Response 11</button>
     </main>
 </body>
 </html>
