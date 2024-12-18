@@ -76,23 +76,35 @@
     <!-- Header Section -->
     <header>
         <button class="home-button" onclick="window.location.href='index.html'">Home</button>
-        <h1>ALWATANI BACK OFFICE</h1>
+        <h1>Tabadul Responses</h1>
     </header>
 
     <!-- Main Content -->
     <main>
-        <button class="button">Response 1</button>
-        <button class="button">Response 2</button>
-        <button class="button">Response 3</button>
-        <button class="button">Response 4</button>
-        <button class="button">Response 5</button>
-        <button class="button">Response 6</button>
-        <button class="button">Response 7</button>
-        <button class="button">Response 8</button>
-        <button class="button">Response 9</button>
-        <button class="button">Response 10</button>
-        <button class="button">Response 11</button>
-        <button class="button">Response 12</button>
+        <button class="button" onclick="copyText('Response 1')">Response 1</button>
+        <button class="button" onclick="copyText('Response 2')">Response 2</button>
+        <button class="button" onclick="copyText('Response 3')">Response 3</button>
+        <button class="button" onclick="copyText('Response 4')">Response 4</button>
+        <button class="button" onclick="copyText('Response 5')">Response 5</button>
+        <button class="button" onclick="copyText('Response 6')">Response 6</button>
+        <button class="button" onclick="copyText('Response 7')">Response 7</button>
+        <button class="button" onclick="copyText('Response 8')">Response 8</button>
+        <button class="button" onclick="copyText('Response 9')">Response 9</button>
+        <button class="button" onclick="copyText('Response 10')">Response 10</button>
+        <button class="button" onclick="copyText('Response 11')">Response 11</button>
     </main>
+
+    <script>
+        function copyText(text) {
+            // Create a temporary textarea element
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('Copied: ' + text); // Optional: Show an alert to notify the user
+        }
+    </script>
 </body>
 </html>
