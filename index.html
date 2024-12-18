@@ -7,12 +7,25 @@
     <link rel="icon" type="image/png" href="icon.png">
     <style>
         body {
-          font-family: Arial, sans-serif;
+           font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        background: url('LOGOAlwatani.png') no-repeat center center; /* الصورة في الوسط */
-        background-size: 40%; /* الصورة تظهر بحجم 50% من أبعاد الصفحة */
-        background-color: #000000; /* لون خلفية احتياطي */
+        background: url('background.jpg') no-repeat center center fixed; /* الصورة في الخلفية */
+        background-size: cover; /* تغطي الخلفية */
+        position: relative;
+    }
+
+    /* إضافة طبقة شفافة */
+    body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.7); /* لون أبيض شفاف */
+        z-index: -1; /* التأكد أن الطبقة خلف المحتوى */
+    }
         }
 
         header {
