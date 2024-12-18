@@ -1,12 +1,9 @@
-(Subject) Incident: Problem Refill users 
-TO: it-helpdesk@hulum.iq; 
-CC: hsinan@earthlink.iq ; hsami@earthlink.iq ; shassun@earthlink.iq ; fsayf@earthlink.iq ;
-    mufarqad@earthlink.iq; mbasim@earthlink.iq ; sunajm@earthlink.iq ; azsadun@hulum.iq;
+(Subject) Incident: Drop Services TO: metronbb@earthlink.iq CC: arabeea@earthlink.iq; mufarqad@earthlink.iq ; hsami@earthlink.iq ; bhaq@earthlink.iq ; supportftth@earthlink.iq ; mbasim@earthlink.iq; sunajm@earthlink.iq ahisam@earthlink.iq
 
 Message:
 
-Dear IT Team,
+Dear Metro Team,
 
-We have a problem with portal Subscribers cannot be refill users, according to the photo below:
+We would like to inform you that we have a drop service for these ZONEs, as shown in the picture:
 
-Start ON: Time
+Start ON: Time 
