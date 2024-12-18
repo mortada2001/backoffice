@@ -34,6 +34,8 @@
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
             font-size: 2rem;
             font-weight: 600;
+            position: relative;
+            text-align: center;
         }
 
         /* Glassmorphism Card */
@@ -81,6 +83,29 @@
             grid-column: span 2; /* Centered across both columns */
             justify-self: center;
         }
+
+/* Home Button */
+        .home-button {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            background: rgba(88, 166, 255, 0.8);
+            color: #FFFFFF;
+            border: 2px solid #FFFFFF;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .home-button:hover {
+            background: #FFFFFF;
+            color: #0D1117;
+            transform: scale(1.1);
+        }
+
 
         /* Logo */
         .logo {
