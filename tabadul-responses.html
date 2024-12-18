@@ -19,7 +19,7 @@
         header {
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Ensures Home button is on the left */
+            justify-content: space-between;
             padding: 10px 20px;
             background-color: #007BFF;
             color: white;
@@ -29,7 +29,7 @@
             margin: 0;
             font-size: 2rem;
             text-align: center;
-            flex-grow: 1; /* Ensures the title stays in the center */
+            flex-grow: 1;
         }
 
         .home-button {
@@ -49,15 +49,15 @@
 
         main {
             display: grid;
-            grid-template-columns: repeat(2, 300px); /* 2 columns */
-            gap: 10px; /* Space between buttons */
+            grid-template-columns: repeat(2, 300px);
+            gap: 10px;
             justify-content: center;
             align-items: center;
             margin: 20px 0;
         }
 
         .button {
-            height: 60px; /* Uniform height */
+            height: 60px;
             background-color: #007BFF;
             color: white;
             border: none;
@@ -82,9 +82,8 @@
 
     <!-- Main Content -->
     <main>
-        
         <button class="button" onclick="copyText(' تحية طيبة لم يصل otp (الرمز الذي يصل في رسالة) والحركة مرفوضة بدون استقطاع من الرصيد  يرجى اعادة المحاولة مرة اخرى وشكرا')">No attempts left</button>
-        <button class="button" onclick="openInNewTab('https://epg-ui.tabadul.iq/epg_gui/#login')"> tabadul </button>
+        <button class="button" onclick="openInNewTab('https://epg-ui.tabadul.iq/epg_gui/#login')">tabadul</button>
         <button class="button" onclick="copyText('تحية طيبة يرجى مراجعة  الجهة مصدرة  لم يتم استقطاع رصيد من الزبون وشكرا')">Do not honor transaction</button>
         <button class="button" onclick="copyText('تحية طيبة يرجى مراجعة  الجهة مصدرة  لم يتم استقطاع رصيد من الزبون وشكرا')">Cannot process transaction</button>
         <button class="button" onclick="copyText('تحية طيبة المحاولة في وقت اخر (15-30 دقيقة ) لم يتم استقطاع رصيد من الزبون / او مراجعة الجهة المصدرة للبطاقة وشكرا')">Session time limit</button>
@@ -106,7 +105,12 @@
             textArea.select();
             document.execCommand('copy');
             document.body.removeChild(textArea);
-            alert('Copied: ' + text); // Optional: Show an alert to notify the user
+            alert('تم نسخ النص: ' + text); // إشعار المستخدم بأنه تم النسخ
+        }
+
+        function openInNewTab(url) {
+            // Open the URL in a new tab
+            window.open(url, '_blank');
         }
     </script>
 </body>
