@@ -22,6 +22,7 @@
             padding: 10px 20px;
             background-color: #007BFF;
             color: white;
+            position: relative; /* Enable absolute positioning within the header */
     }
 
 
@@ -32,6 +33,11 @@
             text-align: center;
             flex-grow: 1;
     }
+
+    header img.logo {
+    margin-left: auto; /* This will push the logo to the far right */
+}
+
 
     .home-btn {
             background-color: #0056b3;
@@ -107,6 +113,17 @@
       color: red;
       margin: 5px 0;
     }
+
+.logo {
+    width: 50px; /* Set the logo size */
+    height: auto;
+    position: absolute; /* Position the logo at the top-right corner */
+    right: 20px; /* Adjust the distance from the right edge */
+    top: 50%; /* Position it vertically in the middle of the header */
+    transform: translateY(-50%); /* Adjust vertical alignment to the middle */
+}
+
+
   </style>
 </head>
 <body>
@@ -115,6 +132,7 @@
   <div class="header">
     <button class="home-btn" onclick="goHome()">Home</button>
     <h1>ALWATANI BACK OFFICE</h1>
+    <img src="alwatani.png" alt="Logo" class="logo">
   </div>
 
   <div class="container">
