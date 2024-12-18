@@ -18,7 +18,7 @@
         header {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between; /* Ensures Home button is on the left */
             padding: 10px 20px;
             background-color: #007BFF;
             color: white;
@@ -28,6 +28,7 @@
             margin: 0;
             font-size: 2rem;
             text-align: center;
+            flex-grow: 1; /* Ensures the title stays in the center */
         }
 
         .home-button {
@@ -75,7 +76,7 @@
     <!-- Header Section -->
     <header>
         <button class="home-button" onclick="window.location.href='index.html'">Home</button>
-        <h1>Tabadul Responses</h1>
+        <h1>ALWATANI BACK OFFICE</h1>
     </header>
 
     <!-- Main Content -->
