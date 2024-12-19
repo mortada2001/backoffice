@@ -202,7 +202,7 @@
             <button class="button" onclick="openInNewTab('https://ticket.earthlink.iq/Tickets/AddTicket.aspx?showpage=add&tickettype=pointticket&ID=90671')">New Ticket DEV </button>
             <button class="button" onclick="openInNewTab('https://sso.ftth.iq/auth/admin/master/console/#/realms/Customers/users')">RED HAT SSO</button>
             <button class="button" onclick="openInNewTab('https://192.168.219.126/zabbix.php?action=dashboard.view')">ZABBIX</button>
-
+            <button class="button" onclick="showQUALITY()">QUALITY</button>
             <button class="button" onclick="showIT()">IT HELPDESK</button>
 
             
@@ -267,6 +267,12 @@
 </div>
 
 
+<div id="showQUALITY" class="hidden">
+    <button class="button" onclick="openInNewTab('https://earthlinktel-my.sharepoint.com/:x:/g/personal/tkamil_earthlink_iq/EZXeoE2PVpNFgH6jHKmcoAgB_baAlFYf4ek0l4gLwPqFbg?e=w3uydt')">QUALITY REPORT</button>
+    <button class="button" onclick="openInNewTab('https://earthlinktel-my.sharepoint.com/:x:/r/personal/samuayyad_earthlink_iq/Documents/Objctions%20Report.xlsx?d=w32ab713f9a6b48929640e6912ef18e3a&csf=1&web=1&e=ew2Jjc')">OBJCTIONS REPORT</button>
+
+
+</div>
 
 
 
@@ -294,6 +300,7 @@
         document.getElementById('main-buttons').classList.remove('hidden');
         document.getElementById('showJW').classList.add('hidden');
         document.getElementById('showIT').classList.add('hidden');
+        document.getElementById('showQUALITY').classList.add('hidden');
 
     }
 
@@ -317,6 +324,14 @@
         document.getElementById('main-buttons').classList.add('hidden');
         document.getElementById('showIT').classList.remove('hidden');
     }
+    
+    
+    function showQUALITY() {
+        document.getElementById('main-buttons').classList.add('hidden');
+        document.getElementById('showQUALITY').classList.remove('hidden');
+    }
+    
+    
 
     function fetchTemplate(templatePath, title) {
         fetch(templatePath)
