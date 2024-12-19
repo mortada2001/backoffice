@@ -248,6 +248,7 @@
         <div id="main-buttons">
             <button class="button" onclick="showEmailTemplates()">Email Templates</button>
             <button class="button" onclick="showFeedBackTemplates()">Feed Back Templates</button>
+            <button class="button" onclick="showFeedBackFATS()">Feed Back FATS</button>
             <button class="button" onclick="redirectToDailyWork()">Daily Work</button>
             <button class="button" onclick="redirectToAddZone()">Add Zone</button>
             <button class="button" onclick="redirectToEscalation()">Escalation</button>
@@ -309,6 +310,25 @@
 
         </div>
 
+        
+<div id="showFeedBackFATS" class="hidden">
+  
+                 <button class="button" onclick="fetchTemplate('feedtemplates/template1', ' يوجد باور طبيعي في العامود  ')"> يوجد باور طبيعي في العامود  </button>
+               <button class="button" onclick="fetchTemplate('feedtemplates/template2', ' طلب المشتركين على العامود ')"> طلب المشتركين على العامود </button>
+               <button class="button" onclick="fetchTemplate('feedtemplates/template3', ' طلب اضافة عامود والعامود غير مرتب ')"> طلب اضافة عامود والعامود غير مرتب </button>
+               <button class="button" onclick="fetchTemplate('feedtemplates/template4', ' طلب اضافة عامود جديد جوكت ')"> طلب اضافة عامود جديد جوكت </button>
+               <button class="button" onclick="fetchTemplate('feedtemplates/template5', ' طلب توسعه لعامود  ')"> طلب توسعه لعامود </button>
+               <button class="button" onclick="fetchTemplate('feedtemplates/template6', ' Waiting for response  ')"> Waiting for response </button>
+               <button class="button" onclick="fetchTemplate('feedtemplates/template7', ' مشكله بعض البورتات بدون صورة   ')"> مشكله بعض البورتات بدون صورة   </button>
+               <button class="button" onclick="fetchTemplate('feedtemplates/template8', ' طلب تشفيت عامود  ')"> طلب تشفيت عامود   </button>
+               <button class="button" onclick="fetchTemplate('feedtemplates/template9', ' جار المتابعه  ')"> جار المتابعه    </button>
+
+        </div>
+
+
+
+
+        
 
    <div id="showJW" class="hidden">
             <button class="button" onclick="openInNewTab('https://jwdx.earthlink.iq/jw/web/userview/FTTH_SiteDelivery/FTTH_SiteDeliveryView/_/inbox')">ZONE Delivery #24</button>
@@ -370,6 +390,7 @@
         document.getElementById('showIT').classList.add('hidden');
         document.getElementById('showQUALITY').classList.add('hidden');
         document.getElementById('showGRAFANA').classList.add('hidden');
+        document.getElementById('showFeedBackFATS').classList.add('hidden');
 
     }
 
@@ -381,6 +402,11 @@
     function showFeedBackTemplates() {
         document.getElementById('main-buttons').classList.add('hidden');
         document.getElementById('feedback-templates').classList.remove('hidden');
+    }
+
+         function showFeedBackFATS() {
+        document.getElementById('main-buttons').classList.add('hidden');
+        document.getElementById('showFeedBackFATS').classList.remove('hidden');
     }
 
         
