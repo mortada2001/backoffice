@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OFF DAYS</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #0D1117 !important; 
+            color: #FFFFFF;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #58A6FF, #1F6FEB);
+            color: #FFFFFF;
+            padding: 15px 20px;
+            width: 100%;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            font-size: 2rem;
+            font-weight: 600;
+            position: relative;
+            text-align: center;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1); /* Transparent white */
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px); /* Glassmorphism Effect */
+            -webkit-backdrop-filter: blur(10px);
+            padding: 30px 20px;
+            margin: 30px 0;
+            max-width: 800px;
+            width: 90%;
+        }
+
+/* Home Button */
+        .home-button {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            background: rgba(88, 166, 255, 0.8);
+            color: #FFFFFF;
+            border: 2px solid #FFFFFF;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .home-button:hover {
+            background: #FFFFFF;
+            color: #0D1117;
+            transform: scale(1.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        header img.logo {
+    margin-left: auto; /* This will push the logo to the far right */
+}
+
+        /* Table Header Styling */
+table th {
+    background-color: #D32F2F; /* Bold Red */
+    color: #FFFFFF; /* White text */
+    font-weight: bold;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Table Row Styling */
+table tr:nth-child(even) {
+    background-color: #FFEBEE; /* Light Pinkish Cream */
+}
+
+table tr:nth-child(odd) {
+    background-color: #FFCDD2; /* Soft Red Tint */
+}
+
+/* Table Cell Styling */
+table td {
+    color: #3E2723; /* Dark Brown for text */
+    padding: 10px;
+    text-align: center;
+}
+
+/* Main Page Background */
+body {
+    background-color: #1A1A1A; /* Keep the main page's background */
+    color: #FFFFFF; /* White text for better readability */
+}
+
+
+
+
+
+
+
+
+.logo {
+    width: 50px; /* Set the logo size */
+    height: auto;
+    position: absolute; /* Position the logo at the top-right corner */
+    right: 20px; /* Adjust the distance from the right edge */
+    top: 50%; /* Position it vertically in the middle of the header */
+    transform: translateY(-50%); /* Adjust vertical alignment to the middle */
+}
+
+
+    </style>
+</head>
+<body>
+
+      
+    <!-- Header Section -->
+    <header>
+        <button class="home-button" onclick="window.location.href='index.html'">Home</button>
+        <h1>ALWATANI BACK OFFICE</h1>
+        <img src="alwatani.png" alt="Logo" class="logo">
+        <div></div> <!-- Empty div for spacing -->
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <h2>OFF DAYS</h2>
+        <table id="google-sheet-data">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Sat</th>
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                </tr>
+            </thead>
+            <tbody id="sheet-data-body">
+                <!-- Data will be inserted here -->
+            </tbody>
+        </table>
+    </main>
+
+    <script>
+const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSk7PIeQQoBXAc5S3cftRPONxhRHBltHpXNEw2y4ViDixvYu4737U6WReWmJ29Hb8kzvGxFOZHs3PtR/pub?gid=1434595877&single=true&output=csv';
+
+async function fetchSheetData() {
+    try {
+        // Fetch the CSV data from the Google Sheet
+        const response = await fetch(sheetUrl);
+        const data = await response.text();
+        
+        // Split the data into rows
+        const rows = data.split('\n');
+
+        const sheetBody = document.getElementById('sheet-data-body');
+        rows.forEach((row, index) => {
+            if (index === 0) return; // Skip the header row
+
+            // Split each row into cells
+            const cells = row.split(',');
+
+            // Create a new table row
+            const tableRow = document.createElement('tr');
+            cells.forEach(cell => {
+                const tableCell = document.createElement('td');
+                tableCell.textContent = cell;
+
+                // Check if the cell contains "EOFF" and apply red background
+                if (cell.trim() === "EOFF") {
+                    tableCell.style.backgroundColor = "red";
+                    tableCell.style.color = "white"; // Optional: Set text color to white for better readability
+                }
+
+                tableRow.appendChild(tableCell);
+            });
+            sheetBody.appendChild(tableRow);
+        });
+    } catch (error) {
+        console.error("Error fetching Google Sheet data:", error);
+    }
+}
+
+// Fetch the data when the page is loaded
+window.onload = fetchSheetData;
+</script>
+
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OFF DAYS</title>
+</head>
+<body>
+
+    
+
+
+</body>
+</html>
