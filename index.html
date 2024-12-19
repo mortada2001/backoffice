@@ -203,6 +203,10 @@
             <button class="button" onclick="openInNewTab('https://sso.ftth.iq/auth/admin/master/console/#/realms/Customers/users')">RED HAT SSO</button>
             <button class="button" onclick="openInNewTab('https://192.168.219.126/zabbix.php?action=dashboard.view')">ZABBIX</button>
             <button class="button" onclick="showQUALITY()">QUALITY</button>
+             <button class="button" onclick="showGRAFANA()">GRAFANA</button>
+
+
+
             <button class="button" onclick="showIT()">IT HELPDESK</button>
 
             
@@ -274,6 +278,13 @@
 
 </div>
 
+<div id="showGRAFANA" class="hidden">
+    <button class="button" onclick="openInNewTab('https://dash.elcld.net/d/dZPegMo7z/ftth-online-users?orgId=1&var-Provience=FKK%25&var-sites=BASR&var-Zone2=FBB0072&var-ZoneName=FAM0006&var-ZoneName=FAM0006-2&var-ZoneName=FAM0007-2')">GRAFANA DASHBOARD</button>
+    <button class="button" onclick="openInNewTab('https://dash.elcld.net/d/c651963b-0113-49f5-95d4-628f407a12d8/fat-info-dashboard?orgId=1&viewPanel=2')">FAT INFO</button>
+   
+</div>
+
+
 
 
     </main>
@@ -301,6 +312,7 @@
         document.getElementById('showJW').classList.add('hidden');
         document.getElementById('showIT').classList.add('hidden');
         document.getElementById('showQUALITY').classList.add('hidden');
+        document.getElementById('showGRAFANA').classList.add('hidden');
 
     }
 
@@ -331,6 +343,11 @@
         document.getElementById('showQUALITY').classList.remove('hidden');
     }
     
+    
+    function showGRAFANA() {
+        document.getElementById('main-buttons').classList.add('hidden');
+        document.getElementById('showGRAFANA').classList.remove('hidden');
+    }
     
 
     function fetchTemplate(templatePath, title) {
