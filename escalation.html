@@ -33,20 +33,38 @@
             flex-grow: 1;
         }
 
+        /* Home Button */
         .home-button {
-            background-color: #0056b3;
-            color: white;
-            border: none;
-            padding: 10px 20px;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            background: rgba(88, 166, 255, 0.8);
+            color: #FFFFFF;
+            border: 2px solid #FFFFFF;
+            border-radius: 8px;
+            padding: 8px 15px;
             font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
             cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
         }
 
         .home-button:hover {
-            background-color: #003d80;
+            background: #FFFFFF;
+            color: #0D1117;
+            transform: scale(1.1);
         }
+        
+        .logo {
+    width: 50px; /* Set the logo size */
+    height: auto;
+    position: absolute; /* Position the logo at the top-right corner */
+    right: 20px; /* Adjust the distance from the right edge */
+    top: 50%; /* Position it vertically in the middle of the header */
+    transform: translateY(-50%); /* Adjust vertical alignment to the middle */
+}
+        
 
         /* Main Content Styling */
         main {
@@ -75,6 +93,7 @@
     <header>
         <button class="home-button" onclick="window.location.href='index.html'">Home</button>
         <h1>ALWATANI BACK OFFICE</h1>
+        <img src="alwatani.png" alt="Logo" class="logo">
         <div></div> <!-- Empty div for spacing -->
     </header>
 
