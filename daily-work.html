@@ -3,39 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALWATANI BACK OFFICE</title>
-    <link rel="icon" type="image/png" href="icon.png">
+    <title>Alwatani Back Office</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* General Reset */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f0f8ff;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
-        header {
+        body {
+            background-color: #0D1117; /* Dark background */
+            color: #FFFFFF;
+            text-align: center;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            position: relative; /* Enable absolute positioning within the header */
+            min-height: 100vh;
         }
 
-.home-button { /* Correct class selector with dot (.) */
-            background-color: #0056b3;
-            color: white;
-            border: none;
-            padding: 10px 20px;
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #58A6FF, #1F6FEB);
+            color: #FFFFFF;
+            padding: 15px 20px;
+            width: 100%;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            font-size: 2rem;
+            font-weight: 600;
+            position: relative;
+            text-align: center;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1); /* Transparent white */
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px); /* Glassmorphism Effect */
+            -webkit-backdrop-filter: blur(10px);
+            padding: 30px 20px;
+            margin: 30px 0;
+            max-width: 800px;
+            width: 90%;
+        }
+
+/* Home Button */
+        .home-button {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            background: rgba(88, 166, 255, 0.8);
+            color: #FFFFFF;
+            border: 2px solid #FFFFFF;
+            border-radius: 8px;
+            padding: 8px 15px;
             font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
             cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
         }
 
         .home-button:hover {
-            background-color: #003d80;
+            background: #FFFFFF;
+            color: #0D1117;
+            transform: scale(1.1);
         }
 
         header h1 {
@@ -49,34 +85,43 @@
     margin-left: auto; /* This will push the logo to the far right */
 }
 
-        main {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+        /* Table Header Styling */
+table th {
+    background-color: #D32F2F; /* Bold Red */
+    color: #FFFFFF; /* White text */
+    font-weight: bold;
+    padding: 10px;
+    text-align: center;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+/* Table Row Styling */
+table tr:nth-child(even) {
+    background-color: #FFEBEE; /* Light Pinkish Cream */
+}
 
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
+table tr:nth-child(odd) {
+    background-color: #FFCDD2; /* Soft Red Tint */
+}
 
-        th {
-            background-color: #007BFF;
-            color: white;
-        }
+/* Table Cell Styling */
+table td {
+    color: #3E2723; /* Dark Brown for text */
+    padding: 10px;
+    text-align: center;
+}
 
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
+/* Main Page Background */
+body {
+    background-color: #1A1A1A; /* Keep the main page's background */
+    color: #FFFFFF; /* White text for better readability */
+}
+
+
+
+
+
+
+
 
 .logo {
     width: 50px; /* Set the logo size */
@@ -112,6 +157,7 @@
                     <th>EMAIL - In Progress - Escalation</th>
                     <th>Notifications - FATS - Waiting</th>
                     <th>NEW</th>
+                    <th>DAY</th>
                 </tr>
             </thead>
             <tbody id="sheet-data-body">
