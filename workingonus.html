@@ -36,6 +36,7 @@
             font-weight: 600;
             position: relative;
             text-align: center;
+            position: relative;
         }
 
         /* Glassmorphism Card */
@@ -117,12 +118,24 @@ body {
             color: #fffff;
             margin-top: 20px;
         }
+        
+        .logo {
+    width: 50px; /* Set the logo size */
+    height: auto;
+    position: absolute; /* Position the logo at the top-right corner */
+    right: 20px; /* Adjust the distance from the right edge */
+    top: 50%; /* Position it vertically in the middle of the header */
+    transform: translateY(-50%); /* Adjust vertical alignment to the middle */
+}
+        
+        
     </style>
 </head>
 <body>
     <!-- Header Section -->
     <header>
         <button class="home-button" onclick="window.location.href='index.html'">Home</button>
+        <img src="alwatani.png" alt="Logo" class="logo">
         <h1>ALWATANI BACK OFFICE</h1>
         <div></div> <!-- Empty div for spacing -->
     </header>
