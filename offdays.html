@@ -194,7 +194,7 @@ async function fetchSheetData() {
                 tableCell.textContent = cell;
 
                 // Check if the cell contains "EOFF" and apply red background
-                if (cell.trim() === "EOFF") {
+                if (cell.trim() === "OFF") {
                     tableCell.style.backgroundColor = "red";
                     tableCell.style.color = "white"; // Optional: Set text color to white for better readability
                 }
