@@ -211,16 +211,6 @@
 
 
 
-#logoclick {
-            width: 100px;
-            cursor: pointer;
-            margin-top: 50px;
-        }
-
-        #easterEggImage {
-            display: none;
-            width: 300px;
-            margin-top: 20px;
 
 
 
@@ -256,7 +246,7 @@
         <img src="alwatani.png" alt="Alwatani Logo">
         
     </div>
-    <img id="easterEggImage" src="easter-egg.png" alt="Easter Egg">
+    
 
     <!-- Main Content -->
     <main>
@@ -406,21 +396,6 @@
 
     <script>
 
-let clickCount = 0;
-        const logoclick = document.getElementById("logo");
-        const easterEggImage = document.getElementById("easterEggImage");
-
-        logo.addEventListener("click", function () {
-            clickCount++;
-            if (clickCount === 10) {
-                easterEggImage.style.display = "block"; // Show the Easter egg image
-                clickCount = 0; // Reset the count after showing the image
-
-                // Hide the Easter egg after 5 seconds
-                setTimeout(() => {
-                    easterEggImage.style.display = "none";
-                }, 5000);
-            }
 
 
     function goHome() {
