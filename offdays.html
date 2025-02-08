@@ -193,11 +193,19 @@ async function fetchSheetData() {
                 const tableCell = document.createElement('td');
                 tableCell.textContent = cell;
 
-                // Check if the cell contains "EOFF" and apply red background
+                // Check if the cell contains "OFF" and apply red background
                 if (cell.trim() === "OFF") {
                     tableCell.style.backgroundColor = "red";
                     tableCell.style.color = "white"; // Optional: Set text color to white for better readability
                 }
+
+               // Check if the cell contains "rotation" and apply blue background
+                if (cell.trim() === "Rotation") {
+                    tableCell.style.backgroundColor = "blue";
+                    tableCell.style.color = "white"; // Optional: Set text color to white for better readability
+                }
+
+
 
                 tableRow.appendChild(tableCell);
             });
