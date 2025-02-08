@@ -315,7 +315,7 @@
                <button class="button" onclick="fetchTemplate('feedtemplates/template16.txt', ' طلب تغيير سيريال  ')"> طلب تغيير سيريال  </button>
                <button class="button" onclick="fetchTemplate('feedtemplates/template17.txt', ' طلب الغاء ريكوست جديد ')"> طلب الغاء ريكوست جديد  </button>
                <button class="button" onclick="fetchTemplate('feedtemplates/template19.txt', ' لا يشمل عرض الجديد  ')"> لا يشمل عرض الجديد   </button>
-               <button class="button" onclick="fetchTemplate('feedtemplates/test.txt', ' test ')"> test </button>
+               <button class="button" onclick="fetchTemplateAndCopy('feedtemplates/template19.txt')"> test </button>
                <button class="button" onclick="copyText('تحية طيبة يرجى مراجعة  الجهة مصدرة  لم يتم استقطاع رصيد من الزبون وشكرا')">copty test</button>
 
         </div>
@@ -526,6 +526,17 @@ function copyText(text) {
             alert('تم نسخ النص: ' + text); // إشعار المستخدم بأنه تم النسخ
         }
         
+function fetchTemplateAndCopy(filePath) {
+    fetch(filePath)
+        .then(response => response.text())
+        .then(text => {
+            copyText(text);
+        })
+        .catch(error => console.error('Error fetching template:', error));
+}
+
+
+
     function copyToClipboard() {
         const content = document.getElementById("popup-content").innerText;
         navigator.clipboard.writeText(content)
