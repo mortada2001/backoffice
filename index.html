@@ -241,6 +241,7 @@
     <!-- Logo -->
     <div class="logo">
         <img src="alwatani.png" alt="Alwatani Logo">
+        <img id="easterEggImage" src="easter-egg.png" alt="Easter Egg">
     </div>
 
     <!-- Main Content -->
@@ -547,4 +548,21 @@ function fetchTemplateAndCopy(filePath) {
                 alert("Failed to copy content.");
             });
     }
+
+let clickCount = 0;
+        const logo = document.getElementById("logo");
+        const easterEggImage = document.getElementById("easterEggImage");
+
+        logo.addEventListener("click", function () {
+            clickCount++;
+            if (clickCount === 10) {
+                easterEggImage.style.display = "block"; // Show the Easter egg image
+                clickCount = 0; // Reset the count after showing the image
+
+                // Hide the Easter egg after 5 seconds
+                setTimeout(() => {
+                    easterEggImage.style.display = "none";
+                }, 5000);
+            }
+
 </script>
