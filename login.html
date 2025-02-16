@@ -51,42 +51,42 @@
             width: 90%;
         }
         
+         }
         .login-container {
-            background: #1a1a1a;
+            background-color: #161b22;
             padding: 20px;
             border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
             text-align: center;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-            position: relative;
+            width: 100%;
+            max-width: 400px;
         }
         .login-container h2 {
-            background: linear-gradient(to right, #3a82f7, #5fafff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #58a6ff;
         }
         .input-group {
-            margin: 10px 0;
+            margin: 15px 0;
         }
-        input {
+        .input-group input {
             width: 100%;
             padding: 10px;
-            margin: 5px 0;
-            border: none;
+            border: 1px solid #30363d;
             border-radius: 5px;
-            outline: none;
+            background-color: #0d1117;
+            color: #c9d1d9;
         }
         .login-btn {
-            background: linear-gradient(to right, #3a82f7, #5fafff);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
+            background-color: #238636;
             color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
             font-size: 16px;
-            transition: 0.3s;
         }
         .login-btn:hover {
-            opacity: 0.8;
+            background-color: #2ea043;
         }
         </style>
 </head>
@@ -99,10 +99,8 @@
     <link rel="icon" type="image/png" href="icon.png">
     
       
-    </div>
-
-        <div class="login-container">
-        <h2>Alwatani Login</h2>
+    <div class="login-container">
+        <h2>Login</h2>
         <div class="input-group">
             <input type="text" id="email" placeholder="Email">
         </div>
@@ -111,27 +109,27 @@
         </div>
         <button class="login-btn" onclick="login()">Login</button>
     </div>
-
-    <script type="module">
-        import { createClient } from 'https://esm.sh/@supabase/supabase-js';
-        
-        const supabaseUrl = 'https://yypcsibilseoghyadbul.supabase.co';
-        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ';
-        const supabase = createClient(supabaseUrl, supabaseAnonKey);
-        
-        window.login = async function() {
+    <script>
+        async function login() {
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
             
+            const { createClient } = supabase;
+            const supabaseUrl = "YOUR_SUPABASE_URL";
+            const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+            const supabase = createClient(supabaseUrl, supabaseKey);
+            
             const { user, error } = await supabase.auth.signInWithPassword({ email, password });
+            
             if (error) {
                 alert("Login failed: " + error.message);
             } else {
-                window.location.href = "index.html"; // Redirect on success
+                window.location.href = "index.html";
             }
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </body>
 </html>
-        
+
         
