@@ -457,10 +457,12 @@
     <script>
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    // Initialize Supabase at the very top
+   // Initialize Supabase FIRST
     const supabaseUrl = 'https://yypcsibilseoghyadbul.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // This is the correct initialization syntax
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
     // Session check function
     async function checkSession() {
