@@ -154,6 +154,28 @@
         }
 
 
+/* logout button */
+        .logout-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: rgba(88, 166, 255, 0.8);
+            color: #FFFFFF;
+            border: 2px solid #FFFFFF;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+.logout-button:hover {
+            background: #FFFFFF;
+            color: #0D1117;
+            transform: scale(1.1);
+        }
         /* Logo */
         .logo {
             margin: 20px auto;
@@ -262,6 +284,8 @@
     </header>
     <link rel="icon" type="image/png" href="icon.png">
     <button class="home-button" onclick="goHome()">Home</button>
+    <button class="logout-button" onclick="logout()">Logout</button>
+
     <!-- Logo -->
     <div class="logo">
         <img src="alwatani.png" alt="Alwatani Logo">
@@ -573,6 +597,11 @@ function fetchTemplateAndCopy(filePath) {
         .catch(error => console.error('Error fetching template:', error));
 }
 
+async function logout() {
+    await window.supabase.auth.signOut();
+    localStorage.clear(); // Clear stored session data
+    window.location.href = "login.html"; // Redirect to login page
+}
 
 
     function copyToClipboard() {
