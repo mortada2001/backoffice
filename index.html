@@ -598,10 +598,11 @@ function fetchTemplateAndCopy(filePath) {
 }
 
 async function logout() {
-    await window.supabase.auth.signOut();
-    localStorage.clear(); // Clear stored session data
-    window.location.href = "login.html"; // Redirect to login page
+    await supabase.auth.signOut(); // Logs out the user
+    localStorage.clear(); // Clears any stored data
+    window.location.href = "login.html"; // Redirects to login
 }
+
 
 
 document.addEventListener("DOMContentLoaded", async function () {
