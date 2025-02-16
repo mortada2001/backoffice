@@ -589,45 +589,6 @@ function copyText(text) {
         }
         
 
-
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        // Initialize Supabase
-        const supabaseUrl = 'https://yypcsibilseoghyadbul.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-        // Check for an active session
-        async function checkSession() {
-            const { data: { session }, error } = await supabase.auth.getSession();
-
-            if (!session) {
-                // No session found, redirect to login page
-                window.location.href = 'login.html';
-            } else {
-                console.log('User is logged in:', session.user);
-            }
-        }
-
-        // Logout Function
-        document.getElementById('logout-button').addEventListener('click', async () => {
-            const { error } = await supabase.auth.signOut();
-            if (error) {
-                console.error('Logout error:', error);
-            } else {
-                // Redirect to login page after logout
-                window.location.href = 'login.html';
-            }
-        });
-
-        // Check session on page load
-        checkSession();
-    
-
-
-
-
 function fetchTemplateAndCopy(filePath) {
     fetch(filePath)
         .then(response => response.text())
@@ -647,6 +608,10 @@ function fetchTemplateAndCopy(filePath) {
                 console.error("Error copying text: ", err);
                 alert("Failed to copy content.");
             });
+
+
+
+
     }
 
 
