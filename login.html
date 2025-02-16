@@ -3,25 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Alwatani Back Office</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Alwatani Back Office</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: #0f0f0f;
-            color: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        /* General Reset */
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
+
+        body {
+            background-color: #0D1117; /* Dark background */
+            color: #FFFFFF;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #58A6FF, #1F6FEB);
+            color: #FFFFFF;
+            padding: 15px 20px;
+            width: 100%;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            font-size: 2rem;
+            font-weight: 600;
+            position: relative;
+            text-align: center;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1); /* Transparent white */
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px); /* Glassmorphism Effect */
+            -webkit-backdrop-filter: blur(10px);
+            padding: 30px 20px;
+            margin: 30px 0;
+            max-width: 800px;
+            width: 90%;
+        }
+        
         .login-container {
             background: #1a1a1a;
             padding: 20px;
             border-radius: 10px;
             text-align: center;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            position: relative;
         }
         .login-container h2 {
             background: linear-gradient(to right, #3a82f7, #5fafff);
@@ -52,10 +88,20 @@
         .login-btn:hover {
             opacity: 0.8;
         }
-    </style>
+        </style>
 </head>
 <body>
-    <div class="login-container">
+    <!-- Header Section -->
+    <!-- Header -->
+    <header>
+        Alwatani Back Office
+    </header>
+    <link rel="icon" type="image/png" href="icon.png">
+    
+      
+    </div>
+
+        <div class="login-container">
         <h2>Alwatani Login</h2>
         <div class="input-group">
             <input type="text" id="email" placeholder="Email">
@@ -87,3 +133,5 @@
     </script>
 </body>
 </html>
+        
+        
