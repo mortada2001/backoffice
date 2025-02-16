@@ -604,6 +604,17 @@ async function logout() {
 }
 
 
+document.addEventListener("DOMContentLoaded", async function () {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+        // If there's no session, redirect to login page
+        window.location.href = "login.html";
+    }
+});
+
+
+
     function copyToClipboard() {
         const content = document.getElementById("popup-content").innerText;
         navigator.clipboard.writeText(content)
