@@ -597,46 +597,6 @@ function fetchTemplateAndCopy(filePath) {
         .catch(error => console.error('Error fetching template:', error));
 }
 
-
-
-<script src="supabase.js"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            // Check if the user is logged in
-            const user = await checkSession();
-            if (!user) {
-                console.log("No active session, redirecting to login.");
-                window.location.href = "login.html"; // Redirect to login page if not logged in
-            }
-        });
-
-        // Attach the logout function to the button
-        document.getElementById("logoutButton").addEventListener("click", logout);
-
-
-
-
-
-async function logout() {
-    await supabase.auth.signOut(); // Logs out the user
-    localStorage.clear(); // Clears any stored data
-    window.location.href = "login.html"; // Redirects to login
-}
-
-
-
-document.addEventListener("DOMContentLoaded", async function () {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-        // If there's no session, redirect to login page
-        window.location.href = "login.html";
-    }
-});
-
-
-
     function copyToClipboard() {
         const content = document.getElementById("popup-content").innerText;
         navigator.clipboard.writeText(content)
@@ -648,15 +608,13 @@ document.addEventListener("DOMContentLoaded", async function () {
                 alert("Failed to copy content.");
             });
     }
-document.addEventListener("DOMContentLoaded", async function () {
-    const { data: { user } } = await window.supabase.auth.getUser();
 
-    if (!user) {
-        console.log("User is not logged in. Redirecting to login page...");
-        window.location.href = "login.html"; // Force login
-    }
-});
-
+const user = await checkSession();
+            if (!user) {
+                console.log("No active session, redirecting to login.");
+                window.location.href = "login.html"; // Redirect to login page if not logged in
+            }
+        });
 
 
 </script>
