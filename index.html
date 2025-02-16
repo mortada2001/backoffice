@@ -459,7 +459,7 @@
         
 
         // Logout Function
-        document.getElementById('logout-btn').addEventListener('click', async () => {
+        document.getElementById('logout-button').addEventListener('click', async () => {
             const { error } = await supabase.auth.signOut();
             if (error) {
                 console.error('Logout error:', error);
