@@ -284,8 +284,7 @@
     </header>
     <link rel="icon" type="image/png" href="icon.png">
     <button class="home-button" onclick="goHome()">Home</button>
-    <button class="logout-button" onclick="logout()">Logout</button>
-
+    <button class="logout-button" id="logout-button" onclick="logout()">Logout</button>
     <!-- Logo -->
     <div class="logo">
         <img src="alwatani.png" alt="Alwatani Logo">
@@ -456,7 +455,31 @@
     
 
     <script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    // Initialize Supabase at the very top
+    const supabaseUrl = 'https://yypcsibilseoghyadbul.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Session check function
+    async function checkSession() {
+        const { data: { session }, error } = await supabase.auth.getSession();
         
+        if (!session) {
+            window.location.href = 'login.html';
+        }
+    }
+
+    // Logout function
+    async function logout() {
+        const { error } = await supabase.auth.signOut();
+        window.location.href = 'login.html';
+    }
+
+    // Check session when page loads
+    document.addEventListener('DOMContentLoaded', checkSession);
+
 
         // Logout Function
         document.getElementById('logout-button').addEventListener('click', async () => {
@@ -472,7 +495,19 @@
         // Check session on page load
         checkSession();
     
-
+async function checkSession() {
+    try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) throw error;
+        if (!session) window.location.href = 'login.html';
+        
+        console.log('User session:', session);
+    } catch (error) {
+        console.error('Session check failed:', error);
+        window.location.href = 'login.html';
+    }
+}
 
     function goHome() {
         document.getElementById('email-templates').classList.add('hidden'); 
