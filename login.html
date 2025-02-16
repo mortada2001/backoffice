@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alwatani Back Office</title>
-    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -83,38 +82,50 @@
     </header>
     <div class="container">
         <h2>Login</h2>
-        <form onsubmit="login(event)">
+        <form id="loginForm">
             <input type="email" id="email" placeholder="Email" required>
             <input type="password" id="password" placeholder="Password" required>
             <button type="submit" class="btn">Login</button>
         </form>
     </div>
     
+    <!-- Load Supabase First -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script>
-    // Initialize Supabase
-    const supabaseUrl = "https://yypcsibilseoghyadbul.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    
+    <!-- Your JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("DOM fully loaded");
 
-    async function login(event) {
-        event.preventDefault(); // Prevent page reload
+            // Initialize Supabase AFTER the page loads
+            const supabaseUrl = "https://yypcsibilseoghyadbul.supabase.co";
+            const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
+            const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        console.log("Login function triggered");
+            console.log("Supabase initialized", supabase);
 
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+            // Attach event listener to the form
+            document.getElementById("loginForm").addEventListener("submit", async function (event) {
+                event.preventDefault(); // Prevent page reload
+                console.log("Login function triggered");
 
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
 
-        console.log("Supabase Response:", { data, error });
+                console.log("Trying to log in with:", email, password);
 
-        if (error) {
-            alert("Login failed: " + error.message);
-        } else {
-            window.location.href = "index.html";
-        }
-    }
-</script>
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+                if (error) {
+                    console.error("Login failed:", error);
+                    alert("Login failed: " + error.message);
+                } else {
+                    console.log("Login successful", data);
+                    window.location.href = "index.html";
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
