@@ -586,6 +586,14 @@ function fetchTemplateAndCopy(filePath) {
                 alert("Failed to copy content.");
             });
     }
+document.addEventListener("DOMContentLoaded", async function () {
+    const { data: { user } } = await window.supabase.auth.getUser();
+
+    if (!user) {
+        console.log("User is not logged in. Redirecting to login page...");
+        window.location.href = "login.html"; // Force login
+    }
+});
 
 
 
