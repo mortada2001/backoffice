@@ -90,65 +90,66 @@
     </div>
 
     <!-- Load Supabase First -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-    <!-- Your JavaScript -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            console.log("DOM fully loaded");
+<!-- Your JavaScript -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOM fully loaded");
 
-            // Ensure Supabase is loaded first before using it
-            if (typeof supabase === "undefined") {
-                console.error("Supabase is not loaded!");
-                alert("Error: Supabase failed to load. Please check your connection.");
-                return;
+        // Ensure Supabase is loaded first before using it
+        if (typeof supabase === "undefined") {
+            console.error("Supabase is not loaded!");
+            alert("Error: Supabase failed to load. Please check your connection.");
+            return;
+        }
+
+        // Initialize Supabase AFTER the page loads
+        const supabaseUrl = "https://yypcsibilseoghyadbul.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
+        window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        console.log("Supabase initialized:", window.supabase);
+
+        // Check if the user is already logged in
+        document.addEventListener("DOMContentLoaded", async function () {
+            const { data: { user } } = await window.supabase.auth.getUser();
+
+            if (user) {
+                console.log("User is already logged in:", user);
+                window.location.href = "index.html"; // Redirect to main page
             }
-
-            // Initialize Supabase AFTER the page loads
-            const supabaseUrl = "https://yypcsibilseoghyadbul.supabase.co";
-            const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
-            
-            window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-            console.log("Supabase initialized:", window.supabase);
-
-            // Attach event listener to the form
-            document.getElementById("loginForm").addEventListener("submit", async function (event) {
-                event.preventDefault(); // Prevent page reload
-                console.log("Login function triggered");
-
-                const email = document.getElementById("email").value;
-                const password = document.getElementById("password").value;
-
-                console.log("Trying to log in with:", email, password);
-
-                try {
-                    const { data, error } = await window.supabase.auth.signInWithPassword({ email, password });
-
-                    if (error) {
-                        console.error("Login failed:", error);
-                        alert("Login failed: " + error.message);
-                    } else {
-                        console.log("Login successful", data);
-                        window.location.href = "index.html";
-                    }
-                } catch (err) {
-                    console.error("Unexpected error:", err);
-                    alert("An unexpected error occurred: " + err.message);
-                }
-document.addEventListener("DOMContentLoaded", async function () {
-    // Check if user is already logged in
-    const { data: { user } } = await window.supabase.auth.getUser();
-
-    if (user) {
-        console.log("User is already logged in:", user);
-        window.location.href = "index.html"; // Redirect to main page
-    }
-});
-
-            });
         });
-    </script>
 
+        // Attach event listener to the form
+        document.getElementById("loginForm").addEventListener("submit", login);
+    });
+
+    // Login function
+    async function login(event) {
+        event.preventDefault(); // Prevent page reload
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        console.log("Trying to log in with:", email, password);
+
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                console.error("Login failed:", error);
+                alert("Login failed: " + error.message);
+            } else {
+                console.log("Login successful", data);
+                window.location.href = "index.html"; // Redirect to the homepage
+            }
+        } catch (err) {
+            console.error("Unexpected error:", err);
+            alert("An unexpected error occurred: " + err.message);
+        }
+    }
+</script>
 </body>
 </html>
+
