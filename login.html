@@ -5,96 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Alwotani Back Office</title>
     <style>
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        /* Login Container */
-        .login-container {
-            background-color: #ffffff;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        /* Login Header */
-        .login-header h1 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-
-        .login-header p {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 2rem;
-        }
-
-        /* Form Group */
-        .form-group {
-            margin-bottom: 1.5rem;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 14px;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #007bff;
-        }
-
-        /* Login Button */
-        #login-btn {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        #login-btn:hover {
-            background-color: #0056b3;
-        }
-
-        /* Message Display */
-        #message {
-            margin-top: 1rem;
-            font-size: 14px;
-            color: #ff0000;
-        }
+        /* Your CSS remains the same */
     </style>
 </head>
 <body>
@@ -120,16 +31,19 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // Initialize Supabase
-        const supabaseUrl = 'https://yypcsibilseoghyadbul.supabase.co'; // Replace with your Supabase URL
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ'; // Replace with your Supabase API key
+        const supabaseUrl = 'https://yypcsibilseoghyadbul.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ';
         const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
         // Login Function
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            console.log('Form submitted'); // Debugging
 
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+
+            console.log('Email:', email, 'Password:', password); // Debugging
 
             const { user, error } = await supabase.auth.signIn({
                 email,
@@ -137,8 +51,10 @@
             });
 
             if (error) {
+                console.error('Login error:', error); // Debugging
                 document.getElementById('message').textContent = 'Login failed: ' + error.message;
             } else {
+                console.log('Login successful:', user); // Debugging
                 document.getElementById('message').textContent = 'Login successful! Welcome, ' + user.email;
                 // Redirect to another page or update the UI
             }
