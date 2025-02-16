@@ -3,35 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <script type="module">
-        import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
-        const supabase = createClient("https://yypcsibilseoghyadbul.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ");
-
-        async function login() {
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password
-            });
-
-            if (error) {
-                alert("Login failed: " + error.message);
-            } else {
-                console.log("Logged in:", data);
-                localStorage.setItem("supabase-user", JSON.stringify(data)); // Store user session
-                window.location.href = "dashboard.html"; // Redirect after login
-            }
-        }
-    </script>
+    <title>Login with Supabase</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <h2>Login</h2>
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <button onclick="login()">Login</button>
+    <div id="login-form">
+        <h1>Login</h1>
+        <input type="email" id="email" placeholder="Email" />
+        <input type="password" id="password" placeholder="Password" />
+        <button id="login-btn">Login</button>
+        <button id="signup-btn">Sign Up</button>
+    </div>
+    <div id="message"></div>
+    <script src="app.js"></script>
 </body>
 </html>
