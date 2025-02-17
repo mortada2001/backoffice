@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Map Navigator</title>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header {
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      color: #2c3e50;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: #7f8c8d;
+    }
+
+    /* Input Section */
+    .input-section {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .input-section input {
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      width: 200px;
+    }
+
+    .input-section button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .input-section button:hover {
+      background-color: #2980b9;
+    }
+
+    /* Map Box */
+    #map {
+      height: 400px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Map Navigator</h1>
+      <p>Enter coordinates to explore any location on the map.</p>
+    </header>
+
+    <div class="input-section">
+      <input type="text" id="latitude" placeholder="Enter Latitude (e.g., 51.505)" />
+      <input type="text" id="longitude" placeholder="Enter Longitude (e.g., -0.09)" />
+      <button id="navigate-btn">Navigate</button>
+    </div>
+
+    <div id="map"></div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Initialize the map
+  const map = L.map('map').setView([51.505, -0.09], 13); // Default coordinates (London)
+
+  // Add OpenStreetMap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Load your GeoJSON layer
+  fetch('path/to/your-layer.geojson') // Replace with the path to your GeoJSON file
+    .then(response => response.json())
+    .then(data => {
+      L.geoJSON(data, {
+        style: {
+          color: '#ff7800', // Customize the style
+          weight: 2,
+          opacity: 1
+        }
+      }).addTo(map);
+    });
+
+  // Navigate to coordinates
+  document.getElementById('navigate-btn').addEventListener('click', () => {
+    const latitude = parseFloat(document.getElementById('latitude').value);
+    const longitude = parseFloat(document.getElementById('longitude').value);
+
+    if (isNaN(latitude) || isNaN(longitude)) {
+      alert('Please enter valid coordinates.');
+      return;
+    }
+
+    // Update map view
+    map.setView([latitude, longitude], 13);
+
+    // Add a marker to the location
+    L.marker([latitude, longitude]).addTo(map)
+      .bindPopup('You are here!')
+      .openPopup();
+  });
+</script>
+</body>
+</html>
