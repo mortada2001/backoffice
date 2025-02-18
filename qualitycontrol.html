@@ -90,7 +90,7 @@
     <script>
 document.addEventListener("DOMContentLoaded", async () => {
     const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co"; 
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
+    const SUPABASE_KEY = "your-supabase-key-here";
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const employeeInput = document.getElementById("employee");
@@ -108,26 +108,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         console.log("Fetching data for employee:", selectedEmployee, "on date:", selectedDate);
 
-        // Format the date to ensure consistency
-        const formattedDate = selectedDate;
-
         // Fetch data from Supabase based on employee name and date
         let { data, error } = await supabase
             .from("quality cases")
             .select("Number, Assignee, Modified_on") // Adjust the fields accordingly
             .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search for Assignee
-            .ilike("Modified_on", `%${formattedDate}%`); // Using 'ilike' to find the date as text
+            .ilike("Modified_on", `%${selectedDate}%`); // Using 'ilike' to find the date as text
 
         // Log the data and error for debugging
         console.log("Supabase response:", data);
         console.log("Supabase error:", error);
-
-const employeeName = "Mustafa Shakir Mahmud Kadhum";
-const selectedDate = "2025-02-18"; // ensure this matches the date format in your DB
-
-const query = `?select=Number,Assignee,Modified_on&Assignee=ilike.%25${encodeURIComponent(employeeName)}%25&Modified_on=ilike.%25${encodeURIComponent(selectedDate)}%25`;
-
-
 
         if (error) {
             console.error("Error fetching cases:", error);
