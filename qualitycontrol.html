@@ -117,7 +117,7 @@
                 console.log("Fetching data for employee:", selectedEmployee, "on date:", selectedDate);
                 let { data, error } = await supabase
                     .from("quality cases")
-                    .select("Number, Assignee, Modified on")
+                    .select("Number, Assignee, \"Modified on\"")  // Notice the quotes around "Modified on"
                     .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search for Assignee
                     .gte("Modified on", `${selectedDate}T00:00:00`) // Start of the day
                     .lt("Modified on", `${selectedDate}T23:59:59`); // End of the day
