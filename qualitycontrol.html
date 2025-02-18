@@ -70,7 +70,7 @@
             font-weight: bold;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>  <!-- ✅ Load Supabase only once -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
     <div class="container">
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             .from("quality cases")
             .select("Number, Assignee, Modified_on")
             .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search for Assignee
-            .like("Modified_on", `${formattedDate}%`); // Match the date portion
+            .filter("Modified_on", "ilike", `${formattedDate}%`); // Match date with LIKE
 
         // Debugging output
         console.log("Supabase Data:", data);
