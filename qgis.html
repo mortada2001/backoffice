@@ -76,6 +76,17 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       margin: 0 auto;
     }
+
+    /* Style for the map labels */
+    .map-label {
+      background-color: white;
+      padding: 2px 5px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #333;
+    }
   </style>
 </head>
 <body>
@@ -98,44 +109,62 @@
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
     // Initialize the map
-  const map = L.map('map').setView([33.32752877572362,44.40895332999329], 13); // Default coordinates (London)
+    const map = L.map('map').setView([33.32752877572362,44.40895332999329], 13); // Default coordinates (London)
 
-  // Add OpenStreetMap tiles
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map);
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
-  // Load your GeoJSON layer
-  fetch('zones.geojson') // Replace with the path to your GeoJSON file
-    .then(response => response.json())
-    .then(data => {
-      L.geoJSON(data, {
-        style: {
-          color: '#ff7800', // Customize the style
-          weight: 2,
-          opacity: 1
-        }
-      }).addTo(map);
+    // Load GeoJSON layer
+    fetch('zones.geojson')
+      .then(response => response.json())
+      .then(data => {
+        console.log('GeoJSON data loaded:', data); // Debugging
+        L.geoJSON(data, {
+          style: {
+            color: '#ff7800',
+            weight: 2,
+            opacity: 1,
+            fillColor: '#ff7800',
+            fillOpacity: 0.5
+          },
+          onEachFeature: function (feature, layer) {
+            if (feature.properties && feature.properties.id) {
+              const label = String(feature.properties.id); // Ensure the label is a string
+              layer.bindTooltip(label, {
+                permanent: true,
+                direction: 'center',
+                className: 'map-label'
+              });
+            } else {
+              console.warn('Feature has no properties or id:', feature);
+            }
+          }
+        }).addTo(map);
+      })
+      .catch(error => {
+        console.error('Error loading GeoJSON:', error);
+      });
+
+    // Navigate to coordinates
+    document.getElementById('navigate-btn').addEventListener('click', () => {
+      const latitude = parseFloat(document.getElementById('latitude').value);
+      const longitude = parseFloat(document.getElementById('longitude').value);
+
+      if (isNaN(latitude) || isNaN(longitude)) {
+        alert('Please enter valid coordinates.');
+        return;
+      }
+
+      // Update map view
+      map.setView([latitude, longitude], 13);
+
+      // Add a marker to the location
+      L.marker([latitude, longitude]).addTo(map)
+        .bindPopup('You are here!')
+        .openPopup();
     });
-
-  // Navigate to coordinates
-  document.getElementById('navigate-btn').addEventListener('click', () => {
-    const latitude = parseFloat(document.getElementById('latitude').value);
-    const longitude = parseFloat(document.getElementById('longitude').value);
-
-    if (isNaN(latitude) || isNaN(longitude)) {
-      alert('Please enter valid coordinates.');
-      return;
-    }
-
-    // Update map view
-    map.setView([latitude, longitude], 13);
-
-    // Add a marker to the location
-    L.marker([latitude, longitude]).addTo(map)
-      .bindPopup('You are here!')
-      .openPopup();
-  });
-</script>
+  </script>
 </body>
 </html>
