@@ -101,20 +101,32 @@ document.addEventListener("DOMContentLoaded", async () => {
         const selectedEmployee = employeeInput.value.trim(); // Get the typed employee name
         let selectedDate = document.getElementById("date").value;
 
+        // Log the inputs to debug
+        console.log("Selected Employee:", selectedEmployee);
+        console.log("Selected Date (Original):", selectedDate);
+
         if (!selectedEmployee || !selectedDate) {
             resultDiv.innerHTML = "⚠️ Please enter an employee name and select a date!";
             return;
         }
 
+        // Format the date for Supabase query
+        const formattedDate = `${selectedDate}T00:00:00`;  // Start of the day
+        console.log("Formatted Date:", formattedDate);
+
         console.log("Fetching data for employee:", selectedEmployee, "on date:", selectedDate);
 
-        // Fetch data from Supabase based on employee name and date
+        // Query Supabase for data
         let { data, error } = await supabase
             .from("quality cases")
             .select("Number, Assignee, Modified_on") // Adjust the fields accordingly
             .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search for Assignee
-            .gte("Modified_on", `${selectedDate}T00:00:00`) // Start of the day
+            .gte("Modified_on", formattedDate) // Start of the day
             .lt("Modified_on", `${selectedDate}T23:59:59`); // End of the day
+
+        // Debugging output
+        console.log("Supabase Data:", data);
+        console.log("Error:", error);
 
         if (error) {
             console.error("Error fetching cases:", error);
