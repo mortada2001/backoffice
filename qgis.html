@@ -90,25 +90,12 @@
       padding: 2px 5px;
       border-radius: 3px;
     }
-
-/* Loading Spinner */
-    #loading {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 1.5rem;
-      color: #3498db;
-      display: none;
-    }
-
   </style>
 </head>
 <body>
   <div class="container">
     <header>
       <h1>Map Navigator</h1>
-      <h2>نموذج تجريبي وقد توجد به اخطاء</h2>
       <p>Enter coordinates to explore any location on the map.</p>
     </header>
 
@@ -116,10 +103,6 @@
       <input type="text" id="coordinates" placeholder="Enter coordinates (e.g., 51.505, -0.09)" />
       <button id="navigate-btn">Navigate</button>
     </div>
-
-<!-- Loading Spinner -->
-    <div id="loading">Loading Map...</div>
-
 
     <div id="map"></div>
   </div>
@@ -189,25 +172,6 @@
       // Load pole data
       loadPoles('pole.geojson');
       loadPoles('polesA.geojson'); 
-
-// Show loading spinner
-      document.getElementById('loading').style.display = 'block';
-
- // Load all GeoJSON files and add callback
-      Promise.all([
-        new Promise((resolve) => loadGeoJSON('zones.geojson', resolve)),
-        new Promise((resolve) => loadGeoJSON('pole.geojson', resolve)),
-        new Promise((resolve) => loadGeoJSON('polesA.geojson', resolve))
-      ]).then(() => {
-        // Hide loading spinner once all layers are loaded
-        document.getElementById('loading').style.display = 'none';
-      });
-      .catch(() => {
-        // If any error occurs, hide loading spinner
-        document.getElementById('loading').style.display = 'none';
-      });
-
-
 
       // Add cluster markers to the map
       map.addLayer(markers);
