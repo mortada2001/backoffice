@@ -122,6 +122,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("Supabase response:", data);
         console.log("Supabase error:", error);
 
+const employeeName = "Mustafa Shakir Mahmud Kadhum";
+const selectedDate = "2025-02-18"; // ensure this matches the date format in your DB
+
+const query = `?select=Number,Assignee,Modified_on&Assignee=ilike.%25${encodeURIComponent(employeeName)}%25&Modified_on=ilike.%25${encodeURIComponent(selectedDate)}%25`;
+
+
+
         if (error) {
             console.error("Error fetching cases:", error);
             resultDiv.innerHTML = "❌ Error fetching data!";
