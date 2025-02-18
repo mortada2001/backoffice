@@ -90,6 +90,18 @@
       padding: 2px 5px;
       border-radius: 3px;
     }
+
+/* Loading Spinner */
+    #loading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5rem;
+      color: #3498db;
+      display: none;
+    }
+
   </style>
 </head>
 <body>
@@ -104,6 +116,10 @@
       <input type="text" id="coordinates" placeholder="Enter coordinates (e.g., 51.505, -0.09)" />
       <button id="navigate-btn">Navigate</button>
     </div>
+
+<!-- Loading Spinner -->
+    <div id="loading">Loading Map...</div>
+
 
     <div id="map"></div>
   </div>
@@ -173,6 +189,26 @@
       // Load pole data
       loadPoles('pole.geojson');
       loadPoles('polesA.geojson'); 
+
+// Show loading spinner
+      document.getElementById('loading').style.display = 'block';
+
+ // Hide loading spinner once all layers are loaded
+      Promise.all([
+        fetch('zones.geojson'),
+        fetch('pole.geojson'),
+        fetch('polesA.geojson')
+      ])
+      .then(() => {
+        // Hide the loading spinner after layers are loaded
+        document.getElementById('loading').style.display = 'none';
+      })
+      .catch(() => {
+        // If any error occurs, hide loading spinner
+        document.getElementById('loading').style.display = 'none';
+      });
+
+
 
       // Add cluster markers to the map
       map.addLayer(markers);
