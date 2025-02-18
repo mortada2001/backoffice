@@ -101,16 +101,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const selectedEmployee = employeeInput.value.trim(); // Get the typed employee name
         let selectedDate = document.getElementById("date").value;
 
-        console.log("Selected Employee:", selectedEmployee);
-        console.log("Selected Date (Original):", selectedDate);
-
-        // Convert date format if necessary
-        if (selectedDate.includes('/')) {
-            selectedDate = convertDateFormat(selectedDate); // Convert to YYYY-MM-DD
-        }
-
-        console.log("Selected Date (Converted):", selectedDate);
-
         if (!selectedEmployee || !selectedDate) {
             resultDiv.innerHTML = "⚠️ Please enter an employee name and select a date!";
             return;
@@ -118,14 +108,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         console.log("Fetching data for employee:", selectedEmployee, "on date:", selectedDate);
 
+        // Fetch data from Supabase based on employee name and date
         let { data, error } = await supabase
             .from("quality cases")
-            .select("Number, Assignee, Modified_on") // Updated column name here
-            .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search
+            .select("Number, Assignee, Modified_on") // Adjust the fields accordingly
+            .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search for Assignee
             .gte("Modified_on", `${selectedDate}T00:00:00`) // Start of the day
             .lt("Modified_on", `${selectedDate}T23:59:59`); // End of the day
-
-        console.log("Fetched Data:", data);
 
         if (error) {
             console.error("Error fetching cases:", error);
@@ -139,6 +128,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
+        // Pick a random case from the fetched data
         const randomCase = data[Math.floor(Math.random() * data.length)];
         resultDiv.innerHTML = `✅ Ticket Number: <strong>${randomCase.Number}</strong>`;
     });
