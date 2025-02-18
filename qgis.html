@@ -150,14 +150,14 @@
           .then(data => {
             L.geoJSON(data, {
               pointToLayer: function (feature, latlng) {
-                return L.marker(latlng).bindPopup(`Pole No: ${feature.properties.pole_no || 'N/A'}`);
+                return L.marker(latlng).bindPopup(`Pole No: ${feature.properties.Pole_No || 'N/A'}`);
               },
               onEachFeature: function (feature, layer) {
-                if (feature.properties && feature.properties.pole_no) {
+              if (feature.properties && feature.properties.Pole_No) {
                   L.marker(layer.getLatLng(), {
                     icon: L.divIcon({
                       className: 'pole-label',
-                      html: feature.properties.pole_no,
+                      html: feature.properties.Pole_No,
                       iconSize: [40, 20],
                       iconAnchor: [20, 10]
                     })
