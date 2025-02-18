@@ -120,10 +120,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         let { data, error } = await supabase
             .from("quality cases")
-            .select("Number, Assignee, \"Modified on\"")
+            .select("Number, Assignee, Modified_on") // Updated column name here
             .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search
-            .gte("Modified on", `${selectedDate}T00:00:00`) // Start of the day
-            .lt("Modified on", `${selectedDate}T23:59:59`); // End of the day
+            .gte("Modified_on", `${selectedDate}T00:00:00`) // Start of the day
+            .lt("Modified_on", `${selectedDate}T23:59:59`); // End of the day
 
         console.log("Fetched Data:", data);
 
