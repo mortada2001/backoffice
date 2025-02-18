@@ -1,237 +1,440 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Map Navigator Pro</title>
-  
-  <!-- تحسين تحميل الموارد -->
-  <link rel="preload" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" as="style">
-  <link rel="preload" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" as="script">
-  
-  <!-- Leaflet CSS مع التخزين المؤقت -->
-  <link rel="stylesheet" 
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-        crossorigin="anonymous"/>
-  
-  <style>
-    :root {
-      --primary-color: #2c3e50;
-      --secondary-color: #3498db;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoVision Pro - Advanced Map Navigator</title>
+    
+    <!-- تحسين تحميل الموارد -->
+    <link rel="preload" href="https://unpkg.com/leaflet/dist/leaflet.css" as="style">
+    <link rel="preload" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" as="style">
+    <link rel="preload" href="https://unpkg.com/leaflet/dist/leaflet.js" as="script">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
 
-    body {
-      font-family: 'Tajawal', sans-serif;
-      background-color: #f8f9fa;
-      line-height: 1.6;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--background-gradient);
+            color: var(--primary-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-    .header {
-      text-align: center;
-      padding: 2rem 0;
-    }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
 
-    .map-container {
-      position: relative;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      background: white;
-    }
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
 
-    #map {
-      height: 70vh;
-      min-height: 500px;
-      width: 100%;
-    }
+        .header h1 {
+            font-size: 2.8rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-    .leaflet-marker-icon {
-      image-rendering: crisp-edges;
-    }
+        .header p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-    .loading-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255,255,255,0.9);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      transition: opacity 0.3s;
-    }
-  </style>
+        .input-section {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        #coordinates {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        #coordinates:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.2);
+        }
+
+        #navigate-btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        #navigate-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        #map {
+            height: 70vh;
+            min-height: 600px;
+            width: 100%;
+            border-radius: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .leaflet-control-zoom {
+            margin-right: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .leaflet-bar a {
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            font-size: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .custom-popup .leaflet-popup-content-wrapper {
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .cluster-marker {
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <h1>Map Navigator Pro</h1>
-      <p>⚠️يوجد الان صيانة عل الموقع نعتذر لازعجكم⚠️</p>
-    </header>
+    <div class="container">
+        <header class="header">
+            <h1>GeoVision Pro</h1>
+            <p>Advanced geospatial navigation with real-time data visualization</p>
+        </header>
 
-    <div class="map-container">
-      <div id="map"></div>
-      <div class="loading-overlay" id="loading">
-        <div class="spinner">جاري التحميل...</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Leaflet JS مع التحميل المؤجل -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-          crossorigin="anonymous"
-          defer></script>
-  
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      // تهيئة الخريطة مع إعدادات الأداء
-      const map = L.map('map', {
-        preferCanvas: true,
-        zoomControl: false,
-        maxZoom: 22,
-        minZoom: 8,
-        inertia: true,
-        inertiaDeceleration: 3000
-      }).setView([33.2625977, 44.4070566], 15);
-
-      // إضافة عناصر التحكم المخصصة
-      L.control.zoom({
-        position: 'topright'
-      }).addTo(map);
-
-      // إدارة حالة التحميل
-      const loadingOverlay = document.getElementById('loading');
-      
-      // تحميل الطبقة الأساسية مع التخزين المؤقت
-      const baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap',
-        maxZoom: 22,
-        detectRetina: true
-      }).addTo(map);
-
-      // نظام التخزين المؤقت للبيانات
-      const dataCache = new Map();
-
-      async function fetchWithCache(url) {
-        if(dataCache.has(url)) {
-          return dataCache.get(url);
-        }
-
-        try {
-          const response = await fetch(url);
-          if(!response.ok) throw new Error('فشل في تحميل البيانات');
-          const data = await response.json();
-          dataCache.set(url, data);
-          return data;
-        } catch(error) {
-          console.error('خطأ في تحميل البيانات:', error);
-          return null;
-        }
-      }
-
-      // تحميل البيانات الجغرافية بشكل متقدم
-      async function loadGeoData() {
-        loadingOverlay.style.display = 'flex';
-        
-        try {
-          const [zones, poles] = await Promise.all([
-            fetchWithCache('zones.geojson'),
-            fetchWithCache('poles.geojson')
-          ]);
-
-          if(zones) {
-            L.geoJSON(zones, {
-              style: { color: '#e74c3c', weight: 2 },
-              onEachFeature: bindZonePopup
-            }).addTo(map);
-          }
-
-          if(poles) {
-            const poleMarkers = L.markerClusterGroup({
-              chunkedLoading: true,
-              chunkInterval: 100,
-              disableClusteringAtZoom: 18
-            });
-
-            L.geoJSON(poles, {
-              pointToLayer: createPoleMarker
-            }).eachLayer(layer => poleMarkers.addLayer(layer));
-
-            map.addLayer(poleMarkers);
-          }
-        } finally {
-          loadingOverlay.style.opacity = '0';
-          setTimeout(() => {
-            loadingOverlay.style.display = 'none';
-          }, 300);
-        }
-      }
-
-      // تحميل البيانات عند الوصول لمستوى تكبير معين
-      let dataLoaded = false;
-      map.on('zoomend', () => {
-        if(!dataLoaded && map.getZoom() > 12) {
-          loadGeoData();
-          dataLoaded = true;
-        }
-      });
-
-      // وظائف المساعدة
-      function bindZonePopup(feature, layer) {
-        if(feature.properties) {
-          layer.bindPopup(`
-            <div class="popup-content">
-              <h3>${feature.properties.name || 'منطقة غير معروفة'}</h3>
-              <p>المساحة: ${feature.properties.area || 'غير متوفر'} كم²</p>
+        <div class="input-section">
+            <div class="search-container">
+                <input type="text" 
+                       id="coordinates" 
+                       placeholder="Enter coordinates (e.g., 33.2625977, 44.4070566)"
+                       autocomplete="off">
+                <div class="suggestions-container"></div>
             </div>
-          `);
+            <button id="navigate-btn">Explore</button>
+        </div>
+
+        <div id="map"></div>
+        <div class="loading-overlay" id="loading">
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Leaflet & Plugins -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
+    <script>
+        // تهيئة التطبيق
+        class MapApp {
+            constructor() {
+                this.map = null;
+                this.markers = null;
+                this.dataCache = new Map();
+                this.init();
+            }
+
+            async init() {
+                await this.initializeMap();
+                this.setupEventListeners();
+                this.loadEssentialData();
+            }
+
+            async initializeMap() {
+                // إعدادات الخريطة
+                this.map = L.map('map', {
+                    zoomControl: false,
+                    preferCanvas: true,
+                    maxZoom: 22,
+                    minZoom: 3,
+                    inertia: true,
+                    fadeAnimation: false,
+                    zoomSnap: 0.25,
+                    wheelPxPerZoomLevel: 75
+                }).setView([33.2625977, 44.4070566], 15);
+
+                // طبقة الخريطة الأساسية
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap',
+                    maxZoom: 22,
+                    detectRetina: true
+                }).addTo(this.map);
+
+                // عناصر التحكم المخصصة
+                L.control.zoom({
+                    position: 'topright'
+                }).addTo(this.map);
+            }
+
+            setupEventListeners() {
+                // حدث التنقل
+                document.getElementById('navigate-btn').addEventListener('click', () => this.handleNavigation());
+
+                // أحداث الخريطة
+                this.map.on('zoomend', () => this.handleZoomChange());
+                this.map.on('moveend', () => this.handleMapMove());
+            }
+
+            async loadEssentialData() {
+                await Promise.all([
+                    this.loadDataLayer('zones.geojson', this.handleZoneData),
+                    this.loadDataLayer('poles.geojson', this.handlePoleData)
+                ]);
+            }
+
+            async loadDataLayer(url, handler) {
+                this.showLoading();
+                try {
+                    const data = await this.fetchWithCache(url);
+                    if (data) handler.call(this, data);
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            async fetchWithCache(url) {
+                if (this.dataCache.has(url)) return this.dataCache.get(url);
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network error');
+                const data = await response.json();
+                this.dataCache.set(url, data);
+                return data;
+            }
+
+            handleZoneData(data) {
+                L.geoJSON(data, {
+                    style: { color: '#e74c3c', weight: 2 },
+                    onEachFeature: (feature, layer) => {
+                        if (feature.properties.Zone_ID) {
+                            layer.bindPopup(this.createZonePopup(feature.properties));
+                        }
+                    }
+                }).addTo(this.map);
+            }
+
+            handlePoleData(data) {
+                this.markers = L.markerClusterGroup({
+                    chunkedLoading: true,
+                    chunkInterval: 150,
+                    spiderfyOnMaxZoom: true,
+                    disableClusteringAtZoom: 20,
+                    iconCreateFunction: cluster => this.createClusterIcon(cluster)
+                });
+
+                L.geoJSON(data, {
+                    pointToLayer: (feature, latlng) => {
+                        return L.marker(latlng, {
+                            icon: this.createPoleIcon(feature.properties)
+                        }).bindPopup(this.createPolePopup(feature.properties));
+                    }
+                }).eachLayer(layer => this.markers.addLayer(layer));
+
+                this.map.addLayer(this.markers);
+            }
+
+            createClusterIcon(cluster) {
+                const count = cluster.getChildCount();
+                return L.divIcon({
+                    className: 'cluster-marker',
+                    html: `<div>${count}</div>`,
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20]
+                });
+            }
+
+            createPoleIcon(properties) {
+                return L.divIcon({
+                    className: 'pole-marker',
+                    html: `<div class="pole-label">${properties.Pole_No}</div>`,
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20]
+                });
+            }
+
+            createZonePopup(properties) {
+                return `
+                    <div class="custom-popup">
+                        <h3>Zone ${properties.Zone_ID}</h3>
+                        <p>Area: ${properties.Area || 'N/A'} km²</p>
+                        <p>Last Updated: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                `;
+            }
+
+            createPolePopup(properties) {
+                return `
+                    <div class="custom-popup">
+                        <h3>Pole ${properties.Pole_No}</h3>
+                        <p>Status: ${properties.Status || 'Unknown'}</p>
+                        <p>Installation Date: ${properties.Install_Date || 'N/A'}</p>
+                    </div>
+                `;
+            }
+
+            handleNavigation() {
+                const input = document.getElementById('coordinates').value.trim();
+                const coords = input.split(/[\s,]+/).map(Number);
+                
+                if (coords.length !== 2 || coords.some(isNaN)) {
+                    this.showError('Invalid coordinates format! Use: lat, lng');
+                    return;
+                }
+
+                this.map.flyTo(coords, 22, {
+                    animate: true,
+                    duration: 1.5,
+                    easeLinearity: 0.25
+                });
+
+                L.marker(coords, {
+                    icon: this.createTargetIcon()
+                }).addTo(this.map)
+                .bindPopup(`<b>Target Location</b><br>Lat: ${coords[0]}<br>Lng: ${coords[1]}`)
+                .openPopup();
+            }
+
+            createTargetIcon() {
+                return L.divIcon({
+                    className: 'target-marker',
+                    html: '<div class="pulsating-dot"></div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+            }
+
+            showLoading() {
+                document.getElementById('loading').style.opacity = '1';
+                document.getElementById('loading').style.pointerEvents = 'all';
+            }
+
+            hideLoading() {
+                document.getElementById('loading').style.opacity = '0';
+                document.getElementById('loading').style.pointerEvents = 'none';
+            }
+
+            showError(message) {
+                const errorEl = document.createElement('div');
+                errorEl.className = 'error-message';
+                errorEl.textContent = message;
+                document.body.appendChild(errorEl);
+                
+                setTimeout(() => {
+                    errorEl.remove();
+                }, 3000);
+            }
+
+            handleZoomChange() {
+                if (this.map.getZoom() > 18) {
+                    this.markers.options.disableClusteringAtZoom = 20;
+                }
+            }
+
+            handleMapMove() {
+                // يمكن إضافة تحديث البيانات الديناميكي هنا
+            }
         }
-      }
 
-      function createPoleMarker(feature, latlng) {
-        return L.marker(latlng, {
-          icon: L.divIcon({
-            className: 'pole-marker',
-            html: `<div class="pole-label">${feature.properties.id}</div>`,
-            iconSize: [40, 40]
-          })
-        }).bindPopup(`
-          <div class="pole-popup">
-            <strong>العمود ${feature.properties.id}</strong>
-            <p>الحالة: ${feature.properties.status || 'غير معروف'}</p>
-          </div>
-        `);
-      }
-
-      // تسجيل Service Worker
-      if('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('Service Worker مسجل بنجاح'))
-          .catch(err => console.log('فشل تسجيل Service Worker:', err));
-      }
-    });
-
-    // تحميل الخطوط بشكل غير متزامن
-    const fontLink = document.createElement('link');
-    fontLink.href = 'https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap';
-    fontLink.rel = 'stylesheet';
-    document.head.appendChild(fontLink);
-  </script>
+        // بدء التطبيق
+        document.addEventListener('DOMContentLoaded', () => {
+            new MapApp();
+        });
+    </script>
 </body>
 </html>
