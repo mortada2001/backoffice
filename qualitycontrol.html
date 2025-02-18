@@ -39,7 +39,7 @@
             font-size: 14px;
         }
 
-        input {
+        select, input {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
@@ -70,14 +70,16 @@
             font-weight: bold;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>  <!-- ✅ Load Supabase only once -->
 </head>
 <body>
     <div class="container">
         <h1>Alwatani Quality Control</h1>
         <div class="form-group">
-            <label for="employee">Enter Employee Name:</label>
-            <input type="text" id="employee" placeholder="Type employee name">
+            <label for="employee">Select Employee:</label>
+            <select id="employee">
+                <option value="">Loading...</option>
+            </select>
         </div>
         <div class="form-group">
             <label for="date">Select Date:</label>
@@ -88,61 +90,70 @@
     </div>
 
     <script>
-document.addEventListener("DOMContentLoaded", async () => {
-    const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co"; 
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    document.addEventListener("DOMContentLoaded", async () => {
+        const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co"; 
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const employeeInput = document.getElementById("employee");
-    const showCaseButton = document.getElementById("show-case");
-    const resultDiv = document.getElementById("result");
+        const employeeSelect = document.getElementById("employee");
+        const showCaseButton = document.getElementById("show-case");
+        const resultDiv = document.getElementById("result");
 
-    showCaseButton.addEventListener("click", async () => {
-        const selectedEmployee = employeeInput.value.trim(); // Get the typed employee name
-        let selectedDate = document.getElementById("date").value;
+        // ✅ Load Employees into Dropdown (Fixed)
+        async function loadEmployees() {
+            let { data, error } = await supabase.from("quality cases").select("Assignee");
 
-        // Log the inputs to debug
-        console.log("Selected Employee:", selectedEmployee);
-        console.log("Selected Date (Original):", selectedDate);
+            if (error) {
+                console.error("Error fetching employees:", error);
+                return;
+            }
 
-        if (!selectedEmployee || !selectedDate) {
-            resultDiv.innerHTML = "⚠️ Please enter an employee name and select a date!";
-            return;
+            // ✅ Get unique employees using Set()
+            let uniqueEmployees = [...new Set(data.map(item => item.Assignee))];
+
+            // ✅ Populate dropdown
+            employeeSelect.innerHTML = '<option value="">Select Employee</option>';
+            uniqueEmployees.forEach(employee => {
+                const option = document.createElement("option");
+                option.value = employee;
+                option.textContent = employee;
+                employeeSelect.appendChild(option);
+            });
         }
 
-        // Format the date for Supabase query
-        const formattedDate = `${selectedDate}`;  // Directly use the selected date
-        console.log("Formatted Date:", formattedDate);
+        await loadEmployees();
 
-        console.log("Fetching data for employee:", selectedEmployee, "on date:", selectedDate);
+        // ✅ Fetch and Show Random Case
+        showCaseButton.addEventListener("click", async () => {
+            const selectedEmployee = employeeSelect.value;
+            const selectedDate = document.getElementById("date").value;
 
-        // Raw SQL query to cast timestamp to text and use LIKE
-        const { data, error } = await supabase.rpc('get_quality_cases', {
-            employee: selectedEmployee,
-            date: formattedDate
+            if (!selectedEmployee || !selectedDate) {
+                resultDiv.innerHTML = "⚠️ Please select an employee and a date!";
+                return;
+            }
+
+            let { data, error } = await supabase
+                .from("quality cases")
+                .select("Number")
+                .eq("Assignee", selectedEmployee)
+                .eq("Modified on", selectedDate);
+
+            if (error) {
+                console.error("Error fetching cases:", error);
+                resultDiv.innerHTML = "❌ Error fetching data!";
+                return;
+            }
+
+            if (data.length === 0) {
+                resultDiv.innerHTML = "ℹ️ No cases found for this selection.";
+                return;
+            }
+
+            const randomCase = data[Math.floor(Math.random() * data.length)];
+            resultDiv.innerHTML = `✅ Ticket Number: <strong>${randomCase.Number}</strong>`;
         });
-
-        // Debugging output
-        console.log("Supabase Data:", data);
-        console.log("Error:", error);
-
-        if (error) {
-            console.error("Error fetching cases:", error);
-            resultDiv.innerHTML = "❌ Error fetching data!";
-            return;
-        }
-
-        if (data.length === 0) {
-            console.log("No matching cases found in the database.");
-            resultDiv.innerHTML = "ℹ️ No cases found for this selection.";
-            return;
-        }
-
-        // Pick a random case from the fetched data
-        const randomCase = data[Math.floor(Math.random() * data.length)];
-        resultDiv.innerHTML = `✅ Ticket Number: <strong>${randomCase.Number}</strong>`;
     });
-});
 </script>
 </body>
 </html>
