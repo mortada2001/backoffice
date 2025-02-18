@@ -1,241 +1,363 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Map Navigator Pro</title>
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<!-- Leaflet MarkerCluster CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
- 
-  <style>
-    /* General Styles */
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f9;
-      color: #333;
-      overflow-x: hidden; /* لمنع التمرير الأفقي */
-    }
- 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-      text-align: center;
-    }
- 
-    header {
-      margin-bottom: 30px;
-    }
- 
-    header h1 {
-      font-size: 2.5rem;
-      color: #2c3e50;
-    }
- 
-    header p {
-      font-size: 1.1rem;
-      color: #7f8c8d;
-    }
- 
-    /* Input Section */
-    .input-section {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
- 
-    .input-section input {
-      padding: 10px;
-      font-size: 1rem;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      width: 300px;
-    }
- 
-    .input-section button {
-      padding: 10px 20px;
-      font-size: 1rem;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
- 
-    .input-section button:hover {
-      background-color: #2980b9;
-    }
- 
-    /* Map Box */
-    #map {
-      height: 600px;
-      width: 100%;
-      border-radius: 70px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      margin: 20px auto;
-    }
- 
-    .zone-label, .pole-label {
-      font-size: 14px;
-      font-weight: bold;
-      color: black;
-      background-color: rgba(255, 255, 255, 0.7);
-      padding: 2px 5px;
-      border-radius: 3px;
-    }
- 
-    /* تحسين عناصر التحكم في الخريطة */
-    .leaflet-control-zoom {
-      margin-right: 15px;
-      margin-bottom: 15px;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QGIS PRO</title>
+    
+    <!-- تحميل مسبق للموارد الأساسية -->
+    <link rel="preload" href="https://unpkg.com/leaflet/dist/leaflet.css" as="style">
+    <link rel="preload" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" as="style">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --background: #f8f9fa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--background);
+            color: var(--primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(245,245,245,0.9) 100%);
+            border-radius: 1.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .input-section {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        #coordinates {
+            width: 100%;
+            max-width: 500px;
+            padding: 1rem;
+            border: 2px solid #eee;
+            border-radius: 1rem;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.9);
+        }
+
+        #coordinates:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.2);
+        }
+
+        #navigate-btn {
+            padding: 1rem 2rem;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        #navigate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        #map {
+            height: 70vh;
+            min-height: 600px;
+            width: 100%;
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            background: white;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .leaflet-control-zoom {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .custom-popup .leaflet-popup-content {
+            min-width: 200px;
+            padding: 1rem;
+            border-radius: 1rem;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-<header>
-<h1>Map Navigator Pro</h1>
-<p>⚠️يوجد الان صيانة عل الموقع نعتذر لازعجكم⚠️</p>
-</header>
- 
-    <div class="input-section">
-<input type="text" id="coordinates" placeholder="Enter coordinates (e.g., 33.2625977,44.4070566)" />
-<button id="navigate-btn">Navigate</button>
-</div>
- 
-    <div id="map"></div>
-</div>
- 
-  <!-- Leaflet JavaScript -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<!-- MarkerCluster JavaScript -->
-<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-      // تهيئة الخريطة مع إعدادات التكبير المتقدمة
-      const map = L.map('map', {
-        zoomControl: true,
-        maxZoom: 22,    // زيادة مستوى التكبير الأقصى
-        minZoom: 3,     // مستوى التصغير الأدنى
-        inertia: true,   // تمكين القصور الذاتي للحركة
-        inertiaDeceleration: 3000,
-        wheelPxPerZoomLevel: 100
-      }).setView([33.2625977, 44.4070566], 20);
- 
-      // إضافة طبقة الخريطة مع دعم التكبير العالي
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 22,    // يجب أن يتطابق مع إعدادات الخريطة
-        detectRetina: true // لدعم الشاشات عالية الدقة
-      }).addTo(map);
- 
-      // بديل لخرائط جوجل (إذا لزم الأمر)
-      /*
-      L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-        maxZoom: 22,
-        attribution: 'Google Satellite'
-      }).addTo(map);
-      */
- 
-      // تحميل طبقة المناطق
-      fetch('zones.geojson')
-        .then(response => response.json())
-        .then(data => {
-          L.geoJSON(data, {
-            style: {
-              color: '#ff7800',
-              weight: 2,
-              opacity: 1
-            },
-            onEachFeature: function (feature, layer) {
-              if (feature.properties?.Zone_ID) {
-                const center = layer.getBounds().getCenter();
-                L.marker(center, {
-                  icon: L.divIcon({
-                    className: 'zone-label',
-                    html: feature.properties.Zone_ID,
-                    iconSize: [50, 20],
-                    iconAnchor: [25, 10]
-                  })
-                }).addTo(map);
-              }
+    <div class="container">
+        <header class="header">
+            <h1>QGIS PRO</h1>
+            <p>⚠️يوجد الان صيانة عل الموقع نعتذر لازعجكم⚠️</p>
+        </header>
+
+        <div class="input-section">
+            <input type="text" 
+                   id="coordinates" 
+                   placeholder="أدخل الإحداثيات (مثال: 33.2625977,44.4070566)"
+                   autocomplete="off">
+            <button id="navigate-btn">استكشف</button>
+        </div>
+
+        <div id="map"></div>
+        <div class="loading-overlay" id="loading">
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
+    <script>
+        class EnhancedMap {
+            constructor() {
+                this.map = null;
+                this.markers = null;
+                this.dataCache = new Map();
+                this.init();
             }
-          }).addTo(map);
-        })
-        .catch(console.error);
- 
-      // تهيئة تجميع العلامات
-      const markers = L.markerClusterGroup({
-        spiderfyOnMaxZoom: true, // تمكين التوزيع عند التكبير الأقصى
-        showCoverageOnHover: false,
-        zoomToBoundsOnClick: true,
-        maxClusterRadius: 40
-      });
- 
-      // دالة لتحميل الأعمدة
-      const loadPoles = (geojsonPath) => {
-        fetch(geojsonPath)
-          .then(response => response.json())
-          .then(data => {
-            L.geoJSON(data, {
-              pointToLayer: (feature, latlng) => {
-                return L.marker(latlng, {
-                  icon: L.divIcon({
-                    className: 'pole-label',
-                    html: feature.properties.Pole_No || 'N/A',
-                    iconSize: [60, 20],
-                    iconAnchor: [30, 10]
-                  })
-                }).bindPopup(`Pole No: ${feature.properties.Pole_No || 'N/A'}`);
-              }
-            }).getLayers().forEach(layer => markers.addLayer(layer));
-          })
-          .catch(console.error);
-      };
- 
-      // تحميل بيانات الأعمدة
-      loadPoles('pole.geojson');
-      loadPoles('polesA.geojson');
-      map.addLayer(markers);
- 
-      // التحكم في التنقل
-      document.getElementById('navigate-btn').addEventListener('click', () => {
-        const input = document.getElementById('coordinates').value.trim();
-        const coords = input.split(/[\s,]+/).map(Number);
- 
-        if (coords.length !== 2 || coords.some(isNaN)) {
-          alert('Invalid coordinates! Format: latitude,longitude');
-          return;
+
+            async init() {
+                this.initMap();
+                this.setupEventListeners();
+                this.loadInitialData();
+            }
+
+            initMap() {
+                this.map = L.map('map', {
+                    zoomControl: false,
+                    preferCanvas: true,
+                    maxZoom: 22,
+                    minZoom: 3,
+                    inertia: true,
+                    fadeAnimation: false,
+                    wheelPxPerZoomLevel: 100
+                }).setView([33.2625977, 44.4070566], 15);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap',
+                    maxZoom: 22,
+                    detectRetina: true
+                }).addTo(this.map);
+
+                L.control.zoom({ position: 'topright' }).addTo(this.map);
+            }
+
+            setupEventListeners() {
+                document.getElementById('navigate-btn').addEventListener('click', () => this.handleNavigation());
+                this.map.on('zoomend', () => this.handleZoom());
+            }
+
+            async loadInitialData() {
+                await Promise.all([
+                    this.loadLayer('zones.geojson', this.processZones),
+                    this.loadLayer('pole.geojson', this.processPoles),
+                    this.loadLayer('polesA.geojson', this.processPoles)
+                ]);
+            }
+
+            async loadLayer(url, processor) {
+                this.showLoading();
+                try {
+                    const data = await this.cachedFetch(url);
+                    processor.call(this, data);
+                } catch (error) {
+                    console.error('خطأ في التحميل:', error);
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            async cachedFetch(url) {
+                if (this.dataCache.has(url)) return this.dataCache.get(url);
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                this.dataCache.set(url, data);
+                return data;
+            }
+
+            processZones(data) {
+                L.geoJSON(data, {
+                    style: { color: '#ff7800', weight: 2 },
+                    onEachFeature: (feature, layer) => {
+                        if (feature.properties.Zone_ID) {
+                            const center = layer.getBounds().getCenter();
+                            L.marker(center, {
+                                icon: L.divIcon({
+                                    className: 'zone-label',
+                                    html: feature.properties.Zone_ID,
+                                    iconSize: [50, 20],
+                                    iconAnchor: [25, 10]
+                                })
+                            }).addTo(this.map);
+                        }
+                    }
+                }).addTo(this.map);
+            }
+
+            processPoles(data) {
+                if (!this.markers) {
+                    this.markers = L.markerClusterGroup({
+                        chunkedLoading: true,
+                        chunkInterval: 150,
+                        spiderfyOnMaxZoom: true,
+                        maxClusterRadius: 40
+                    });
+                }
+
+                L.geoJSON(data, {
+                    pointToLayer: (feature, latlng) => {
+                        return L.marker(latlng, {
+                            icon: L.divIcon({
+                                className: 'pole-label',
+                                html: feature.properties.Pole_No || 'N/A',
+                                iconSize: [60, 20],
+                                iconAnchor: [30, 10]
+                            })
+                        }).bindPopup(`<b>العمود ${feature.properties.Pole_No}</b>`);
+                    }
+                }).eachLayer(layer => this.markers.addLayer(layer));
+
+                this.map.addLayer(this.markers);
+            }
+
+            handleNavigation() {
+                const input = document.getElementById('coordinates').value.trim();
+                const coords = input.split(/[\s,]+/).map(Number);
+
+                if (coords.length !== 2 || coords.some(isNaN)) {
+                    this.showError('صيغة إحداثيات غير صحيحة! مثال: 33.2625977,44.4070566');
+                    return;
+                }
+
+                this.map.flyTo(coords, 22, {
+                    animate: true,
+                    duration: 1.5
+                });
+
+                L.marker(coords)
+                    .addTo(this.map)
+                    .bindPopup(`<b>الموقع المستهدف</b><br>عرض: ${coords[0]}<br>طول: ${coords[1]}`)
+                    .openPopup();
+            }
+
+            handleZoom() {
+                if (this.map.getZoom() > 18) {
+                    this.markers.options.disableClusteringAtZoom = 20;
+                }
+            }
+
+            showLoading() {
+                document.getElementById('loading').style.opacity = '1';
+                document.getElementById('loading').style.pointerEvents = 'all';
+            }
+
+            hideLoading() {
+                document.getElementById('loading').style.opacity = '0';
+                document.getElementById('loading').style.pointerEvents = 'none';
+            }
+
+            showError(message) {
+                const errorEl = document.createElement('div');
+                errorEl.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 1rem;
+                    background: #e74c3c;
+                    color: white;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                    z-index: 1001;
+                `;
+                errorEl.textContent = message;
+                document.body.appendChild(errorEl);
+                
+                setTimeout(() => errorEl.remove(), 3000);
+            }
         }
- 
-        map.flyTo(coords, 22, {
-          animate: true,
-          duration: 2,
-          easeLinearity: 0.25
-        });
- 
-        L.marker(coords)
-          .addTo(map)
-          .bindPopup('Target Location<br>Lat: ' + coords[0] + '<br>Lon: ' + coords[1])
-          .openPopup();
-      });
- 
-      // إضافة تحكم مخصص في التكبير
-      L.control.zoom({
-        position: 'topright',
-        zoomInText: '+',
-        zoomOutText: '-',
-        zoomInTitle: 'Zoom In',
-        zoomOutTitle: 'Zoom Out'
-      }).addTo(map);
-    });
-</script>
+
+        // بدء التطبيق
+        document.addEventListener('DOMContentLoaded', () => new EnhancedMap());
+    </script>
 </body>
 </html>
