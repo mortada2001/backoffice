@@ -6,6 +6,11 @@
   <title>Map Navigator</title>
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  
+  <!-- Leaflet MarkerCluster CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+
   <style>
     /* General Styles */
     body {
@@ -105,6 +110,9 @@
 
   <!-- Add Leaflet JavaScript -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- Add MarkerCluster JavaScript -->
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
   
   <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -116,18 +124,22 @@
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
 
+      // Create a marker cluster group
+      const markers = L.markerClusterGroup();
+
       // Load Zones GeoJSON
       fetch('zones.geojson')
         .then(response => response.json())
         .then(data => {
           L.geoJSON(data, {
-            style: {
-              color: '#ff7800',
-              weight: 2,
-              opacity: 1
-            },
             onEachFeature: function (feature, layer) {
               if (feature.properties && feature.properties.Zone_ID) {
+                layer.on('click', function () {
+                  // Load poles when a zone is clicked
+                  loadPoles('poles_in_zone.geojson');
+                });
+
+                // Add zone labels
                 let center = layer.getBounds().getCenter();
                 L.marker(center, {
                   icon: L.divIcon({
@@ -143,35 +155,34 @@
         })
         .catch(error => console.error("Error loading zones GeoJSON:", error));
 
-      // Function to load poles and display pole_no
+      // Function to load poles and display them with MarkerCluster
       function loadPoles(geojsonPath) {
         fetch(geojsonPath)
           .then(response => response.json())
           .then(data => {
             L.geoJSON(data, {
               pointToLayer: function (feature, latlng) {
-                return L.marker(latlng).bindPopup(`Pole No: ${feature.properties.Pole_No || 'N/A'}`);
+                const marker = L.marker(latlng).bindPopup(`Pole No: ${feature.properties.Pole_No || 'N/A'}`);
+                markers.addLayer(marker); // Add the marker to the cluster group
+                return marker;
               },
               onEachFeature: function (feature, layer) {
-              if (feature.properties && feature.properties.Pole_No) {
-                  L.marker(layer.getLatLng(), {
-                    icon: L.divIcon({
-                      className: 'pole-label',
-                      html: feature.properties.Pole_No,
-                      iconSize: [40, 20],
-                      iconAnchor: [20, 10]
-                    })
-                  }).addTo(map);
+                if (feature.properties && feature.properties.Pole_No) {
+                  const label = L.divIcon({
+                    className: 'pole-label',
+                    html: feature.properties.Pole_No,
+                    iconSize: [40, 20],
+                    iconAnchor: [20, 10]
+                  });
+                  L.marker(layer.getLatLng(), { icon: label }).addTo(map);
                 }
               }
-            }).addTo(map);
+            }).addTo(markers);  // Add geoJSON to cluster
+
+            map.addLayer(markers);  // Add the cluster group to the map
           })
           .catch(error => console.error(`Error loading ${geojsonPath}:`, error));
       }
-
-      // Load pole data
-      loadPoles('pole.geojson');
-      loadPoles('poleA.geojson');
 
       // Navigate to coordinates
       document.getElementById('navigate-btn').addEventListener('click', () => {
