@@ -130,6 +130,14 @@
 
                 console.log("Fetched Data:", data);
 
+                // Debugging: Check if data format is correct
+                if (data && data.length > 0) {
+                    console.log("Raw Data: ", data);
+                    console.log("Raw Case Dates: ", data.map(caseItem => caseItem["Modified on"]));
+                } else {
+                    console.log("No matching cases found in the database.");
+                }
+
                 if (data.length === 0) {
                     resultDiv.innerHTML = "ℹ️ No cases found for this selection.";
                     console.log("No data found for the given employee and date.");
