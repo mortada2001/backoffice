@@ -116,12 +116,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         console.log("Fetching data for employee:", selectedEmployee, "on date:", selectedDate);
 
-        // Query Supabase for data
-        let { data, error } = await supabase
-            .from("quality cases")
-            .select("Number, Assignee, Modified_on")
-            .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search for Assignee
-            .filter("Modified_on", "ilike", `${formattedDate}%`); // Match date with LIKE
+        // Raw SQL query to cast timestamp to text and use LIKE
+        const { data, error } = await supabase.rpc('get_quality_cases', {
+            employee: selectedEmployee,
+            date: formattedDate
+        });
 
         // Debugging output
         console.log("Supabase Data:", data);
