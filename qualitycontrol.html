@@ -88,56 +88,60 @@
     </div>
 
     <script>
-document.addEventListener("DOMContentLoaded", async () => {
-    const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co"; 
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        document.addEventListener("DOMContentLoaded", async () => {
+            const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co"; 
+            const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const employeeInput = document.getElementById("employee");
-    const showCaseButton = document.getElementById("show-case");
-    const resultDiv = document.getElementById("result");
+            const employeeInput = document.getElementById("employee");
+            const showCaseButton = document.getElementById("show-case");
+            const resultDiv = document.getElementById("result");
 
-    showCaseButton.addEventListener("click", async () => {
-        const selectedEmployee = employeeInput.value.trim(); // Get the typed employee name
-        let selectedDate = document.getElementById("date").value;
+            showCaseButton.addEventListener("click", async () => {
+                const selectedEmployee = employeeInput.value.trim(); // Get the typed employee name
+                let selectedDate = document.getElementById("date").value;
 
-        console.log("Selected Employee:", selectedEmployee);
-        console.log("Selected Date (Original):", selectedDate);
+                console.log("Selected Employee:", selectedEmployee);
+                console.log("Selected Date (Original):", selectedDate);
 
-        // Convert date format if necessary
-        if (selectedDate.includes('/')) {
-            selectedDate = convertDateFormat(selectedDate); // Convert to YYYY-MM-DD
-        }
+                if (!selectedEmployee || !selectedDate) {
+                    resultDiv.innerHTML = "⚠️ Please enter an employee name and select a date!";
+                    console.log("Error: Employee or Date not selected.");
+                    return;
+                }
 
-        console.log("Selected Date (Converted):", selectedDate);
+                // Convert date format if necessary (not required here as input is already in the correct format)
+                console.log("Selected Date (Converted):", selectedDate);
 
-        if (!selectedEmployee || !selectedDate) {
-            resultDiv.innerHTML = "⚠️ Please enter an employee name and select a date!";
-            return;
-        }
+                // Fetch the data from Supabase based on employee and date
+                console.log("Fetching data for employee:", selectedEmployee, "on date:", selectedDate);
+                let { data, error } = await supabase
+                    .from("quality cases")
+                    .select("Number, Assignee, Modified on")
+                    .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search for Assignee
+                    .gte("Modified on", `${selectedDate}T00:00:00`) // Start of the day
+                    .lt("Modified on", `${selectedDate}T23:59:59`); // End of the day
 
-        let { data, error } = await supabase
-            .from("quality cases")
-            .select("Number")
-            .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search
-            .gte("Modified on", `${selectedDate}T00:00:00`) // Start of the day
-            .lt("Modified on", `${selectedDate}T23:59:59`); // End of the day
+                if (error) {
+                    console.error("Error fetching cases:", error);
+                    resultDiv.innerHTML = "❌ Error fetching data!";
+                    return;
+                }
 
-        console.log("Fetched Data:", data);
+                console.log("Fetched Data:", data);
 
-        if (error) {
-            console.error("Error fetching cases:", error);
-            resultDiv.innerHTML = "❌ Error fetching data!";
-            return;
-        }
+                if (data.length === 0) {
+                    resultDiv.innerHTML = "ℹ️ No cases found for this selection.";
+                    console.log("No data found for the given employee and date.");
+                    return;
+                }
 
-        if (data.length === 0) {
-            resultDiv.innerHTML = "ℹ️ No cases found for this selection.";
-            return;
-        }
-
-        const randomCase = data[Math.floor(Math.random() * data.length)];
-        resultDiv.innerHTML = `✅ Ticket Number: <strong>${randomCase.Number}</strong>`;
-    });
-});
-</script>
+                // If data is found, display a random case
+                const randomCase = data[Math.floor(Math.random() * data.length)];
+                resultDiv.innerHTML = `✅ Ticket Number: <strong>${randomCase.Number}</strong>`;
+                console.log("Random Case Selected:", randomCase.Number);
+            });
+        });
+    </script>
+</body>
+</html>
