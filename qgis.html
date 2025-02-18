@@ -4,10 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Map Navigator</title>
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    /* General Styles */
     body {
       font-family: 'Arial', sans-serif;
       margin: 0;
@@ -15,36 +13,22 @@
       background-color: #f4f4f9;
       color: #333;
     }
-
     .container {
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
       text-align: center;
     }
-
-    header {
-      margin-bottom: 30px;
-    }
-
     header h1 {
       font-size: 2.5rem;
       color: #2c3e50;
     }
-
-    header p {
-      font-size: 1.1rem;
-      color: #7f8c8d;
-    }
-
-    /* Input Section */
     .input-section {
       display: flex;
       justify-content: center;
       gap: 10px;
       margin-bottom: 20px;
     }
-
     .input-section input {
       padding: 10px;
       font-size: 1rem;
@@ -52,7 +36,6 @@
       border-radius: 5px;
       width: 200px;
     }
-
     .input-section button {
       padding: 10px 20px;
       font-size: 1rem;
@@ -61,16 +44,12 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
     }
-
     .input-section button:hover {
       background-color: #2980b9;
     }
-
-    /* Map Box */
     #map {
-      height: 400px;
+      height: 500px;
       width: 100%;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -79,91 +58,96 @@
   </style>
 </head>
 <body>
+
   <div class="container">
     <header>
       <h1>Map Navigator</h1>
-      <p>Enter coordinates to explore any location on the map.</p>
+      <p>Click on an area to toggle poles visibility.</p>
     </header>
 
     <div class="input-section">
-      <input type="text" id="latitude" placeholder="Enter Latitude (e.g., 51.505)" />
-      <input type="text" id="longitude" placeholder="Enter Longitude (e.g., -0.09)" />
+      <input type="text" id="latitude" placeholder="Enter Latitude" />
+      <input type="text" id="longitude" placeholder="Enter Longitude" />
       <button id="navigate-btn">Navigate</button>
     </div>
 
     <div id="map"></div>
   </div>
 
-  <!-- Add Leaflet JavaScript -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      // Initialize the map
-      const map = L.map('map').setView([51.505, -0.09], 13); // Default coordinates
+    let map = L.map('map').setView([51.505, -0.09], 13);
 
-      // Add OpenStreetMap tiles
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
-      // Load GeoJSON layer and add labels
-      fetch('zones.geojson') // Replace with the correct GeoJSON path
-        .then(response => response.json())
-        .then(data => {
-          L.geoJSON(data, {
-            style: {
-              color: '#ff7800', // Polygon border color
-              weight: 2,
-              opacity: 1
-            },
-            onEachFeature: function (feature, layer) {
-              if (feature.properties && feature.properties.Zone_ID) {
-                let center = layer.getBounds().getCenter(); // Get the polygon's center
-                L.marker(center, {
-                  icon: L.divIcon({
-                    className: 'zone-label',
-                    html: feature.properties.Zone_ID,
-                    iconSize: [50, 20], // Adjust the size
-                    iconAnchor: [25, 10] // Position correctly
-                  })
-                }).addTo(map);
-              }
-            }
-          }).addTo(map);
+    let polesLayer, polesALayer;
+    let polesVisible = false;
+
+    function loadPoles() {
+      let urls = ['poles.geojson', 'polesA.geojson'];
+      let promises = urls.map(url => fetch(url).then(res => res.json()));
+
+      Promise.all(promises)
+        .then(dataArray => {
+          polesLayer = L.geoJSON(dataArray[0], { 
+            style: { color: 'purple' } 
+          });
+          polesALayer = L.geoJSON(dataArray[1], { 
+            style: { color: 'blue' } 
+          });
+
+          map.addLayer(polesLayer);
+          map.addLayer(polesALayer);
+
+          // Hide poles initially
+          map.removeLayer(polesLayer);
+          map.removeLayer(polesALayer);
         })
-        .catch(error => console.error("Error loading GeoJSON:", error));
-
-      // Navigate to coordinates
-      document.getElementById('navigate-btn').addEventListener('click', () => {
-        const latitude = parseFloat(document.getElementById('latitude').value);
-        const longitude = parseFloat(document.getElementById('longitude').value);
-
-        if (isNaN(latitude) || isNaN(longitude)) {
-          alert('Please enter valid coordinates.');
-          return;
-        }
-
-        // Update map view
-        map.setView([latitude, longitude], 13);
-
-        // Add a marker to the location
-        L.marker([latitude, longitude]).addTo(map)
-          .bindPopup('You are here!')
-          .openPopup();
-      });
-    });
-  </script>
-
-  <style>
-    .zone-label {
-      font-size: 14px;
-      font-weight: bold;
-      color: black;
-      background-color: rgba(255, 255, 255, 0.7);
-      padding: 2px 5px;
-      border-radius: 3px;
+        .catch(error => console.error("Error loading poles:", error));
     }
-  </style>
+
+    function togglePoles() {
+      if (polesVisible) {
+        map.removeLayer(polesLayer);
+        map.removeLayer(polesALayer);
+        polesVisible = false;
+      } else {
+        map.addLayer(polesLayer);
+        map.addLayer(polesALayer);
+        polesVisible = true;
+      }
+    }
+
+    // Load Zones and attach click event
+    fetch('zones.geojson')
+      .then(response => response.json())
+      .then(data => {
+        L.geoJSON(data, {
+          style: { color: '#ff7800', weight: 2 },
+          onEachFeature: function (feature, layer) {
+            layer.on('click', togglePoles);
+          }
+        }).addTo(map);
+      });
+
+    // Navigate to coordinates
+    document.getElementById('navigate-btn').addEventListener('click', () => {
+      const lat = parseFloat(document.getElementById('latitude').value);
+      const lon = parseFloat(document.getElementById('longitude').value);
+
+      if (isNaN(lat) || isNaN(lon)) {
+        alert('Please enter valid coordinates.');
+        return;
+      }
+
+      map.setView([lat, lon], 13);
+      L.marker([lat, lon]).addTo(map).bindPopup('You are here!').openPopup();
+    });
+
+    loadPoles();
+  </script>
 </body>
 </html>
