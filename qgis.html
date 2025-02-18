@@ -94,26 +94,37 @@
     <div id="map"></div>
   </div>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    // Initialize the map
-  const map = L.map('map').setView([51.505, -0.09], 13); // Default coordinates (London)
+  // Initialize the map
+  const map = L.map('map').setView([51.505, -0.09], 13); // Default coordinates
 
   // Add OpenStreetMap tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
-  // Load your GeoJSON layer
-  fetch('zones.geojson') // Replace with the path to your GeoJSON file
+  // Load GeoJSON layer and add labels
+  fetch('zones.geojson') // Replace with the correct GeoJSON path
     .then(response => response.json())
     .then(data => {
       L.geoJSON(data, {
         style: {
-          color: '#ff7800', // Customize the style
+          color: '#ff7800', // Polygon border color
           weight: 2,
           opacity: 1
+        },
+        onEachFeature: function (feature, layer) {
+          if (feature.properties && feature.properties.Zone_ID) {
+            let center = layer.getBounds().getCenter(); // Get the polygon's center
+            L.marker(center, {
+              icon: L.divIcon({
+                className: 'zone-label',
+                html: feature.properties.Zone_ID,
+                iconSize: [50, 20], // Adjust the size
+                iconAnchor: [25, 10] // Position correctly
+              })
+            }).addTo(map);
+          }
         }
       }).addTo(map);
     });
@@ -137,5 +148,16 @@
       .openPopup();
   });
 </script>
+
+<style>
+  .zone-label {
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 2px 5px;
+    border-radius: 3px;
+  }
+</style>
 </body>
 </html>
