@@ -193,16 +193,15 @@
 // Show loading spinner
       document.getElementById('loading').style.display = 'block';
 
- // Hide loading spinner once all layers are loaded
+ // Load all GeoJSON files and add callback
       Promise.all([
-        fetch('zones.geojson'),
-        fetch('pole.geojson'),
-        fetch('polesA.geojson')
-      ])
-      .then(() => {
-        // Hide the loading spinner after layers are loaded
+        new Promise((resolve) => loadGeoJSON('zones.geojson', resolve)),
+        new Promise((resolve) => loadGeoJSON('pole.geojson', resolve)),
+        new Promise((resolve) => loadGeoJSON('polesA.geojson', resolve))
+      ]).then(() => {
+        // Hide loading spinner once all layers are loaded
         document.getElementById('loading').style.display = 'none';
-      })
+      });
       .catch(() => {
         // If any error occurs, hide loading spinner
         document.getElementById('loading').style.display = 'none';
