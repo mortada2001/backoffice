@@ -106,7 +106,7 @@
   }).addTo(map);
 
   // Load your GeoJSON layer
-  fetch('path/to/your-layer.geojson') // Replace with the path to your GeoJSON file
+  fetch('zones.geojson') // Replace with the path to your GeoJSON file
     .then(response => response.json())
     .then(data => {
       L.geoJSON(data, {
