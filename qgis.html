@@ -23,31 +23,6 @@
       font-size: 2.5rem;
       color: #2c3e50;
     }
-    .input-section {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .input-section input {
-      padding: 10px;
-      font-size: 1rem;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      width: 200px;
-    }
-    .input-section button {
-      padding: 10px 20px;
-      font-size: 1rem;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .input-section button:hover {
-      background-color: #2980b9;
-    }
     #map {
       height: 500px;
       width: 100%;
@@ -65,20 +40,13 @@
       <p>Click on an area to toggle poles visibility.</p>
     </header>
 
-    <div class="input-section">
-      <input type="text" id="latitude" placeholder="Enter Latitude" />
-      <input type="text" id="longitude" placeholder="Enter Longitude" />
-      <button id="navigate-btn">Navigate</button>
-    </div>
-
     <div id="map"></div>
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    let map = L.map('map').setView([51.505, -0.09], 13);
+    let map = L.map('map').setView([33.55, 44.40], 13);
 
-    // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
@@ -92,11 +60,26 @@
 
       Promise.all(promises)
         .then(dataArray => {
-          polesLayer = L.geoJSON(dataArray[0], { 
-            style: { color: 'purple' } 
+          polesLayer = L.geoJSON(dataArray[0], {
+            pointToLayer: function(feature, latlng) {
+              return L.circleMarker(latlng, { radius: 6, color: 'purple' });
+            },
+            onEachFeature: function(feature, layer) {
+              if (feature.properties && feature.properties.Pole_No) {
+                layer.bindPopup(`Pole No: ${feature.properties.Pole_No}`);
+              }
+            }
           });
-          polesALayer = L.geoJSON(dataArray[1], { 
-            style: { color: 'blue' } 
+
+          polesALayer = L.geoJSON(dataArray[1], {
+            pointToLayer: function(feature, latlng) {
+              return L.circleMarker(latlng, { radius: 6, color: 'blue' });
+            },
+            onEachFeature: function(feature, layer) {
+              if (feature.properties && feature.properties.Pole_No) {
+                layer.bindPopup(`Pole No: ${feature.properties.Pole_No}`);
+              }
+            }
           });
 
           map.addLayer(polesLayer);
@@ -132,20 +115,6 @@
           }
         }).addTo(map);
       });
-
-    // Navigate to coordinates
-    document.getElementById('navigate-btn').addEventListener('click', () => {
-      const lat = parseFloat(document.getElementById('latitude').value);
-      const lon = parseFloat(document.getElementById('longitude').value);
-
-      if (isNaN(lat) || isNaN(lon)) {
-        alert('Please enter valid coordinates.');
-        return;
-      }
-
-      map.setView([lat, lon], 13);
-      L.marker([lat, lon]).addTo(map).bindPopup('You are here!').openPopup();
-    });
 
     loadPoles();
   </script>
