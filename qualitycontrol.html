@@ -91,10 +91,9 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
-            // ✅ Initialize Supabase at the top
             const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co"; 
             const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
-            const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); // ✅ Fix initialization issue
 
             const employeeSelect = document.getElementById("employee");
             const showCaseButton = document.getElementById("show-case");
@@ -102,7 +101,7 @@
 
             // ✅ Load Employees into Dropdown
             async function loadEmployees() {
-                let { data, error } = await supabase.from("cases").select("assignee").distinct();
+                let { data, error } = await supabase.from("quality cases").select("Assignee").distinct();
                 if (error) {
                     console.error("Error fetching employees:", error);
                     return;
@@ -110,8 +109,8 @@
                 employeeSelect.innerHTML = '<option value="">Select Employee</option>';
                 data.forEach(employee => {
                     const option = document.createElement("option");
-                    option.value = employee.assignee;
-                    option.textContent = employee.assignee;
+                    option.value = employee.Assignee;
+                    option.textContent = employee.Assignee;
                     employeeSelect.appendChild(option);
                 });
             }
@@ -129,10 +128,10 @@
                 }
 
                 let { data, error } = await supabase
-                    .from("cases")
-                    .select("number")
-                    .eq("assignee", selectedEmployee)
-                    .eq("date", selectedDate);
+                    .from("quality cases")
+                    .select("Number")
+                    .eq("Assignee", selectedEmployee)
+                    .eq("Modified on", selectedDate);
 
                 if (error) {
                     console.error("Error fetching cases:", error);
@@ -146,7 +145,7 @@
                 }
 
                 const randomCase = data[Math.floor(Math.random() * data.length)];
-                resultDiv.innerHTML = `✅ Ticket Number: <strong>${randomCase.number}</strong>`;
+                resultDiv.innerHTML = `✅ Ticket Number: <strong>${randomCase.Number}</strong>`;
             });
         });
     </script>
