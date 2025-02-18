@@ -97,12 +97,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const showCaseButton = document.getElementById("show-case");
     const resultDiv = document.getElementById("result");
 
-    // Function to convert date format from DD/MM/YYYY to YYYY-MM-DD
-    function convertDateFormat(dateString) {
-        const [day, month, year] = dateString.split('/');
-        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    }
-
     showCaseButton.addEventListener("click", async () => {
         const selectedEmployee = employeeInput.value.trim(); // Get the typed employee name
         let selectedDate = document.getElementById("date").value;
@@ -126,7 +120,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             .from("quality cases")
             .select("Number")
             .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search
-            .eq("Modified on", selectedDate);
+            .gte("Modified on", `${selectedDate}T00:00:00`) // Start of the day
+            .lt("Modified on", `${selectedDate}T23:59:59`); // End of the day
 
         console.log("Fetched Data:", data);
 
