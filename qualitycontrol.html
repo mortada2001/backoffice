@@ -122,6 +122,30 @@
             });
         }
 
+
+async function loadEmployees() {
+    let { data, error } = await supabase.from("quality cases").select("Assignee");
+
+    if (error) {
+        console.error("Error fetching employees:", error);
+        resultDiv.innerHTML = "❌ Error fetching employees!";
+        return;
+    }
+
+    console.log("Data from Supabase:", data); // Inspect the data
+    let uniqueEmployees = [...new Set(data.map(item => item.Assignee))];
+    console.log("Unique Employees:", uniqueEmployees); // Inspect unique employees
+
+    employeeSelect.innerHTML = '<option value="">Select Employee</option>';
+    uniqueEmployees.forEach(employee => {
+        const option = document.createElement("option");
+        option.value = employee;
+        option.textContent = employee;
+        employeeSelect.appendChild(option);
+    });
+}
+
+
         await loadEmployees();
 
         // ✅ Fetch and Show Random Case
