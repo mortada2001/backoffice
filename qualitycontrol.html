@@ -108,12 +108,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         console.log("Fetching data for employee:", selectedEmployee, "on date:", selectedDate);
 
+        // Convert the selected date to a JavaScript Date object
+        const dateObj = new Date(selectedDate);
+        if (isNaN(dateObj.getTime())) {
+            resultDiv.innerHTML = "❌ Invalid date format! Use YYYY-MM-DD.";
+            return;
+        }
+
+        // Format the date to match Supabase's date format (YYYY-MM-DD)
+        const formattedDate = dateObj.toISOString().split('T')[0];
+
+        console.log("Querying Supabase for Assignee:", `%${selectedEmployee}%`, "and Modified on:", formattedDate);
+
         // Fetch data from Supabase based on employee name and date
         let { data, error } = await supabase
             .from("quality cases")
             .select("Number, Assignee, \"Modified on\"") // Use double quotes for column names with spaces
             .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search for Assignee
-            .ilike("\"Modified on\"", `%${selectedDate}%`); // Use double quotes for column names with spaces
+            .eq("\"Modified on\"", formattedDate); // Exact match for the date
 
         // Log the data and error for debugging
         console.log("Supabase response:", data);
