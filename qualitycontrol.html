@@ -124,6 +124,10 @@
 
         console.log("🟢 Supabase Response:", data);
         console.log("🔴 Supabase Error:", error);
+        console.log("📌 Checking values before request:");
+        console.log("📌 Employee:", selectedEmployee);
+        console.log("📌 Date:", selectedDate);
+
 
         if (error) {
             console.error("❌ Error fetching cases:", error);
