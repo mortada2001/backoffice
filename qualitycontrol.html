@@ -90,7 +90,7 @@
     <script>
     document.addEventListener("DOMContentLoaded", async () => {
     const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co"; 
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeGh5YWRidWwiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczOTcyNTUwMCwiZXhwIjoyMDU1MzAxNTAwfQ.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const employeeInput = document.getElementById("employee");
@@ -109,18 +109,18 @@
 
         console.log("🚀 Fetching data for employee:", selectedEmployee, "on date:", selectedDate);
 
-        // 🔍 Debug Step: Print the exact API call we are making
+        // 🛠️ Debugging: Print the exact query format
         console.log(`🛠️ Running Query: 
-        SELECT "Number", "Assignee", "Modified on" FROM quality 
-        WHERE "Assignee" ILIKE '%${selectedEmployee}%' 
-        AND "Modified on" = '${selectedDate}';
+        SELECT "number", "assignee", "modified_on" FROM quality 
+        WHERE "assignee" ILIKE '%${selectedEmployee}%' 
+        AND "modified_on" = '${selectedDate}';
         `);
 
         let { data, error } = await supabase
             .from("quality")
-            .select('"Number", "Assignee", "Modified on"')  // Ensure column names match
-            .ilike('"Assignee"', `%${selectedEmployee}%`)  // 🔥 Fix wildcard issue
-            .eq('"Modified on"', selectedDate); 
+            .select("number, assignee, modified_on")  // 🔥 New column names
+            .ilike("assignee", `%${selectedEmployee}%`)  // Fix wildcard issue
+            .eq("modified_on", selectedDate);  // New column name
 
         console.log("🟢 Supabase Response:", data);
         console.log("🔴 Supabase Error:", error);
@@ -139,7 +139,7 @@
 
         // Pick a random case from the fetched data
         const randomCase = data[Math.floor(Math.random() * data.length)];
-        resultDiv.innerHTML = `✅ Ticket Number: <strong>${randomCase["Number"]}</strong>`;
+        resultDiv.innerHTML = `✅ Ticket Number: <strong>${randomCase["number"]}</strong>`;
     });
 });
 
