@@ -111,9 +111,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Fetch data from Supabase based on employee name and date
         let { data, error } = await supabase
             .from("quality cases")
-            .select("Number, Assignee, Modified_on") // Adjust the fields accordingly
+            .select("Number, Assignee, \"Modified on\"") // Use double quotes for column names with spaces
             .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search for Assignee
-            .ilike("Modified_on", `%${selectedDate}%`); // Using 'ilike' to find the date as text
+            .ilike("\"Modified on\"", `%${selectedDate}%`); // Use double quotes for column names with spaces
 
         // Log the data and error for debugging
         console.log("Supabase response:", data);
