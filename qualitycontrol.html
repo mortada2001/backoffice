@@ -89,53 +89,53 @@
 
     <script>
     document.addEventListener("DOMContentLoaded", async () => {
-        const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co"; 
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co"; 
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeGh5YWRidWwiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczOTcyNTUwMCwiZXhwIjoyMDU1MzAxNTAwfQ.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const employeeInput = document.getElementById("employee");
-        const dateInput = document.getElementById("date");
-        const showCaseButton = document.getElementById("show-case");
-        const resultDiv = document.getElementById("result");
+    const employeeInput = document.getElementById("employee");
+    const dateInput = document.getElementById("date");
+    const showCaseButton = document.getElementById("show-case");
+    const resultDiv = document.getElementById("result");
 
-        showCaseButton.addEventListener("click", async () => {
-            const selectedEmployee = employeeInput.value.trim();
-            let selectedDate = dateInput.value.trim();
+    showCaseButton.addEventListener("click", async () => {
+        const selectedEmployee = employeeInput.value.trim();
+        let selectedDate = dateInput.value.trim();
 
-            if (!selectedEmployee || !selectedDate) {
-                resultDiv.innerHTML = "⚠️ Please enter an employee name and date!";
-                return;
-            }
+        if (!selectedEmployee || !selectedDate) {
+            resultDiv.innerHTML = "⚠️ Please enter an employee name and date!";
+            return;
+        }
 
-            console.log("Fetching data for employee:", selectedEmployee, "on date:", selectedDate);
+        console.log("Fetching data for employee:", selectedEmployee, "on date:", selectedDate);
 
-            // Fetch data from Supabase based on exact column names
-            let { data, error } = await supabase
-                .from("quality")
-                .select("\"Number\", \"Assignee\", \"Modified on\"") 
-                .eq("\"Assignee\"", selectedEmployee) 
-                .eq("\"Modified on\"", selectedDate);
+        // Fetch data from Supabase using correct column names
+        let { data, error } = await supabase
+            .from("quality")
+            .select(`"Number", "Assignee", "Modified on"`)  // Ensure correct column names
+            .ilike('"Assignee"', selectedEmployee)  // Use .ilike() instead of .eq() for name matching
+            .eq('"Modified on"', selectedDate); // Ensure exact date match
 
-            console.log("Supabase response:", data);
-            console.log("Supabase error:", error);
+        console.log("Supabase response:", data);
+        console.log("Supabase error:", error);
 
-            if (error) {
-                console.error("Error fetching cases:", error);
-                resultDiv.innerHTML = "❌ Error fetching data!";
-                return;
-            }
+        if (error) {
+            console.error("Error fetching cases:", error);
+            resultDiv.innerHTML = "❌ Error fetching data!";
+            return;
+        }
 
-            if (data.length === 0) {
-                console.log("No matching cases found in the database.");
-                resultDiv.innerHTML = "ℹ️ No cases found for this selection.";
-                return;
-            }
+        if (data.length === 0) {
+            console.log("No matching cases found in the database.");
+            resultDiv.innerHTML = "ℹ️ No cases found for this selection.";
+            return;
+        }
 
-            // Pick a random case from the fetched data
-            const randomCase = data[Math.floor(Math.random() * data.length)];
-            resultDiv.innerHTML = `✅ Ticket Number: <strong>${randomCase["Number"]}</strong>`;
-        });
+        // Pick a random case from the fetched data
+        const randomCase = data[Math.floor(Math.random() * data.length)];
+        resultDiv.innerHTML = `✅ Ticket Number: <strong>${randomCase["Number"]}</strong>`;
     });
+});
     </script>
 </body>
 </html>
