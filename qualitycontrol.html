@@ -120,7 +120,7 @@
             .from("quality")
             .select("number, assignee, modified_on")  // 🔥 New column names
             .ilike("assignee", `%${selectedEmployee}%`)  // Fix wildcard issue
-            .eq("modified_on", selectedDate);  // New column name
+            .eq("modified_on::date", selectedDate); // Force cast to DATE
 
         console.log("🟢 Supabase Response:", data);
         console.log("🔴 Supabase Error:", error);
