@@ -97,6 +97,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const showCaseButton = document.getElementById("show-case");
     const resultDiv = document.getElementById("result");
 
+    // Function to normalize date to YYYY-MM-DD format
+    const normalizeDate = (date) => {
+        const [year, month, day] = date.split('-');
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    };
+
     showCaseButton.addEventListener("click", async () => {
         const selectedEmployee = employeeInput.value.trim(); // Get the typed employee name
         let selectedDate = document.getElementById("date").value;
@@ -108,21 +114,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         console.log("Fetching data for employee:", selectedEmployee, "on date:", selectedDate);
 
-        // Convert the selected date to a JavaScript Date object
-        const dateObj = new Date(selectedDate);
-        if (isNaN(dateObj.getTime())) {
-            resultDiv.innerHTML = "❌ Invalid date format! Use YYYY-MM-DD.";
-            return;
-        }
-
-        // Format the date to match Supabase's date format (YYYY-MM-DD)
-        const formattedDate = dateObj.toISOString().split('T')[0];
+        // Normalize the date to YYYY-MM-DD format
+        const formattedDate = normalizeDate(selectedDate);
 
         console.log("Querying Supabase for Assignee:", `%${selectedEmployee}%`, "and Modified on:", formattedDate);
 
         // Fetch data from Supabase based on employee name and date
         let { data, error } = await supabase
-            .from("quality")
+            .from("quality cases")
             .select("Number, Assignee, \"Modified on\"") // Use double quotes for column names with spaces
             .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search for Assignee
             .eq("\"Modified on\"", formattedDate); // Exact match for the date
