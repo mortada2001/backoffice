@@ -80,15 +80,15 @@
             <input type="text" id="employee" placeholder="Type employee name">
         </div>
         <div class="form-group">
-            <label for="date">Enter Date (YYYY-MM-DD):</label>
-            <input type="text" id="date" placeholder="Enter date in YYYY-MM-DD format">
+            <label for="date">Select Date:</label>
+            <input type="date" id="date"> <!-- Date picker input -->
         </div>
         <button id="show-case">Show Case</button>
         <div id="result"></div>
     </div>
 
     <script>
-    document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co"; 
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -100,62 +100,43 @@
 
     showCaseButton.addEventListener("click", async () => {
         const selectedEmployee = employeeInput.value.trim();
-        let selectedDate = dateInput.value.trim();
+        const selectedDate = dateInput.value; // Get the selected date from the date picker
 
         if (!selectedEmployee || !selectedDate) {
-            resultDiv.innerHTML = "⚠️ Please enter an employee name and date!";
+            resultDiv.innerHTML = "⚠️ Please enter an employee name and select a date!";
             return;
         }
 
-        console.log("🚀 Fetching data for employee:", selectedEmployee, "on date:", selectedDate);
+        console.log("Fetching data for employee:", selectedEmployee, "on date:", selectedDate);
 
-        // 🛠️ Debugging: Print the exact query format
-        console.log(`🛠️ Running Query: 
-        SELECT "number", "assignee", "modified_on" FROM quality 
-        WHERE "assignee" ILIKE '%${selectedEmployee}%' 
-        AND "modified_on" = '${selectedDate}';
-        `);
-
-
-        console.log("📢 Sending Request to Supabase...");
-
+        // Fetch data from Supabase based on employee name and date
         let { data, error } = await supabase
             .from("quality")
-            .select("number, assignee, modified_on")  // 🔥 New column names
-            .ilike("assignee", `%${selectedEmployee}%`)  // Fix wildcard issue
-            .eq("modified_on::date", selectedDate); // Force cast to DATE
+            .select("number, assignee, modified_on")
+            .ilike("assignee", `%${selectedEmployee}%`)
+            .eq("modified_on", selectedDate); // Match the exact date
 
-
-        console.log("🟢 Supabase Response:", data);
-        console.log("🔴 Supabase Error:", error);
-        console.log("📌 Checking values before request:");
-        console.log("📌 Employee:", selectedEmployee);
-        console.log("📌 Date:", selectedDate);
-        console.log("🔍 Full Supabase Response:", JSON.stringify(data, null, 2));
-        console.log("⚠️ Supabase Error:", error);
-        console.log("📌 Checking values before request:");
-        console.log("📌 Employee:", JSON.stringify(selectedEmployee));
-        console.log("📌 Date:", JSON.stringify(selectedDate));
-
+        // Log the data and error for debugging
+        console.log("Supabase response:", data);
+        console.log("Supabase error:", error);
 
         if (error) {
-            console.error("❌ Error fetching cases:", error);
+            console.error("Error fetching cases:", error);
             resultDiv.innerHTML = "❌ Error fetching data!";
             return;
         }
 
         if (data.length === 0) {
-            console.log("ℹ️ No matching cases found in the database.");
+            console.log("No matching cases found in the database.");
             resultDiv.innerHTML = "ℹ️ No cases found for this selection.";
             return;
         }
 
         // Pick a random case from the fetched data
         const randomCase = data[Math.floor(Math.random() * data.length)];
-        resultDiv.innerHTML = `✅ Ticket Number: <strong>${randomCase["number"]}</strong>`;
+        resultDiv.innerHTML = `✅ Ticket Number: <strong>${randomCase.number}</strong>`;
     });
 });
-
     </script>
 </body>
 </html>
