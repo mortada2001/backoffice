@@ -124,7 +124,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             .from("quality")
             .select("Number, Assignee, \"Modified on\"") // Use double quotes for column names with spaces
             .ilike("Assignee", `%${selectedEmployee}%`) // Case-insensitive search for Assignee
-            .eq("\"Modified on\"", formattedDate); // Exact match for the date
+            .eq("Modified on", formattedDate);
+
 
         // Log the data and error for debugging
         console.log("Supabase response:", data);
