@@ -49,6 +49,10 @@
             border-radius: 5px;
         }
 
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+        }
+
         button {
             background-color: #007acc;
             color: white;
@@ -74,14 +78,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>Mohammed  Quality Control</h1>
+        <h1>Mohammed Quality Control</h1>
         <div class="form-group">
             <label for="employee">Enter Employee Name:</label>
             <input type="text" id="employee" placeholder="Type employee name">
         </div>
         <div class="form-group">
-            <label for="date">Enter Date (YYYY-MM-DD):</label>
-            <input type="text" id="date" placeholder="Enter date in YYYY-MM-DD format">
+            <label for="date">Select Date:</label>
+            <input type="date" id="date">
         </div>
         <button id="show-case">Show Case</button>
         <div id="result"></div>
@@ -100,17 +104,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     showCaseButton.addEventListener("click", async () => {
         const selectedEmployee = employeeInput.value.trim();
-        const selectedDate = dateInput.value.trim();
+        const selectedDate = dateInput.value;
 
         if (!selectedEmployee || !selectedDate) {
-            resultDiv.innerHTML = "⚠️ Please enter an employee name and date!";
-            return;
-        }
-
-        // Validate date format
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-        if (!dateRegex.test(selectedDate)) {
-            resultDiv.innerHTML = "⚠️ Please enter a valid date in YYYY-MM-DD format!";
+            resultDiv.innerHTML = "⚠️ Please enter an employee name and select a date!";
             return;
         }
 
