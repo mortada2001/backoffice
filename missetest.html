@@ -136,7 +136,7 @@
             cursor: pointer;
         }
 
-.home-button:hover {
+        .home-button:hover {
             background: white;
             color: var(--background);
             transform: scale(1.1);
@@ -263,9 +263,9 @@
                     this.markers.refreshClusters();
                 }
 
-// تحديث حجم النص على العلامات
+                // تحديث حجم النص على العلامات
                 document.querySelectorAll('.pole-label span').forEach(el => {
-                    el.style.fontSize = ${Math.max(12, zoomLevel * 1.2)}px;
+                    el.style.fontSize = `${Math.max(12, zoomLevel * 1.2)}px`;
                 });
             }
 
@@ -308,7 +308,7 @@
                             const center = layer.getBounds().getCenter();
                             const label = L.divIcon({
                                 className: 'zone-label',
-                                html: <span style="color: black; font-weight: bold; font-size: 12px;">${feature.properties.Zone_ID}</span>,
+                                html: `<span style="color: black; font-weight: bold; font-size: 12px;">${feature.properties.Zone_ID}</span>`,
                                 iconSize: [50, 20],
                                 iconAnchor: [25, 10]
                             });
@@ -325,7 +325,7 @@
                 this.map.on('zoomend', () => {
                     const zoomLevel = this.map.getZoom();
                     document.querySelectorAll('.zone-label span').forEach(el => {
-                        el.style.fontSize = ${Math.max(12, zoomLevel * 1.2)}px;
+                        el.style.fontSize = `${Math.max(12, zoomLevel * 1.2)}px`;
                     });
                 });
             }
@@ -346,7 +346,7 @@
                         return L.marker(latlng, {
                             icon: L.divIcon({
                                 className: 'pole-label',
-                                html: <span style="color: black; font-weight: bold;">FAT${feature.properties.Pole_No || 'N/A'}</span>,
+                                html: `<span style="color: black; font-weight: bold;">FAT${feature.properties.Pole_No || 'N/A'}</span>`,
                                 iconSize: [60, 20],
                                 iconAnchor: [30, 10]
                             })
@@ -361,8 +361,7 @@
                 const input = document.getElementById('coordinates').value.trim();
                 const coords = input.split(/[\s,]+/).map(Number);
 
-Misse, [2/20/2025 6:31 AM]
-if (coords.length !== 2 || coords.some(isNaN)) {
+                if (coords.length !== 2 || coords.some(isNaN)) {
                     this.showError('صيغة إحداثيات غير صحيحة! مثال: 33.2625977,44.4070566');
                     return;
                 }
@@ -374,7 +373,7 @@ if (coords.length !== 2 || coords.some(isNaN)) {
 
                 L.marker(coords)
                     .addTo(this.map)
-                    .bindPopup(<b>Target location</b><br>latitude: ${coords[0]}<br>longitude: ${coords[1]})
+                    .bindPopup(`<b>Target location</b><br>latitude: ${coords[0]}<br>longitude: ${coords[1]}`)
                     .openPopup();
             }
 
@@ -413,3 +412,4 @@ if (coords.length !== 2 || coords.some(isNaN)) {
     </script>
 </body>
 </html>
+
