@@ -317,31 +317,31 @@
     });
 }
 
-            processPoles(data) {
-                if (!this.markers) {
-                    this.markers = L.markerClusterGroup({
-                        chunkedLoading: true,
-                        chunkInterval: 150,
-                        spiderfyOnMaxZoom: true,
-                        maxClusterRadius: 40
-                    });
-                }
+          processPoles(data) {
+    if (!this.markers) {
+        this.markers = L.markerClusterGroup({
+            chunkedLoading: true,
+            chunkInterval: 150,
+            spiderfyOnMaxZoom: true, // تفعيل هذه الخاصية
+            maxClusterRadius: 40
+        });
+    }
 
-                L.geoJSON(data, {
-                    pointToLayer: (feature, latlng) => {
-                        return L.marker(latlng, {
-                            icon: L.divIcon({
-                                className: 'pole-label',
-                html: `<span style="color: black; font-weight: bold;">${feature.properties.Pole_No || 'N/A'}</span>`,
-                                iconSize: [60, 20],
-                                iconAnchor: [30, 10]
-                            })
-                        }).bindPopup(`<b>FAT${feature.properties.Pole_No}</b>`);
-                    }
-                }).eachLayer(layer => this.markers.addLayer(layer));
+    L.geoJSON(data, {
+        pointToLayer: (feature, latlng) => {
+            return L.marker(latlng, {
+                icon: L.divIcon({
+                    className: 'pole-label',
+                    html: `<span style="color: black; font-weight: bold;">${feature.properties.Pole_No || 'N/A'}</span>`,
+                    iconSize: [60, 20],
+                    iconAnchor: [30, 10]
+                })
+            }).bindPopup(`<b>FAT${feature.properties.Pole_No}</b>`);
+        }
+    }).eachLayer(layer => this.markers.addLayer(layer));
 
-                this.map.addLayer(this.markers);
-            }
+    this.map.addLayer(this.markers);
+}
 
             handleNavigation() {
                 const input = document.getElementById('coordinates').value.trim();
