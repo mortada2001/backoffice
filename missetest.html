@@ -238,6 +238,7 @@
     class EnhancedMap {
       constructor() {
         this.map = null;
+        // استخدام markerClusterGroup لتجميع العلامات عند التكبير/التصغير
         this.markers = null;
         this.dataCache = new Map();
         this.init();
@@ -276,6 +277,7 @@
 
       handleZoom() {
         const zoomLevel = this.map.getZoom();
+        // عند التكبير فوق مستوى 18 نقوم بتحديث أيقونات FAT لتضمين دنبوس التحديد
         if (zoomLevel > 18 && this.markers) {
           this.markers.eachLayer(marker => {
             marker.setIcon(L.divIcon({
@@ -286,6 +288,7 @@
             }));
           });
         } else if (this.markers) {
+          // عند تقليل التكبير نعيد الأيقونات الأصلية
           this.markers.eachLayer(marker => {
             marker.setIcon(L.divIcon({
               className: 'pole-label',
@@ -295,7 +298,7 @@
             }));
           });
         }
-        // تحديث حجم النص على العلامات
+        // تحديث حجم النص على العلامات (مثال)
         document.querySelectorAll('.pole-label span').forEach(el => {
           el.style.fontSize = `${Math.max(12, zoomLevel * 1.2)}px`;
         });
@@ -303,12 +306,9 @@
 
       async loadInitialData() {
         await Promise.all([
-          // تحميل الـZones
           this.loadLayer('zones.geojson', this.processZones),
-          // تحميل ملف واحد فقط من ملفات الأعمدة (لتجنب التكرار)
           this.loadLayer('pole.geojson', this.processPoles),
-          // إذا تأكدت أن polesA.geojson مكرر، لا تحمله
-          // this.loadLayer('polesA.geojson', this.processPoles)
+          this.loadLayer('polesA.geojson', this.processPoles)
         ]);
       }
 
@@ -352,6 +352,7 @@
         }).addTo(this.map);
         this.map.addLayer(zoneLabels);
 
+        // تحديث حجم الخط عند التكبير
         this.map.on('zoomend', () => {
           const zoomLevel = this.map.getZoom();
           document.querySelectorAll('.zone-label span').forEach(el => {
@@ -381,6 +382,7 @@
                 iconAnchor: [30, 10]
               })
             });
+            // تخزين رقم العمود في الخاصية الخاصة بالعلامة
             marker.poleNumber = poleNo;
             return marker;
           }
@@ -434,7 +436,7 @@
       }
     }
 
-    // بدء التطبيق
+    // بدء التطبيق عند تحميل صفحة DOM
     document.addEventListener('DOMContentLoaded', () => new EnhancedMap());
   </script>
 </body>
