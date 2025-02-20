@@ -135,11 +135,11 @@
             <div class="big-box">
               <div class="form-group">
                     <label for="field7">Ticket number:</label>
-                    <input type="text" id="field7">
+                    <input type="text" id="field7_ticket">
                 </div>
                 <div class="form-group">
                     <label for="field7">Assignee:</label>
-                    <input type="text" id="field7">
+                    <input type="text" id="field7_assignee">
                 </div>
                 <div class="form-group row-input">
                     <label for="field1">Answer Ending:</label>
@@ -207,8 +207,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const evaluateButton = document.getElementById("evaluate");
 
     evaluateButton.addEventListener("click", async () => {
-        const ticketNumber = document.getElementById("field7").value.trim();
-        const assignee = document.getElementById("field7").value.trim();
+        const ticketNumber = document.getElementById("field7_ticket").value.trim();
+        const assignee = document.getElementById("field7_assignee").value.trim();
         const answerEnding = document.getElementById("field1").value.trim();
         const answerEndingScore = document.getElementById("field1_score").value.trim();
         const caseText = document.getElementById("field2").value.trim();
@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const inquiriesScore = document.getElementById("field5_score").value.trim();
         const problemSolve = document.getElementById("field6").value.trim();
         const problemSolveScore = document.getElementById("field6_score").value.trim();
-        const finalComment = document.getElementById("field7").value.trim();
+        const finalComment = document.getElementById("field7_comment").value.trim();
         const evaluationID = document.getElementById("field8").value.trim();
         const finalScore = document.getElementById("field9").value.trim();
 
@@ -251,6 +251,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let { error: updateError } = await supabase
             .from("qualitydone")
             .update({
+                assignee: assignee,
                 answer_ending: answerEnding,
                 answer_ending_score: answerEndingScore,
                 case: caseText,
