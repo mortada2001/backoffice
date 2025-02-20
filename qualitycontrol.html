@@ -199,6 +199,80 @@ document.addEventListener("DOMContentLoaded", async () => {
     const showCaseButton = document.getElementById("show-case");
     const resultDiv = document.getElementById("result");
 
+
+
+
+const ticketNumberInput = document.getElementById("ticket_number");
+    const assigneeInput = document.getElementById("assignee");
+    const answerEndingInput = document.getElementById("field1");
+    const answerEndingScoreInput = document.getElementById("field1_score");
+    const evaluateButton = document.getElementById("evaluate");
+
+    let foundRowId = null; // To store the row ID of the found entry
+
+    async function searchTicket() {
+        const ticketNumber = ticketNumberInput.value.trim();
+        const assignee = assigneeInput.value.trim();
+
+        if (!ticketNumber || !assignee) {
+            alert("Please enter both Ticket Number and Assignee.");
+            return;
+        }
+
+        // Search for a row that matches both ticket number and assignee
+        let { data, error } = await supabase
+            .from("qualitydone")
+            .select("*")
+            .eq("number", ticketNumber)
+            .eq("assignee", assignee)
+            .single(); // Expecting one match
+
+        if (error || !data) {
+            alert("No matching case found.");
+            console.error("Error fetching data:", error);
+            foundRowId = null;
+            return;
+        }
+
+        console.log("Found matching row:", data);
+        foundRowId = data.id; // Store the row ID for updating
+
+        // Optionally, populate fields with existing data (if needed)
+        answerEndingInput.value = data.answe_ending || "";
+        answerEndingScoreInput.value = data.answe_ending_score || "";
+    }
+
+    evaluateButton.addEventListener("click", async () => {
+        if (!foundRowId) {
+            alert("No matching case selected. Please search first.");
+            return;
+        }
+
+        const updatedAnswerEnding = answerEndingInput.value.trim();
+        const updatedAnswerEndingScore = answerEndingScoreInput.value.trim();
+
+        let { error } = await supabase
+            .from("qualitydone")
+            .update({
+                answe_ending: updatedAnswerEnding,
+                answe_ending_score: updatedAnswerEndingScore
+            })
+            .eq("id", foundRowId);
+
+        if (error) {
+            alert("Error updating the record.");
+            console.error("Update error:", error);
+            return;
+        }
+
+        alert("Case updated successfully!");
+    });
+
+    // Call searchTicket when clicking the evaluate button
+    evaluateButton.addEventListener("click", searchTicket);
+});
+
+
     showCaseButton.addEventListener("click", async () => {
         const selectedEmployee = employeeInput.value.trim();
         const selectedDate = dateInput.value; // Get the selected date from the date picker
