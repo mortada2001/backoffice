@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Fetch data from Supabase based on employee name and date
         let { data, error } = await supabase
             .from("quality")
-            .select("number, assignee, modified_on")
+            .select("number, assignee, modified_on, modified_by") // Select all required columns
             .ilike("assignee", `%${selectedEmployee}%`)
             .eq("modified_on", selectedDate); // Match the exact date
 
@@ -135,6 +135,33 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Pick a random case from the fetched data
         const randomCase = data[Math.floor(Math.random() * data.length)];
         resultDiv.innerHTML = `✅ Ticket Number: <strong>${randomCase.number}</strong>`;
+
+        // Move the case to the "qualitydone" table
+        const { error: moveError } = await supabase
+            .from("qualitydone")
+            .insert([randomCase]); // Insert the entire row into "qualitydone"
+
+        if (moveError) {
+            console.error("Error moving case to qualitydone:", moveError);
+            resultDiv.innerHTML += "<br>❌ Error moving case to completed tasks!";
+            return;
+        }
+
+        console.log("Case moved to qualitydone:", randomCase.number);
+
+        // Optionally, delete the case from the "quality" table
+        const { error: deleteError } = await supabase
+            .from("quality")
+            .delete()
+            .eq("number", randomCase.number); // Delete the case by its number
+
+        if (deleteError) {
+            console.error("Error deleting case from quality:", deleteError);
+            resultDiv.innerHTML += "<br>❌ Error removing case from active tasks!";
+            return;
+        }
+
+        console.log("Case deleted from quality:", randomCase.number);
     });
 });
     </script>
