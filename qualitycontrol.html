@@ -207,78 +207,77 @@ document.addEventListener("DOMContentLoaded", async () => {
     const evaluateButton = document.getElementById("evaluate");
 
     evaluateButton.addEventListener("click", async () => {
-        const ticketNumber = document.getElementById("field7_ticket").value.trim();
-        const assignee = document.getElementById("field7_assignee").value.trim();
-        const answerEnding = document.getElementById("field1").value.trim();
-        const answerEndingScore = document.getElementById("field1_score").value.trim();
-        const caseText = document.getElementById("field2").value.trim();
-        const caseScore = document.getElementById("field2_score").value.trim();
-        const communicationSkills = document.getElementById("field3").value.trim();
-        const communicationSkillsScore = document.getElementById("field3_score").value.trim();
-        const diagnosis = document.getElementById("field4").value.trim();
-        const diagnosisScore = document.getElementById("field4_score").value.trim();
-        const inquiries = document.getElementById("field5").value.trim();
-        const inquiriesScore = document.getElementById("field5_score").value.trim();
-        const problemSolve = document.getElementById("field6").value.trim();
-        const problemSolveScore = document.getElementById("field6_score").value.trim();
-        const finalComment = document.getElementById("field7_comment").value.trim();
-        const evaluationID = document.getElementById("field8").value.trim();
-        const finalScore = document.getElementById("field9").value.trim();
+    const ticketNumber = document.getElementById("field7_ticket").value.trim();
+    const assignee = document.getElementById("field7_assignee").value.trim();
+    const answerEnding = document.getElementById("field1").value.trim();
+    const answerEndingScore = document.getElementById("field1_score").value.trim();
+    const caseText = document.getElementById("field2").value.trim();
+    const caseScore = document.getElementById("field2_score").value.trim();
+    const communicationSkills = document.getElementById("field3").value.trim();
+    const communicationSkillsScore = document.getElementById("field3_score").value.trim();
+    const diagnosis = document.getElementById("field4").value.trim();
+    const diagnosisScore = document.getElementById("field4_score").value.trim();
+    const inquiries = document.getElementById("field5").value.trim();
+    const inquiriesScore = document.getElementById("field5_score").value.trim();
+    const problemSolve = document.getElementById("field6").value.trim();
+    const problemSolveScore = document.getElementById("field6_score").value.trim();
+    const finalComment = document.getElementById("field7").value.trim(); // FIXED ID REFERENCE
+    const evaluationID = document.getElementById("field8").value.trim();
+    const finalScore = document.getElementById("field9").value.trim();
 
-        if (!ticketNumber) {
-            alert("⚠️ Please enter a Ticket Number before evaluating!");
-            return;
-        }
+    if (!ticketNumber) {
+        alert("⚠️ Please enter a Ticket Number before evaluating!");
+        return;
+    }
 
-        // Search for the ticket in `qualitydone`
-        let { data, error } = await supabase
-            .from("qualitydone")
-            .select("*")
-            .eq("number", ticketNumber);
+    // Search for the ticket in `qualitydone`
+    let { data, error } = await supabase
+        .from("qualitydone")
+        .select("*")
+        .eq("number", ticketNumber);
 
-        if (error) {
-            console.error("Error searching for ticket:", error);
-            alert("❌ Error searching for ticket!");
-            return;
-        }
+    if (error) {
+        console.error("Error searching for ticket:", error);
+        alert("❌ Error searching for ticket!");
+        return;
+    }
 
-        if (data.length === 0) {
-            alert("⚠️ No matching ticket number found in qualitydone.");
-            return;
-        }
+    if (data.length === 0) {
+        alert("⚠️ No matching ticket number found in qualitydone.");
+        return;
+    }
 
-        // Update the matching record in `qualitydone`
-        let { error: updateError } = await supabase
-            .from("qualitydone")
-            .update({
-                assignee: assignee,
-                answer_ending: answerEnding,
-                answer_ending_score: answerEndingScore,
-                case: caseText,
-                case_score: caseScore,
-                communication_skills: communicationSkills,
-                communication_skills_score: communicationSkillsScore,
-                diagnosis: diagnosis,
-                diagnosis_score: diagnosisScore,
-                inquiries: inquiries,
-                inquiries_score: inquiriesScore,
-                problem_solve: problemSolve,
-                problem_solve_score: problemSolveScore,
-                final_comment: finalComment,
-                evaliuation_id: evaluationID,
-                final_score: finalScore
-            })
-            .eq("number", ticketNumber);
+    // Update the matching record in `qualitydone`
+    let { error: updateError } = await supabase
+        .from("qualitydone")
+        .update({
+            assignee: assignee,
+            answe_ending: answerEnding,  // Ensure the field name matches Supabase
+            answe_ending_score: answerEndingScore,
+            case: caseText,
+            case_score: caseScore,
+            communication_skills: communicationSkills,
+            communication_skills_score: communicationSkillsScore,
+            diagnosis: diagnosis,
+            diagnosis_score: diagnosisScore,
+            inquiries: inquiries,
+            inquiries_score: inquiriesScore,
+            problem_solve: problemSolve,
+            problem_solve_score: problemSolveScore,
+            final_comment: finalComment,
+            evaliuation_id: evaluationID,
+            final_score: finalScore
+        })
+        .eq("number", ticketNumber);
 
-        if (updateError) {
-            console.error("Error updating ticket:", updateError);
-            alert("❌ Error updating ticket!");
-            return;
-        }
+    if (updateError) {
+        console.error("Error updating ticket:", updateError);
+        alert("❌ Error updating ticket!");
+        return;
+    }
 
-        alert("✅ Ticket evaluation successfully updated!");
-    });
-});
+    alert("✅ Ticket updated successfully!");
+}); // Ensure this closing brace exists
 
 
 
