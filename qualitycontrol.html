@@ -225,8 +225,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const evaluationID = document.getElementById("field8").value.trim();
     const finalScore = document.getElementById("field9").value.trim();
 
-    if (!ticketNumber) {
-        alert("⚠️ Please enter a Ticket Number before evaluating!");
+    if (!ticketNumber || !assignee) {
+        alert("⚠️ Please enter both Ticket Number and Assignee before evaluating!");
         return;
     }
 
@@ -234,7 +234,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     let { data, error } = await supabase
         .from("qualitydone")
         .select("*")
-        .eq("number", ticketNumber);
+        .eq("number", ticketNumber)
+        .eq("assignee", assignee);
 
     if (error) {
         console.error("Error searching for ticket:", error);
@@ -243,16 +244,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (data.length === 0) {
-        alert("⚠️ No matching ticket number found in qualitydone.");
+        alert("⚠️ No matching record found with this Ticket Number and Assignee.");
         return;
     }
 
-    // Update the matching record in `qualitydone`
+    // Update the exact matching record in `qualitydone`
     let { error: updateError } = await supabase
         .from("qualitydone")
         .update({
-            assignee: assignee,
-            answer_ending: answerEnding,  // Ensure the field name matches Supabase
+            answer_ending: answerEnding,  
             answer_ending_score: answerEndingScore,
             case: caseText,
             case_score: caseScore,
@@ -268,7 +268,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             evaliuation_id: evaluationID,
             final_score: finalScore
         })
-        .eq("number", ticketNumber);
+        .eq("number", ticketNumber)
+        .eq("assignee", assignee);
 
     if (updateError) {
         console.error("Error updating ticket:", updateError);
@@ -276,8 +277,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    alert("✅ Ticket updated successfully!");
-}); // Ensure this closing brace exists
+    alert("✅ Ticket successfully updated!");
+});
 
 
 
