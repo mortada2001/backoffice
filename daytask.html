@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,8 +57,7 @@
             font-weight: 600;
         }
         
-        .input-group input,
-        .input-group datalist {
+        .input-group input {
             width: 100%;
             padding: 12px 15px;
             border: 1px solid #30363D;
@@ -80,17 +79,23 @@
         }
         
         .date-wrapper input[type="date"] {
-            padding-left: 40px;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid #30363D;
+            border-radius: 6px;
+            background-color: #0D1117;
+            color: #C9D1D9;
+            font-size: 16px;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-2 .89-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V6c0-1.11-.89-2-2-2zm0 16H5V9h14v11zm0-13H5V6h14v1z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: 10px center;
+            background-size: 20px;
         }
         
-        .date-wrapper span {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #8B949E;
-            pointer-events: none;
-            font-size: 18px;
+        .date-wrapper input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0;
+            cursor: pointer;
         }
         
         button {
@@ -131,14 +136,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>Daily Tasks Viewer</h1>
+        <h1>Employee Task Viewer</h1>
         
         <div class="input-group">
-            <label for="employee">Search for Employee:</label>
+            <label for="employee">Employee Name:</label>
             <input type="text" list="employeesList" id="employee" 
-                   placeholder="Type employee name..." autocomplete="off">
+                   placeholder="Start typing employee name..." autocomplete="off">
             <datalist id="employeesList">
-                <option value="">-- Select Name --</option>
+                <option value="">-- Select Employee --</option>
             </datalist>
         </div>
         
@@ -146,76 +151,65 @@
             <label for="date">Select Date:</label>
             <div class="date-wrapper">
                 <input type="date" id="date" required min="2020-01-01" max="2030-12-31">
-                <span>📅</span>
             </div>
         </div>
         
-        <button onclick="fetchTask()">View Task</button>
+        <button onclick="fetchTask()">Show Task</button>
         
         <div id="result"></div>
     </div>
     
-      <script>
-        // تصحيح الرابط وإضافة التخويل
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzR_otRqvBc6vb93FC5fb4fet4xXovT0HkSbgGh9uJPAti1es_OPTyqux-iUGf7Yvw/exec";
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbzR_otRqvBc6vb93FC5fb4fet4xXovT0HkSbgGh9uJPAti1es_OPTyqux-iUGf7Yvw/exec";
 
-        // تصحيح جلب الموظفين
-        window.onload = async function() {
+        // Load employee list on startup
+        window.addEventListener('load', async () => {
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=getEmployees`);
-                if (!response.ok) throw new Error('Failed to fetch data');
+                const response = await fetch(`${API_URL}?action=getEmployees`);
                 const employees = await response.json();
-                
                 const datalist = document.getElementById('employeesList');
-                employees.forEach(emp => {
+                
+                employees.forEach(employee => {
                     const option = document.createElement('option');
-                    option.value = emp;
+                    option.value = employee;
                     datalist.appendChild(option);
                 });
             } catch (error) {
-                console.error("Error:", error);
                 document.getElementById('result').innerHTML = 
-                    "<span style='color: #FF7B72'>Error loading employee list</span>";
+                    `<span style="color: #FF7B72">Error loading employee data</span>`;
             }
-        };
+        });
 
-        // تصحيح جلب المهام مع إدارة الأخطاء
+        // Fetch task details
         async function fetchTask() {
-            const employee = document.getElementById('employee').value;
-            const date = document.getElementById('date').value;
+            const employeeInput = document.getElementById('employee').value;
+            const dateInput = document.getElementById('date').value;
             const resultDiv = document.getElementById('result');
 
             try {
-                resultDiv.innerHTML = "<span style='color: #8B949E'>Searching...</span>";
+                resultDiv.innerHTML = `<span style="color: #8B949E">Searching...</span>`;
                 
                 const response = await fetch(
-                    `${SCRIPT_URL}?action=getTask&employee=${encodeURIComponent(employee)}&date=${date}`,
+                    `${API_URL}?action=getTask&employee=${encodeURIComponent(employeeInput)}&date=${dateInput}`,
                     { redirect: 'follow' }
                 );
                 
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const taskData = await response.text();
                 
-                const task = await response.text();
-                
-                // معالجة الحالات المختلفة
-                if (task === "No task found") {
-                    resultDiv.innerHTML = "<span style='color: #8B949E'>No tasks found for selected criteria</span>";
-                } else if (task) {
+                if (taskData === "No task found") {
+                    resultDiv.innerHTML = `<span style="color: #8B949E">No tasks scheduled for this date</span>`;
+                } else {
                     resultDiv.innerHTML = `
                         <div style="border-bottom: 1px solid #30363D; padding-bottom: 10px; margin-bottom: 15px;">
                             <span style="color: #58A6FF">Task Details:</span>
                         </div>
-                        <div style="white-space: pre-wrap">${task}</div>
+                        <div style="white-space: pre-wrap">${taskData}</div>
                     `;
-                } else {
-                    resultDiv.innerHTML = "<span style='color: #FF7B72'>Invalid response format</span>";
                 }
             } catch (error) {
-                console.error("Fetch Error:", error);
                 resultDiv.innerHTML = `
-                    <span style='color: #FF7B72'>
-                        Error: ${error.message}<br>
-                        Check console for details
+                    <span style="color: #FF7B72">
+                        Error retrieving data: ${error.message}
                     </span>
                 `;
             }
