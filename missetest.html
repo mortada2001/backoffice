@@ -251,10 +251,18 @@
                 L.control.zoom({ position: 'topright' }).addTo(this.map);
             }
 
-            setupEventListeners() {
-                document.getElementById('navigate-btn').addEventListener('click', () => this.handleNavigation());
-                this.map.on('zoomend', () => this.handleZoom());
-            }
+           setupEventListeners() {
+    document.getElementById('navigate-btn').addEventListener('click', () => this.handleNavigation());
+    this.map.on('zoomend', () => this.handleZoom());
+}
+
+handleZoom() {
+    const zoomLevel = this.map.getZoom();
+    if (zoomLevel > 18) {
+        this.markers.options.disableClusteringAtZoom = zoomLevel; // تعطيل التجميع عند مستوى تكبير عالي
+        this.markers.refreshClusters(); // تحديث العلامات
+    }
+}
 
             async loadInitialData() {
                 await Promise.all([
