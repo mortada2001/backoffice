@@ -5,127 +5,173 @@
     <title>عرض المهام اليومية</title>
     <style>
         body {
-    background-color: #0D1117 !important; /* Dark background */
-    color: #FFFFFF;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-}
-        h1 {
-            color: #333;
+            background-color: #0D1117;
+            color: #FFFFFF;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
         }
+        
+        .container {
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #161B22;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            margin-top: 30px;
+        }
+
+        h1 {
+            color: #58A6FF;
+            margin-bottom: 30px;
+        }
+
         .input-group {
             margin: 20px 0;
+            text-align: right;
         }
+
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
+            margin-bottom: 10px;
+            color: #8B949E;
+            font-size: 18px;
         }
-        select, input[type="date"] {
+
+        input, datalist {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 12px;
+            border: 1px solid #30363D;
+            border-radius: 6px;
+            background-color: #0D1117;
+            color: #C9D1D9;
             font-size: 16px;
+            margin: 8px 0;
         }
+
+        input:focus {
+            outline: none;
+            border-color: #1F6FEB;
+            box-shadow: 0 0 0 3px rgba(31,111,235,0.3);
+        }
+
         button {
-            display: block;
             width: 100%;
-            padding: 10px;
-            background-color: #28a745;
+            padding: 15px;
+            background-color: #238636;
             color: white;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        #result {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #fff;
+            border-radius: 6px;
             font-size: 18px;
-            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #2EA043;
+        }
+
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 6px;
+            background-color: #161B22;
+            color: #C9D1D9;
+            font-size: 18px;
+            line-height: 1.6;
+            min-height: 80px;
         }
     </style>
 </head>
 <body>
-    <h1>عرض المهام اليومية</h1>
-    
-    <div class="input-group">
-        <label for="employee">اختر اسم الموظف:</label>
-        <select id="employee">
-            <option value="">-- اختر اسم --</option>
-        </select>
-    </div>
+    <div class="container">
+        <h1>عرض المهام اليومية</h1>
+        
+        <div class="input-group">
+            <label for="employee">ابحث عن الموظف:</label>
+            <input type="text" list="employeesList" id="employee" 
+                   placeholder="اكتب اسم الموظف..." autocomplete="off">
+            <datalist id="employeesList">
+                <option value="">-- اختر اسم --</option>
+            </datalist>
+        </div>
 
-    <div class="input-group">
-        <label for="date">اختر التاريخ:</label>
-        <input type="date" id="date" required>
-    </div>
+        <div class="input-group">
+            <label for="date">اختر التاريخ:</label>
+            <input type="date" id="date" required>
+        </div>
 
-    <button onclick="fetchTask()">عرض المهمة</button>
-    
-    <div id="result"></div>
+        <button onclick="fetchTask()">عرض المهمة</button>
+        
+        <div id="result"></div>
+    </div>
 
     <script>
-        // رابط نشر الويب آب من Google Script
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxbVFYvXhN54SMepBP-OrWussxR2vjgXUoUx_03Ju7mr38jUiROzBdOVBdVHsAGKP1_/exec";
 
-        // جلب أسماء الموظفين عند تحميل الصفحة
-     // التعديل في جزء جلب البيانات
-window.onload = async function() {
-  try {
-    const response = await fetch(`${SCRIPT_URL}?action=getEmployees`);
-    if (!response.ok) throw new Error('فشل الجلب');
-    const employees = await response.json();
-    
-    const select = document.getElementById('employee');
-    employees.forEach(emp => {
-      const option = document.createElement('option');
-      option.value = emp;
-      option.textContent = emp;
-      select.appendChild(option);
-    });
-  } catch (error) {
-    console.error("Error:", error);
-    document.getElementById('result').innerHTML = "خطأ في جلب البيانات";
-  }
-}
-        
+        // جلب أسماء الموظفين وتعبئة الـ datalist
+        window.onload = async function() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getEmployees`);
+                if (!response.ok) throw new Error('فشل في جلب البيانات');
+                const employees = await response.json();
+                
+                const datalist = document.getElementById('employeesList');
+                employees.forEach(emp => {
+                    const option = document.createElement('option');
+                    option.value = emp;
+                    option.textContent = emp;
+                    datalist.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('result').innerHTML = 
+                    "<span style='color: #FF7B72'>خطأ في تحميل قائمة الموظفين</span>";
+            }
+        }
 
-        // دالة جلب المهمة
+        // دالة جلب المهمة مع تحسينات
         async function fetchTask() {
             const employee = document.getElementById('employee').value;
             const date = document.getElementById('date').value;
             const resultDiv = document.getElementById('result');
 
             if(!employee || !date) {
-                resultDiv.innerHTML = "<span style='color: red;'>الرجاء اختيار الموظف والتاريخ</span>";
+                resultDiv.innerHTML = "<span style='color: #FF7B72'>الرجاء إدخال جميع البيانات المطلوبة</span>";
                 return;
             }
 
             try {
+                resultDiv.innerHTML = "<span style='color: #8B949E'>جاري البحث...</span>";
+                
                 const response = await fetch(`${SCRIPT_URL}?action=getTask&employee=${encodeURIComponent(employee)}&date=${date}`);
+                
+                if (!response.ok) throw new Error('فشل في جلب المهمة');
+                
                 const task = await response.text();
                 
                 if (task) {
-                    resultDiv.innerHTML = `<strong>المهمة:</strong> ${task}`;
+                    resultDiv.innerHTML = `
+                        <div style="border-bottom: 1px solid #30363D; padding-bottom: 10px; margin-bottom: 15px;">
+                            <span style="color: #58A6FF">المهمة:</span>
+                        </div>
+                        <div style="white-space: pre-wrap">${task}</div>
+                    `;
                 } else {
-                    resultDiv.innerHTML = "<span style='color: #888;'>لا توجد مهام مسجلة لهذا اليوم</span>";
+                    resultDiv.innerHTML = "<span style='color: #8B949E'>لا توجد مهام مسجلة لهذا اليوم</span>";
                 }
             } catch (error) {
-                resultDiv.innerHTML = "<span style='color: red;'>حدث خطأ أثناء جلب البيانات</span>";
-                console.error("حدث خطأ:", error);
+                console.error("Error:", error);
+                resultDiv.innerHTML = `
+                    <span style='color: #FF7B72'>
+                        حدث خطأ أثناء جلب البيانات: ${error.message}
+                    </span>
+                `;
             }
         }
     </script>
