@@ -361,8 +361,8 @@
         return;
     }
 
-    let zoneName = "غير معروف"; // افتراضيًا لا توجد منطقة
-
+    let zoneName = "unknown"; // افتراضيًا لا توجد منطقة
+             
     // التحقق مما إذا كانت بيانات المناطق قد تم تحميلها
     if (this.zoneData && this.zoneData.length > 0) {
         for (const zone of this.zoneData) {
@@ -377,7 +377,7 @@
 
     L.marker(coords)
         .addTo(this.map)
-        .bindPopup(`<b>Target location</b><br>📍 width : ${coords[0]}<br>📍height : ${coords[1]}<br>📌 zone : <b>${zoneName}</b>`)
+        .bindPopup(`<b>Target location</b><br>📍 latitude : ${coords[0]}<br>📍longitude : ${coords[1]}<br>📌 zone : <b>${zoneName}</b>`)
         .openPopup();
 }
 
