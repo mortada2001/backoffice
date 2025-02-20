@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini QGIS</title>
-
+    
+    <!-- تحميل مسبق للموارد الأساسية -->
+    <link rel="preload" href="https://unpkg.com/leaflet/dist/leaflet.css" as="style">
+    <link rel="preload" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" as="style">
+    
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
 
-      <style>
+           <style>
             :root {
                 --primary: #58A6FF;
                 --secondary: #1F6FEB;
@@ -182,18 +187,32 @@
                 border: 1px solid var(--glass-border);
             }
         </style>
+
 </head>
 <body>
-
     <div class="container">
-        <h1>Mini QGIS</h1>
+        <header class="header">
+            <!-- زر Home -->
+            <button class="home-button" onclick="window.location.href='index.html'">Home</button>
+            <h1>Mini QGIS</h1>
+            <p>⚠️يوجد الان صيانة عل الموقع نعتذر لازعجكم⚠️</p>
+        </header>
+
         <div class="input-section">
-            <input type="text" id="coordinates" placeholder="33.2625977, 44.4070566">
-            <button id="navigate-btn">بحث</button>
+            <input type="text" 
+                   id="coordinates" 
+                   placeholder="Enter coordinates (33.2625977,44.4070566)"
+                   autocomplete="off">
+            <button id="navigate-btn">Search</button>
         </div>
+
         <div id="map"></div>
+        <div class="loading-overlay" id="loading">
+            <div class="spinner"></div>
+        </div>
     </div>
 
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
@@ -202,9 +221,7 @@
             constructor() {
                 this.map = null;
                 this.markers = null;
-                this.zonesLayer = null;
                 this.dataCache = new Map();
-                this.currentMarker = null;
                 this.init();
             }
 
@@ -217,12 +234,18 @@
             initMap() {
                 this.map = L.map('map', {
                     zoomControl: false,
+                    preferCanvas: true,
                     maxZoom: 22,
-                    minZoom: 3
+                    minZoom: 3,
+                    inertia: true,
+                    fadeAnimation: false,
+                    wheelPxPerZoomLevel: 100
                 }).setView([33.2625977, 44.4070566], 15);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap'
+                    attribution: '© OpenStreetMap',
+                    maxZoom: 22,
+                    detectRetina: true
                 }).addTo(this.map);
 
                 L.control.zoom({ position: 'topright' }).addTo(this.map);
@@ -230,26 +253,32 @@
 
             setupEventListeners() {
                 document.getElementById('navigate-btn').addEventListener('click', () => this.handleNavigation());
+                this.map.on('zoomend', () => this.handleZoom());
             }
 
             async loadInitialData() {
-                await this.loadLayer('zones.geojson', this.processZones);
-                await this.loadLayer('pole.geojson', this.processPoles);
-                await this.loadLayer('polesA.geojson', this.processPoles);
+                await Promise.all([
+                    this.loadLayer('zones.geojson', this.processZones),
+                    this.loadLayer('pole.geojson', this.processPoles),
+                    this.loadLayer('polesA.geojson', this.processPoles)
+                ]);
             }
 
             async loadLayer(url, processor) {
+                this.showLoading();
                 try {
                     const data = await this.cachedFetch(url);
                     processor.call(this, data);
                 } catch (error) {
-                    console.error('خطأ في تحميل البيانات:', error);
+                    console.error('خطأ في التحميل:', error);
+                } finally {
+                    this.hideLoading();
                 }
             }
 
             async cachedFetch(url) {
                 if (this.dataCache.has(url)) return this.dataCache.get(url);
-
+                
                 const response = await fetch(url);
                 const data = await response.json();
                 this.dataCache.set(url, data);
@@ -257,29 +286,43 @@
             }
 
             processZones(data) {
-                this.zonesLayer = L.geoJSON(data, {
-                    style: { color: '#ff7800', weight: 2 },
-                    onEachFeature: (feature, layer) => {
-                        if (feature.properties.Zone_ID) {
-                            const center = layer.getBounds().getCenter();
-                            const label = L.divIcon({
-                                className: 'zone-label',
-                                html: `<span style="color: black; font-weight: bold;">${feature.properties.Zone_ID}</span>`,
-                                iconSize: [50, 20],
-                                iconAnchor: [25, 10]
-                            });
+    const zoneLabels = L.layerGroup(); // مجموعة جديدة لحفظ التسميات
 
-                            const labelMarker = L.marker(center, { icon: label });
-                            labelMarker.addTo(this.map);
-                        }
-                    }
-                }).addTo(this.map);
+    L.geoJSON(data, {
+        style: { color: '#ff7800', weight: 2 },
+        onEachFeature: (feature, layer) => {
+            if (feature.properties.Zone_ID) {
+                const center = layer.getBounds().getCenter();
+                const label = L.divIcon({
+                    className: 'zone-label',
+                    html: `<span style="color: black; font-weight: bold; font-size: 12px;">${feature.properties.Zone_ID}</span>`,
+                    iconSize: [50, 20],
+                    iconAnchor: [25, 10]
+                });
+
+                const labelMarker = L.marker(center, { icon: label });
+                zoneLabels.addLayer(labelMarker);
             }
+        }
+    }).addTo(this.map);
+
+    this.map.addLayer(zoneLabels);
+
+    // تحديث حجم الخط عند التكبير
+    this.map.on('zoomend', () => {
+        const zoomLevel = this.map.getZoom();
+        document.querySelectorAll('.zone-label span').forEach(el => {
+            el.style.fontSize = `${Math.max(12, zoomLevel * 1.2)}px`; // تكبير النص مع التكبير
+        });
+    });
+}
 
             processPoles(data) {
                 if (!this.markers) {
                     this.markers = L.markerClusterGroup({
                         chunkedLoading: true,
+                        chunkInterval: 150,
+                        spiderfyOnMaxZoom: true,
                         maxClusterRadius: 40
                     });
                 }
@@ -305,43 +348,59 @@
                 const coords = input.split(/[\s,]+/).map(Number);
 
                 if (coords.length !== 2 || coords.some(isNaN)) {
-                    alert('صيغة إحداثيات غير صحيحة! مثال: 33.2625977,44.4070566');
+                    this.showError('صيغة إحداثيات غير صحيحة! مثال: 33.2625977,44.4070566');
                     return;
                 }
 
-                this.map.flyTo(coords, 20, { animate: true, duration: 1.5 });
+                this.map.flyTo(coords, 22, {
+                    animate: true,
+                    duration: 1.5
+                });
 
-                if (this.currentMarker) {
-                    this.map.removeLayer(this.currentMarker);
-                }
-
-                const targetZone = this.findZoneByCoordinates(coords);
-
-                this.currentMarker = L.marker(coords)
+                L.marker(coords)
                     .addTo(this.map)
-                    .bindPopup(`<b>الموقع المستهدف</b><br>العرض: ${coords[0]}<br>الطول: ${coords[1]}<br><b>المنطقة:</b> ${targetZone || 'غير معروف'}`)
+                    .bindPopup(`<b>الموقع المستهدف</b><br>عرض: ${coords[0]}<br>طول: ${coords[1]}`)
                     .openPopup();
             }
 
-            findZoneByCoordinates(coords) {
-                if (!this.zonesLayer) return null;
+            handleZoom() {
+                if (this.map.getZoom() > 18) {
+                    this.markers.options.disableClusteringAtZoom = 20;
+                }
+            }
 
-                let foundZone = null;
-                this.zonesLayer.eachLayer(layer => {
-                    if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
-                        if (layer.getBounds().contains(L.latLng(coords[0], coords[1]))) {
-                            foundZone = layer.feature.properties.Zone_ID;
-                        }
-                    }
-                });
+            showLoading() {
+                document.getElementById('loading').style.opacity = '1';
+                document.getElementById('loading').style.pointerEvents = 'all';
+            }
 
-                return foundZone;
+            hideLoading() {
+                document.getElementById('loading').style.opacity = '0';
+                document.getElementById('loading').style.pointerEvents = 'none';
+            }
+
+            showError(message) {
+                const errorEl = document.createElement('div');
+                errorEl.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 1rem;
+                    background: #e74c3c;
+                    color: black;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                    z-index: 1001;
+                `;
+                errorEl.textContent = message;
+                document.body.appendChild(errorEl);
+                
+                setTimeout(() => errorEl.remove(), 3000);
             }
         }
 
+        // بدء التطبيق
         document.addEventListener('DOMContentLoaded', () => new EnhancedMap());
     </script>
-
 </body>
 </html>
-
