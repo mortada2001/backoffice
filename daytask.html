@@ -1,81 +1,115 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <title>عرض المهام اليومية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Tasks Viewer</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
         body {
             background-color: #0D1117;
             color: #FFFFFF;
-            text-align: center;
+            font-family: 'Arial', sans-serif;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
             min-height: 100vh;
-            font-family: 'Arial', sans-serif;
+            padding: 20px;
         }
         
         .container {
-            width: 90%;
+            width: 100%;
             max-width: 600px;
-            padding: 20px;
             background-color: #161B22;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
-            margin-top: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            padding: 40px 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
+        
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+        
         h1 {
             color: #58A6FF;
             margin-bottom: 30px;
+            font-size: 2em;
+            text-align: center;
         }
-
+        
         .input-group {
-            margin: 20px 0;
-            text-align: right;
+            margin-bottom: 25px;
+            text-align: left;
         }
-
-        label {
+        
+        .input-group label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: #8B949E;
             font-size: 18px;
+            font-weight: 600;
         }
-
-        input, datalist {
+        
+        .input-group input,
+        .input-group datalist {
             width: 100%;
-            padding: 12px;
+            padding: 12px 15px;
             border: 1px solid #30363D;
             border-radius: 6px;
             background-color: #0D1117;
             color: #C9D1D9;
             font-size: 16px;
-            margin: 8px 0;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-
-        input:focus {
+        
+        .input-group input:focus {
             outline: none;
             border-color: #1F6FEB;
             box-shadow: 0 0 0 3px rgba(31,111,235,0.3);
         }
-
+        
+        .date-wrapper {
+            position: relative;
+        }
+        
+        .date-wrapper input[type="date"] {
+            padding-left: 40px;
+        }
+        
+        .date-wrapper span {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8B949E;
+            pointer-events: none;
+            font-size: 18px;
+        }
+        
         button {
             width: 100%;
             padding: 15px;
             background-color: #238636;
-            color: white;
+            color: #FFFFFF;
             border: none;
             border-radius: 6px;
             font-size: 18px;
             cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 20px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
-
+        
         button:hover {
             background-color: #2EA043;
+            transform: translateY(-2px);
         }
-
+        
         #result {
             margin-top: 30px;
             padding: 20px;
@@ -85,41 +119,53 @@
             font-size: 18px;
             line-height: 1.6;
             min-height: 80px;
+            animation: fadeIn 0.5s ease-in-out;
+            text-align: center;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>عرض المهام اليومية</h1>
-        <p>⚠️يوجد الان صيانة عل الموقع نعتذر لازعجكم⚠️</p>
-
+        <h1>Daily Tasks Viewer</h1>
+        
         <div class="input-group">
-            <label for="employee">ابحث عن الموظف:</label>
+            <label for="employee">Search for Employee:</label>
             <input type="text" list="employeesList" id="employee" 
-                   placeholder="اكتب اسم الموظف..." autocomplete="off">
+                   placeholder="Type employee name..." autocomplete="off">
             <datalist id="employeesList">
-                <option value="">-- اختر اسم --</option>
+                <option value="">-- Select Name --</option>
             </datalist>
         </div>
-
+        
         <div class="input-group">
-            <label for="date">اختر التاريخ:</label>
-            <input type="date" id="date" required>
+            <label for="date">Select Date:</label>
+            <div class="date-wrapper">
+                <input type="date" id="date" required min="2020-01-01" max="2030-12-31">
+                <span>📅</span>
+            </div>
         </div>
-
-        <button onclick="fetchTask()">عرض المهمة</button>
+        
+        <button onclick="fetchTask()">View Task</button>
         
         <div id="result"></div>
     </div>
-
+    
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGhaPpbT15BGdPs-_yjrKlrcygV33KWhfiDfRngYqeukDMLSMpToe2RsnZKAJAcVa-/exec";
-
-        // جلب أسماء الموظفين وتعبئة الـ datalist
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzvxhKtb36cJ7RozuW2dWEHRUO9Jb15jUuZtjpWYaYj_oITViMcLZpeLNIOLXP5Auyd/exec";
+    
+        // Set default date to today
+        document.getElementById('date').valueAsDate = new Date();
+    
+        // Fetch employee names
         window.onload = async function() {
             try {
                 const response = await fetch(`${SCRIPT_URL}?action=getEmployees`);
-                if (!response.ok) throw new Error('فشل في جلب البيانات');
+                if (!response.ok) throw new Error('Failed to fetch data');
                 const employees = await response.json();
                 
                 const datalist = document.getElementById('employeesList');
@@ -132,45 +178,45 @@
             } catch (error) {
                 console.error("Error:", error);
                 document.getElementById('result').innerHTML = 
-                    "<span style='color: #FF7B72'>خطأ في تحميل قائمة الموظفين</span>";
+                    "<span style='color: #FF7B72'>Error loading employee list</span>";
             }
-        }
-
-        // دالة جلب المهمة مع تحسينات
+        };
+    
+        // Fetch task
         async function fetchTask() {
             const employee = document.getElementById('employee').value;
             const date = document.getElementById('date').value;
             const resultDiv = document.getElementById('result');
-
-            if(!employee || !date) {
-                resultDiv.innerHTML = "<span style='color: #FF7B72'>الرجاء إدخال جميع البيانات المطلوبة</span>";
+    
+            if (!employee || !date) {
+                resultDiv.innerHTML = "<span style='color: #FF7B72'>Please enter all required fields</span>";
                 return;
             }
-
+    
             try {
-                resultDiv.innerHTML = "<span style='color: #8B949E'>جاري البحث...</span>";
+                resultDiv.innerHTML = "<span style='color: #8B949E'>Searching...</span>";
                 
                 const response = await fetch(`${SCRIPT_URL}?action=getTask&employee=${encodeURIComponent(employee)}&date=${date}`);
                 
-                if (!response.ok) throw new Error('فشل في جلب المهمة');
+                if (!response.ok) throw new Error('Failed to fetch task');
                 
                 const task = await response.text();
                 
                 if (task) {
                     resultDiv.innerHTML = `
                         <div style="border-bottom: 1px solid #30363D; padding-bottom: 10px; margin-bottom: 15px;">
-                            <span style="color: #58A6FF">المهمة:</span>
+                            <span style="color: #58A6FF">Task:</span>
                         </div>
                         <div style="white-space: pre-wrap">${task}</div>
                     `;
                 } else {
-                    resultDiv.innerHTML = "<span style='color: #8B949E'>لا توجد مهام مسجلة لهذا اليوم</span>";
+                    resultDiv.innerHTML = "<span style='color: #8B949E'>No tasks recorded for this day</span>";
                 }
             } catch (error) {
                 console.error("Error:", error);
                 resultDiv.innerHTML = `
                     <span style='color: #FF7B72'>
-                        حدث خطأ أثناء جلب البيانات: ${error.message}
+                        Error fetching data: ${error.message}
                     </span>
                 `;
             }
