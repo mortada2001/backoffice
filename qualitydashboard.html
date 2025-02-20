@@ -188,7 +188,7 @@
 
             let { data, error } = await supabase
                 .from("qualitydone")
-                .select("assignee, number, modified_on, evaluation_id, final_comment, final_score")
+                .select("assignee, number, modified_on, evaliuation_id, final_comment, final_score")
                 .ilike("assignee", `%${selectedEmployee}%`)
                 .gte("modified_on", startDate)
                 .lte("modified_on", endDate);
