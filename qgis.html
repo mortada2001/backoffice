@@ -251,10 +251,18 @@
                 L.control.zoom({ position: 'topright' }).addTo(this.map);
             }
 
-            setupEventListeners() {
-                document.getElementById('navigate-btn').addEventListener('click', () => this.handleNavigation());
-                this.map.on('zoomend', () => this.handleZoom());
-            }
+           setupEventListeners() {
+    document.getElementById('navigate-btn').addEventListener('click', () => this.handleNavigation());
+    this.map.on('zoomend', () => this.handleZoom());
+}
+
+handleZoom() {
+    const zoomLevel = this.map.getZoom();
+    if (zoomLevel > 18) {
+        this.markers.options.disableClusteringAtZoom = zoomLevel; // تعطيل التجميع عند مستوى تكبير عالي
+        this.markers.refreshClusters(); // تحديث العلامات
+    }
+}
 
             async loadInitialData() {
                 await Promise.all([
@@ -317,32 +325,34 @@
     });
 }
 
-            processPoles(data) {
-                if (!this.markers) {
-                    this.markers = L.markerClusterGroup({
-                        chunkedLoading: true,
-                        chunkInterval: 150,
-                        spiderfyOnMaxZoom: true,
-                        maxClusterRadius: 40
-                    });
-                }
+         processPoles(data) {
+    if (!this.markers) {
+        this.markers = L.markerClusterGroup({
+            chunkedLoading: true,
+            chunkInterval: 150,
+            spiderfyOnMaxZoom: true,
+            maxClusterRadius: 40,
+            disableClusteringAtZoom: 20 // تعطيل التجميع عند مستوى تكبير 20
+        });
+    }
 
-                L.geoJSON(data, {
-                    pointToLayer: (feature, latlng) => {
-                        return L.marker(latlng, {
-                            icon: L.divIcon({
-                                className: 'pole-label',
-                html: `<span style="color: black; font-weight: bold;">${feature.properties.Pole_No || 'N/A'}</span>`,
-                                iconSize: [60, 20],
-                                iconAnchor: [30, 10]
-                            })
-                        }).bindPopup(`<b>FAT${feature.properties.Pole_No}</b>`);
-                    }
-                }).eachLayer(layer => this.markers.addLayer(layer));
+    L.geoJSON(data, {
+        pointToLayer: (feature, latlng) => {
+            return L.marker(latlng, {
+                icon: L.divIcon({
+                    className: 'pole-label',
+                    html: `<span style="color: black; font-weight: bold;">${feature.properties.Pole_No || 'N/A'}</span>`,
+                    iconSize: [60, 20],
+                    iconAnchor: [30, 10]
+                })
+            }).bindPopup(`<b>FAT${feature.properties.Pole_No}</b>`);
+        }
+    }).eachLayer(layer => this.markers.addLayer(layer));
 
-                this.map.addLayer(this.markers);
-            }
+    this.map.addLayer(this.markers);
+}
 
+            
             handleNavigation() {
                 const input = document.getElementById('coordinates').value.trim();
                 const coords = input.split(/[\s,]+/).map(Number);
@@ -363,11 +373,19 @@
                     .openPopup();
             }
 
-            handleZoom() {
-                if (this.map.getZoom() > 18) {
-                    this.markers.options.disableClusteringAtZoom = 20;
-                }
-            }
+           handleZoom() {
+    const zoomLevel = this.map.getZoom();
+    if (zoomLevel > 18) {
+        this.markers.options.disableClusteringAtZoom = zoomLevel;
+        this.markers.refreshClusters();
+    }
+
+    // تحديث حجم النص على العلامات
+    document.querySelectorAll('.pole-label span').forEach(el => {
+        el.style.fontSize = `${Math.max(12, zoomLevel * 1.2)}px`;
+    });
+}
+            
 
             showLoading() {
                 document.getElementById('loading').style.opacity = '1';
