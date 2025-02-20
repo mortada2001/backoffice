@@ -332,7 +332,7 @@
                         return L.marker(latlng, {
                             icon: L.divIcon({
                                 className: 'pole-label',
-                    html: `<span style="color: black; font-weight: bold; font-size: 12px;">${feature.properties.Zone_ID}</span>`,
+                html: `<span style="color: black; font-weight: bold;">${feature.properties.Pole_No || 'N/A'}</span>`,
                                 iconSize: [60, 20],
                                 iconAnchor: [30, 10]
                             })
