@@ -202,74 +202,69 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 
-const ticketNumberInput = document.getElementById("ticket_number");
-    const assigneeInput = document.getElementById("assignee");
-    const answerEndingInput = document.getElementById("field1");
-    const answerEndingScoreInput = document.getElementById("field1_score");
-    const evaluateButton = document.getElementById("evaluate");
+document.getElementById("evaluateButton").addEventListener("click", async function () {
+    const ticketNumber = document.getElementById("ticketNumberInput").value;
+    const employeeName = document.getElementById("employeeDropdown").value;
+    const answeEnding = document.getElementById("answeEndingInput").value;
+    const answeEndingScore = document.getElementById("answeEndingScore").value;
+    const caseField = document.getElementById("caseInput").value;
+    const caseScore = document.getElementById("caseScore").value;
+    const communicationSkills = document.getElementById("communicationSkillsInput").value;
+    const communicationSkillsScore = document.getElementById("communicationSkillsScore").value;
+    const diagnosis = document.getElementById("diagnosisInput").value;
+    const diagnosisScore = document.getElementById("diagnosisScore").value;
+    const inquiries = document.getElementById("inquiriesInput").value;
+    const inquiriesScore = document.getElementById("inquiriesScore").value;
+    const problemSolve = document.getElementById("problemSolveInput").value;
+    const problemSolveScore = document.getElementById("problemSolveScore").value;
+    const evaluationId = document.getElementById("evaluationIdInput").value;
+    const finalComment = document.getElementById("finalCommentInput").value;
+    const finalScore = document.getElementById("finalScoreInput").value;
 
-    let foundRowId = null; // To store the row ID of the found entry
-
-    async function searchTicket() {
-        const ticketNumber = ticketNumberInput.value.trim();
-        const assignee = assigneeInput.value.trim();
-
-        if (!ticketNumber || !assignee) {
-            alert("Please enter both Ticket Number and Assignee.");
-            return;
-        }
-
-        // Search for a row that matches both ticket number and assignee
-        let { data, error } = await supabase
-            .from("qualitydone")
-            .select("*")
-            .eq("number", ticketNumber)
-            .eq("assignee", assignee)
-            .single(); // Expecting one match
-
-        if (error || !data) {
-            alert("No matching case found.");
-            console.error("Error fetching data:", error);
-            foundRowId = null;
-            return;
-        }
-
-        console.log("Found matching row:", data);
-        foundRowId = data.id; // Store the row ID for updating
-
-        // Optionally, populate fields with existing data (if needed)
-        answerEndingInput.value = data.answe_ending || "";
-        answerEndingScoreInput.value = data.answe_ending_score || "";
+    if (!ticketNumber) {
+        alert("Please enter a ticket number.");
+        return;
     }
 
-    evaluateButton.addEventListener("click", async () => {
-        if (!foundRowId) {
-            alert("No matching case selected. Please search first.");
-            return;
-        }
+    const { data, error } = await supabase
+        .from("qualitydone")
+        .select("*")
+        .eq("number", ticketNumber)
+        .eq("assignee", employeeName)
+        .single();
 
-        const updatedAnswerEnding = answerEndingInput.value.trim();
-        const updatedAnswerEndingScore = answerEndingScoreInput.value.trim();
+    if (error || !data) {
+        alert("Ticket number not found.");
+        return;
+    }
 
-        let { error } = await supabase
-            .from("qualitydone")
-            .update({
-                answe_ending: updatedAnswerEnding,
-                answe_ending_score: updatedAnswerEndingScore
-            })
-            .eq("id", foundRowId);
+    const { error: updateError } = await supabase
+        .from("qualitydone")
+        .update({
+            answe_ending: answeEnding,
+            answe_ending_score: answeEndingScore,
+            case: caseField,
+            case_score: caseScore,
+            communication_skills: communicationSkills,
+            communication_skills_score: communicationSkillsScore,
+            diagnosis: diagnosis,
+            diagnosis_score: diagnosisScore,
+            inquiries: inquiries,
+            inquiries_score: inquiriesScore,
+            problem_solve: problemSolve,
+            problem_solve_score: problemSolveScore,
+            evaliuation_id: evaluationId,
+            final_comment: finalComment,
+            final_score: finalScore
+        })
+        .eq("number", ticketNumber)
+        .eq("assignee", employeeName);
 
-        if (error) {
-            alert("Error updating the record.");
-            console.error("Update error:", error);
-            return;
-        }
-
-        alert("Case updated successfully!");
-    });
-
-    // Call searchTicket when clicking the evaluate button
-    evaluateButton.addEventListener("click", searchTicket);
+    if (updateError) {
+        alert("Error updating ticket. Please try again.");
+    } else {
+        alert("Ticket successfully updated!");
+    }
 
 
 
