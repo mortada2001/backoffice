@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>عرض المهام اليومية</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .input-group {
+            margin: 20px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        select, input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>عرض المهام اليومية</h1>
+    
+    <div class="input-group">
+        <label for="employee">اختر اسم الموظف:</label>
+        <select id="employee">
+            <option value="">-- اختر اسم --</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label for="date">اختر التاريخ:</label>
+        <input type="date" id="date" required>
+    </div>
+
+    <button onclick="fetchTask()">عرض المهمة</button>
+    
+    <div id="result"></div>
+
+    <script>
+        // رابط نشر الويب آب من Google Script
+        const SCRIPT_URL = "YOUR_SCRIPT_URL_HERE";
+
+        // جلب أسماء الموظفين عند تحميل الصفحة
+        window.onload = async function() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getEmployees`);
+                const employees = await response.json();
+                
+                const select = document.getElementById('employee');
+                employees.forEach(emp => {
+                    const option = document.createElement('option');
+                    option.value = emp;
+                    option.textContent = emp;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error("حدث خطأ أثناء جلب أسماء الموظفين:", error);
+            }
+        }
+
+        // دالة جلب المهمة
+        async function fetchTask() {
+            const employee = document.getElementById('employee').value;
+            const date = document.getElementById('date').value;
+            const resultDiv = document.getElementById('result');
+
+            if(!employee || !date) {
+                resultDiv.innerHTML = "<span style='color: red;'>الرجاء اختيار الموظف والتاريخ</span>";
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getTask&employee=${encodeURIComponent(employee)}&date=${date}`);
+                const task = await response.text();
+                
+                if (task) {
+                    resultDiv.innerHTML = `<strong>المهمة:</strong> ${task}`;
+                } else {
+                    resultDiv.innerHTML = "<span style='color: #888;'>لا توجد مهام مسجلة لهذا اليوم</span>";
+                }
+            } catch (error) {
+                resultDiv.innerHTML = "<span style='color: red;'>حدث خطأ أثناء جلب البيانات</span>";
+                console.error("حدث خطأ:", error);
+            }
+        }
+    </script>
+</body>
+</html>
