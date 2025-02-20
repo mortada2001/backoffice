@@ -317,57 +317,60 @@
     });
 }
 
-            processPoles(data) {
-                if (!this.markers) {
-                    this.markers = L.markerClusterGroup({
-                        chunkedLoading: true,
-                        chunkInterval: 150,
-                        spiderfyOnMaxZoom: true,
-                        maxClusterRadius: 40
-                    });
-                }
+        processZones(data) {
+    this.zoneData = []; // تخزين بيانات المناطق
+    
+    const zoneLabels = L.layerGroup(); // مجموعة جديدة لحفظ التسميات
 
-                L.geoJSON(data, {
-                    pointToLayer: (feature, latlng) => {
-                        return L.marker(latlng, {
-                            icon: L.divIcon({
-                                className: 'pole-label',
-                                html: feature.properties.Pole_No || 'N/A',
-                                iconSize: [60, 20],
-                                iconAnchor: [30, 10]
-                            })
-                        }).bindPopup(`<b>العمود ${feature.properties.Pole_No}</b>`);
-                    }
-                }).eachLayer(layer => this.markers.addLayer(layer));
-
-                this.map.addLayer(this.markers);
-            }
-
-            handleNavigation() {
-                const input = document.getElementById('coordinates').value.trim();
-                const coords = input.split(/[\s,]+/).map(Number);
-
-                if (coords.length !== 2 || coords.some(isNaN)) {
-                    this.showError('صيغة إحداثيات غير صحيحة! مثال: 33.2625977,44.4070566');
-                    return;
-                }
-
-                this.map.flyTo(coords, 22, {
-                    animate: true,
-                    duration: 1.5
+    L.geoJSON(data, {
+        style: { color: '#ff7800', weight: 2 },
+        onEachFeature: (feature, layer) => {
+            if (feature.properties.Zone_ID) {
+                const center = layer.getBounds().getCenter();
+                this.zoneData.push({ id: feature.properties.Zone_ID, layer }); // تخزين المنطقة
+                
+                const label = L.divIcon({
+                    className: 'zone-label',
+                    html: `<span style="color: black; font-weight: bold; font-size: 12px;">${feature.properties.Zone_ID}</span>`,
+                    iconSize: [50, 20],
+                    iconAnchor: [25, 10]
                 });
 
-                L.marker(coords)
-                    .addTo(this.map)
-                    .bindPopup(`<b>الموقع المستهدف</b><br>عرض: ${coords[0]}<br>طول: ${coords[1]}`)
-                    .openPopup();
+                const labelMarker = L.marker(center, { icon: label });
+                zoneLabels.addLayer(labelMarker);
             }
+        }
+    }).addTo(this.map);
 
-            handleZoom() {
-                if (this.map.getZoom() > 18) {
-                    this.markers.options.disableClusteringAtZoom = 20;
-                }
-            }
+    this.map.addLayer(zoneLabels);
+}
+            
+
+           handleNavigation() {
+    const input = document.getElementById('coordinates').value.trim();
+    const coords = input.split(/[\s,]+/).map(Number);
+
+    if (coords.length !== 2 || coords.some(isNaN)) {
+        this.showError('صيغة إحداثيات غير صحيحة! مثال: 33.2625977,44.4070566');
+        return;
+    }
+
+    let zoneName = "غير معروف"; // افتراضيًا لا توجد منطقة
+    for (const zone of this.zoneData) {
+        if (zone.layer.getBounds().contains(L.latLng(coords[0], coords[1]))) {
+            zoneName = zone.id; // إيجاد المنطقة المناسبة
+            break;
+        }
+    }
+
+    this.map.flyTo(coords, 22, { animate: true, duration: 1.5 });
+
+    L.marker(coords)
+        .addTo(this.map)
+        .bindPopup(`<b>الموقع المستهدف</b><br>عرض: ${coords[0]}<br>طول: ${coords[1]}<br>المنطقة: ${zoneName}`)
+        .openPopup();
+}
+
 
             showLoading() {
                 document.getElementById('loading').style.opacity = '1';
