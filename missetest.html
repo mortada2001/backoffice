@@ -1,414 +1,392 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini QGIS</title>
-    
-    <!-- تحميل مسبق للموارد الأساسية -->
-    <link rel="preload" href="https://unpkg.com/leaflet/dist/leaflet.css" as="style">
-    <link rel="preload" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" as="style">
-    
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini QGIS</title>
+  
+  <!-- تحميل مسبق للموارد الأساسية -->
+  <link rel="preload" href="https://unpkg.com/leaflet/dist/leaflet.css" as="style">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-    <style>
-        :root {
-            --primary: #58A6FF;
-            --secondary: #1F6FEB;
-            --accent: #D32F2F;
-            --background: #0D1117;
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Tajawal', sans-serif;
-        }
-
-        body {
-            background: var(--background);
-            color: white;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .header {
-            text-align: center;
-            padding: 2rem;
-            background: var(--glass-bg);
-            border-radius: 1rem;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 6px 20px rgba(255,255,255,0.1);
-            border: 1px solid var(--glass-border);
-            width: 100%;
-            max-width: 800px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .input-section {
-            display: flex;
-            gap: 1rem;
-            background: var(--glass-bg);
-            padding: 1rem;
-            border-radius: 1rem;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.05);
-            width: 100%;
-            max-width: 600px;
-        }
-
-        #coordinates {
-            flex: 1;
-            padding: 0.8rem;
-            border: 2px solid var(--glass-border);
-            border-radius: 8px;
-            background: var(--glass-bg);
-            color: white;
-            font-size: 1.1rem;
-            transition: 0.3s;
-        }
-
-        #coordinates:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 10px rgba(88, 166, 255, 0.4);
-        }
-
-        #navigate-btn {
-            padding: 0.8rem 1.5rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-
-        #navigate-btn:hover {
-            background: var(--secondary);
-            transform: translateY(-2px);
-        }
-
-        #map {
-            height: 70vh;
-            width: 100%;
-            border-radius: 1rem;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 6px 20px rgba(255,255,255,0.1);
-        }
-
-        .home-button {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: rgba(88, 166, 255, 0.8);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 15px;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: 0.3s;
-            cursor: pointer;
-        }
-
-        .home-button:hover {
-            background: white;
-            color: var(--background);
-            transform: scale(1.1);
-        }
-
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(13, 17, 23, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid white;
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .leaflet-control-zoom {
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
-        }
-
-        .custom-popup .leaflet-popup-content {
-            min-width: 200px;
-            padding: 1rem;
-            border-radius: 8px;
-            background: var(--glass-bg);
-            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--glass-border);
-        }
-    </style>
-
+  <style>
+    :root {
+      --primary: #58A6FF;
+      --secondary: #1F6FEB;
+      --accent: #D32F2F;
+      --background: #0D1117;
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Tajawal', sans-serif;
+    }
+    body {
+      background: var(--background);
+      color: white;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .header {
+      text-align: center;
+      padding: 2rem;
+      background: var(--glass-bg);
+      border-radius: 1rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 6px 20px rgba(255,255,255,0.1);
+      border: 1px solid var(--glass-border);
+      width: 100%;
+      max-width: 800px;
+    }
+    .header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .input-section {
+      display: flex;
+      gap: 1rem;
+      background: var(--glass-bg);
+      padding: 1rem;
+      border-radius: 1rem;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.05);
+      width: 100%;
+      max-width: 600px;
+    }
+    #coordinates {
+      flex: 1;
+      padding: 0.8rem;
+      border: 2px solid var(--glass-border);
+      border-radius: 8px;
+      background: var(--glass-bg);
+      color: white;
+      font-size: 1.1rem;
+      transition: 0.3s;
+    }
+    #coordinates:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 10px rgba(88, 166, 255, 0.4);
+    }
+    #navigate-btn {
+      padding: 0.8rem 1.5rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+    #navigate-btn:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+    #map {
+      height: 70vh;
+      width: 100%;
+      border-radius: 1rem;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 6px 20px rgba(255,255,255,0.1);
+    }
+    .home-button {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(88, 166, 255, 0.8);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 15px;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+    .home-button:hover {
+      background: white;
+      color: var(--background);
+      transform: scale(1.1);
+    }
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(13, 17, 23, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid white;
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .leaflet-control-zoom {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    }
+    .custom-popup .leaflet-popup-content {
+      min-width: 200px;
+      padding: 1rem;
+      border-radius: 8px;
+      background: var(--glass-bg);
+      box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--glass-border);
+    }
+    /* تنسيق الأيقونة الخاصة بFAT */
+    .fat-pin-icon {
+      background: none;
+      border: none;
+    }
+    .fat-pin-container {
+      position: relative;
+      display: inline-block;
+    }
+    .fat-pin-container img {
+      display: block;
+      width: 30px;
+      height: 40px;
+    }
+    .fat-pin-text {
+      position: absolute;
+      top: 5px; /* يمكن تعديل الموقع حسب الحاجة */
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <!-- زر Home -->
-            <button class="home-button" onclick="window.location.href='index.html'">Home</button>
-            <h1>Mini QGIS</h1>
-            <p>⚠️يوجد الان صيانة عل الموقع نعتذر لازعجكم⚠️</p>
-        </header>
+  <div class="container">
+    <header class="header">
+      <!-- زر Home -->
+      <button class="home-button" onclick="window.location.href='index.html'">Home</button>
+      <h1>Mini QGIS</h1>
+      <p>⚠️ يوجد الآن صيانة على الموقع نعتذر لإزعاجكم ⚠️</p>
+    </header>
 
-        <div class="input-section">
-            <input type="text" 
-                   id="coordinates" 
-                   placeholder="Enter coordinates (33.2625977,44.4070566)"
-                   autocomplete="off">
-            <button id="navigate-btn">Search</button>
-        </div>
-
-        <div id="map"></div>
-        <div class="loading-overlay" id="loading">
-            <div class="spinner"></div>
-        </div>
+    <div class="input-section">
+      <input type="text" 
+             id="coordinates" 
+             placeholder="Enter coordinates (33.2625977,44.4070566)"
+             autocomplete="off">
+      <button id="navigate-btn">Search</button>
     </div>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <div id="map"></div>
+    <div class="loading-overlay" id="loading">
+      <div class="spinner"></div>
+    </div>
+  </div>
 
-    <script>
-        class EnhancedMap {
-            constructor() {
-                this.map = null;
-                this.markers = null;
-                this.dataCache = new Map();
-                this.init();
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+    class EnhancedMap {
+      constructor() {
+        this.map = null;
+        // بدلاً من markerClusterGroup سنستخدم LayerGroup عادية لإزالة فقاعات التجميع
+        this.markers = L.layerGroup();
+        this.dataCache = new Map();
+        this.init();
+      }
+
+      async init() {
+        this.initMap();
+        this.setupEventListeners();
+        this.loadInitialData();
+      }
+
+      initMap() {
+        this.map = L.map('map', {
+          zoomControl: false,
+          preferCanvas: true,
+          maxZoom: 22,
+          minZoom: 3,
+          inertia: true,
+          fadeAnimation: false,
+          wheelPxPerZoomLevel: 100
+        }).setView([33.2625977, 44.4070566], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap',
+          maxZoom: 22,
+          detectRetina: true
+        }).addTo(this.map);
+
+        L.control.zoom({ position: 'topright' }).addTo(this.map);
+      }
+
+      setupEventListeners() {
+        document.getElementById('navigate-btn').addEventListener('click', () => this.handleNavigation());
+      }
+
+      async loadInitialData() {
+        await Promise.all([
+          this.loadLayer('zones.geojson', this.processZones),
+          this.loadLayer('pole.geojson', this.processPoles),
+          this.loadLayer('polesA.geojson', this.processPoles)
+        ]);
+      }
+
+      async loadLayer(url, processor) {
+        this.showLoading();
+        try {
+          const data = await this.cachedFetch(url);
+          processor.call(this, data);
+        } catch (error) {
+          console.error('خطأ في التحميل:', error);
+        } finally {
+          this.hideLoading();
+        }
+      }
+
+      async cachedFetch(url) {
+        if (this.dataCache.has(url)) return this.dataCache.get(url);
+        const response = await fetch(url);
+        const data = await response.json();
+        this.dataCache.set(url, data);
+        return data;
+      }
+
+      processZones(data) {
+        const zoneLabels = L.layerGroup();
+
+        L.geoJSON(data, {
+          style: { color: '#ff7800', weight: 2 },
+          onEachFeature: (feature, layer) => {
+            if (feature.properties.Zone_ID) {
+              const center = layer.getBounds().getCenter();
+              const label = L.divIcon({
+                className: 'zone-label',
+                html: `<span style="color: black; font-weight: bold; font-size: 12px;">${feature.properties.Zone_ID}</span>`,
+                iconSize: [50, 20],
+                iconAnchor: [25, 10]
+              });
+              const labelMarker = L.marker(center, { icon: label });
+              zoneLabels.addLayer(labelMarker);
             }
+          }
+        }).addTo(this.map);
 
-            async init() {
-                this.initMap();
-                this.setupEventListeners();
-                this.loadInitialData();
-            }
+        this.map.addLayer(zoneLabels);
 
-            initMap() {
-                this.map = L.map('map', {
-                    zoomControl: false,
-                    preferCanvas: true,
-                    maxZoom: 22,
-                    minZoom: 3,
-                    inertia: true,
-                    fadeAnimation: false,
-                    wheelPxPerZoomLevel: 100
-                }).setView([33.2625977, 44.4070566], 15);
+        this.map.on('zoomend', () => {
+          const zoomLevel = this.map.getZoom();
+          document.querySelectorAll('.zone-label span').forEach(el => {
+            el.style.fontSize = `${Math.max(12, zoomLevel * 1.2)}px`;
+          });
+        });
+      }
 
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap',
-                    maxZoom: 22,
-                    detectRetina: true
-                }).addTo(this.map);
+      processPoles(data) {
+        // لكل معلومة من بيانات الأعمدة يتم إنشاء دنبوس خاص
+        L.geoJSON(data, {
+          pointToLayer: (feature, latlng) => {
+            return L.marker(latlng, {
+              icon: L.divIcon({
+                className: 'fat-pin-icon',
+                html: `<div class="fat-pin-container">
+                          <img src="fat-pin.png" alt="FAT Pin" />
+                          <div class="fat-pin-text">FAT${feature.properties.Pole_No || 'N/A'}</div>
+                       </div>`,
+                iconSize: [30, 40],
+                iconAnchor: [15, 40]
+              })
+            });
+          }
+        }).eachLayer(layer => this.markers.addLayer(layer));
 
-                L.control.zoom({ position: 'topright' }).addTo(this.map);
-            }
+        this.map.addLayer(this.markers);
+      }
 
-            setupEventListeners() {
-                document.getElementById('navigate-btn').addEventListener('click', () => this.handleNavigation());
-                this.map.on('zoomend', () => this.handleZoom());
-            }
+      handleNavigation() {
+        const input = document.getElementById('coordinates').value.trim();
+        const coords = input.split(/[\s,]+/).map(Number);
 
-            handleZoom() {
-                const zoomLevel = this.map.getZoom();
-                if (zoomLevel > 18) {
-                    this.markers.options.disableClusteringAtZoom = zoomLevel;
-                    this.markers.refreshClusters();
-                }
-
-                // تحديث حجم النص على العلامات
-                document.querySelectorAll('.pole-label span').forEach(el => {
-                    el.style.fontSize = `${Math.max(12, zoomLevel * 1.2)}px`;
-                });
-            }
-
-            async loadInitialData() {
-                await Promise.all([
-                    this.loadLayer('zones.geojson', this.processZones),
-                    this.loadLayer('pole.geojson', this.processPoles),
-                    this.loadLayer('polesA.geojson', this.processPoles)
-                ]);
-            }
-
-            async loadLayer(url, processor) {
-                this.showLoading();
-                try {
-                    const data = await this.cachedFetch(url);
-                    processor.call(this, data);
-                } catch (error) {
-                    console.error('خطأ في التحميل:', error);
-                } finally {
-                    this.hideLoading();
-                }
-            }
-
-            async cachedFetch(url) {
-                if (this.dataCache.has(url)) return this.dataCache.get(url);
-                
-                const response = await fetch(url);
-                const data = await response.json();
-                this.dataCache.set(url, data);
-                return data;
-            }
-
-            processZones(data) {
-                const zoneLabels = L.layerGroup(); // مجموعة جديدة لحفظ التسميات
-
-                L.geoJSON(data, {
-                    style: { color: '#ff7800', weight: 2 },
-                    onEachFeature: (feature, layer) => {
-                        if (feature.properties.Zone_ID) {
-                            const center = layer.getBounds().getCenter();
-                            const label = L.divIcon({
-                                className: 'zone-label',
-                                html: `<span style="color: black; font-weight: bold; font-size: 12px;">${feature.properties.Zone_ID}</span>`,
-                                iconSize: [50, 20],
-                                iconAnchor: [25, 10]
-                            });
-
-                            const labelMarker = L.marker(center, { icon: label });
-                            zoneLabels.addLayer(labelMarker);
-                        }
-                    }
-                }).addTo(this.map);
-
-                this.map.addLayer(zoneLabels);
-
-                // تحديث حجم الخط عند التكبير
-                this.map.on('zoomend', () => {
-                    const zoomLevel = this.map.getZoom();
-                    document.querySelectorAll('.zone-label span').forEach(el => {
-                        el.style.fontSize = `${Math.max(12, zoomLevel * 1.2)}px`;
-                    });
-                });
-            }
-
-            processPoles(data) {
-                if (!this.markers) {
-                    this.markers = L.markerClusterGroup({
-                        chunkedLoading: true,
-                        chunkInterval: 150,
-                        spiderfyOnMaxZoom: true,
-                        maxClusterRadius: 40,
-                        disableClusteringAtZoom: 20
-                    });
-                }
-
-                L.geoJSON(data, {
-                    pointToLayer: (feature, latlng) => {
-                        return L.marker(latlng, {
-                            icon: L.divIcon({
-                                className: 'pole-label',
-                                html: `<span style="color: black; font-weight: bold;">FAT${feature.properties.Pole_No || 'N/A'}</span>`,
-                                iconSize: [60, 20],
-                                iconAnchor: [30, 10]
-                            })
-                        });
-                    }
-                }).eachLayer(layer => this.markers.addLayer(layer));
-
-                this.map.addLayer(this.markers);
-            }
-
-            handleNavigation() {
-                const input = document.getElementById('coordinates').value.trim();
-                const coords = input.split(/[\s,]+/).map(Number);
-
-                if (coords.length !== 2 || coords.some(isNaN)) {
-                    this.showError('صيغة إحداثيات غير صحيحة! مثال: 33.2625977,44.4070566');
-                    return;
-                }
-
-                this.map.flyTo(coords, 22, {
-                    animate: true,
-                    duration: 1.5
-                });
-
-                L.marker(coords)
-                    .addTo(this.map)
-                    .bindPopup(`<b>Target location</b><br>latitude: ${coords[0]}<br>longitude: ${coords[1]}`)
-                    .openPopup();
-            }
-
-            showLoading() {
-                document.getElementById('loading').style.opacity = '1';
-                document.getElementById('loading').style.pointerEvents = 'all';
-            }
-
-            hideLoading() {
-                document.getElementById('loading').style.opacity = '0';
-                document.getElementById('loading').style.pointerEvents = 'none';
-            }
-
-            showError(message) {
-                const errorEl = document.createElement('div');
-                errorEl.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    padding: 1rem;
-                    background: #e74c3c;
-                    color: black;
-                    border-radius: 8px;
-                    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-                    z-index: 1001;
-                `;
-                errorEl.textContent = message;
-                document.body.appendChild(errorEl);
-                
-                setTimeout(() => errorEl.remove(), 3000);
-            }
+        if (coords.length !== 2 || coords.some(isNaN)) {
+          this.showError('صيغة إحداثيات غير صحيحة! مثال: 33.2625977,44.4070566');
+          return;
         }
 
-        // بدء التطبيق
-        document.addEventListener('DOMContentLoaded', () => new EnhancedMap());
-    </script>
+        this.map.flyTo(coords, 22, {
+          animate: true,
+          duration: 1.5
+        });
+
+        L.marker(coords)
+          .addTo(this.map)
+          .bindPopup(`<b>Target location</b><br>latitude: ${coords[0]}<br>longitude: ${coords[1]}`)
+          .openPopup();
+      }
+
+      showLoading() {
+        document.getElementById('loading').style.opacity = '1';
+        document.getElementById('loading').style.pointerEvents = 'all';
+      }
+
+      hideLoading() {
+        document.getElementById('loading').style.opacity = '0';
+        document.getElementById('loading').style.pointerEvents = 'none';
+      }
+
+      showError(message) {
+        const errorEl = document.createElement('div');
+        errorEl.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          padding: 1rem;
+          background: #e74c3c;
+          color: black;
+          border-radius: 8px;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+          z-index: 1001;
+        `;
+        errorEl.textContent = message;
+        document.body.appendChild(errorEl);
+        setTimeout(() => errorEl.remove(), 3000);
+      }
+    }
+
+    // بدء التطبيق عند تحميل صفحة DOM
+    document.addEventListener('DOMContentLoaded', () => new EnhancedMap());
+  </script>
 </body>
 </html>
