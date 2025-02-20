@@ -325,7 +325,7 @@ handleZoom() {
     });
 }
 
-        processPoles(data) {
+         processPoles(data) {
     if (!this.markers) {
         this.markers = L.markerClusterGroup({
             chunkedLoading: true,
@@ -345,7 +345,7 @@ handleZoom() {
                     iconSize: [60, 20],
                     iconAnchor: [30, 10]
                 })
-            }).bindPopup(`<b>FAT${feature.properties.Pole_No || 'N/A'}</b>`); // رقم FAT مع الدبوس
+            }).bindPopup(`<b>FAT${feature.properties.Pole_No}</b>`);
         }
     }).eachLayer(layer => this.markers.addLayer(layer));
 
@@ -373,28 +373,18 @@ handleZoom() {
                     .openPopup();
             }
 
-         handleZoom() {
+           handleZoom() {
     const zoomLevel = this.map.getZoom();
-
-    // تعطيل التجميع عند مستوى تكبير 18 أو أكثر
     if (zoomLevel > 18) {
         this.markers.options.disableClusteringAtZoom = zoomLevel;
         this.markers.refreshClusters();
     }
 
-    // إضافة دبوس مع رقم FAT عند التكبير
-    this.map.eachLayer(layer => {
-        if (layer instanceof L.Marker && layer.getPopup()) {
-            layer.getPopup().setContent(`<b>FAT${layer.getPopup().getContent().split('<br>')[0]}</b>`);
-        }
-    });
-    
     // تحديث حجم النص على العلامات
     document.querySelectorAll('.pole-label span').forEach(el => {
         el.style.fontSize = `${Math.max(12, zoomLevel * 1.2)}px`;
     });
 }
-
             
 
             showLoading() {
