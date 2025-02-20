@@ -199,73 +199,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const showCaseButton = document.getElementById("show-case");
     const resultDiv = document.getElementById("result");
 
-}
 
-
-document.getElementById("evaluateButton").addEventListener("click", async function () {
-    const ticketNumber = document.getElementById("ticketNumberInput").value;
-    const employeeName = document.getElementById("employeeDropdown").value;
-    const answeEnding = document.getElementById("answeEndingInput").value;
-    const answeEndingScore = document.getElementById("answeEndingScore").value;
-    const caseField = document.getElementById("caseInput").value;
-    const caseScore = document.getElementById("caseScore").value;
-    const communicationSkills = document.getElementById("communicationSkillsInput").value;
-    const communicationSkillsScore = document.getElementById("communicationSkillsScore").value;
-    const diagnosis = document.getElementById("diagnosisInput").value;
-    const diagnosisScore = document.getElementById("diagnosisScore").value;
-    const inquiries = document.getElementById("inquiriesInput").value;
-    const inquiriesScore = document.getElementById("inquiriesScore").value;
-    const problemSolve = document.getElementById("problemSolveInput").value;
-    const problemSolveScore = document.getElementById("problemSolveScore").value;
-    const evaluationId = document.getElementById("evaluationIdInput").value;
-    const finalComment = document.getElementById("finalCommentInput").value;
-    const finalScore = document.getElementById("finalScoreInput").value;
-
-    if (!ticketNumber) {
-        alert("Please enter a ticket number.");
-        return;
-    }
-
-    const { data, error } = await supabase
-        .from("qualitydone")
-        .select("*")
-        .eq("number", ticketNumber)
-        .eq("assignee", employeeName)
-        .single();
-
-    if (error || !data) {
-        alert("Ticket number not found.");
-        return;
-    }
-
-    const { error: updateError } = await supabase
-        .from("qualitydone")
-        .update({
-            answe_ending: answeEnding,
-            answe_ending_score: answeEndingScore,
-            case: caseField,
-            case_score: caseScore,
-            communication_skills: communicationSkills,
-            communication_skills_score: communicationSkillsScore,
-            diagnosis: diagnosis,
-            diagnosis_score: diagnosisScore,
-            inquiries: inquiries,
-            inquiries_score: inquiriesScore,
-            problem_solve: problemSolve,
-            problem_solve_score: problemSolveScore,
-            evaliuation_id: evaluationId,
-            final_comment: finalComment,
-            final_score: finalScore
-        })
-        .eq("number", ticketNumber)
-        .eq("assignee", employeeName);
-
-    if (updateError) {
-        alert("Error updating ticket. Please try again.");
-    } else {
-        alert("Ticket successfully updated!");
-    }
-});
 
 
 
