@@ -23,7 +23,7 @@
         header {
             width: 100%;
             position: fixed;
-            top: 0;
+            top: -40px;
             left: 0;
             background: linear-gradient(135deg, #007acc, #005a9e);
             text-align: center;
@@ -32,6 +32,32 @@
             font-weight: bold;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
             z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+       .qc-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(88, 166, 255, 0.8);
+            color: #FFFFFF;
+            border: 2px solid #FFFFFF;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .qc-button:hover {
+            background: #FFFFFF;
+            color: #0D1117;
+            transform: scale(1.1);
         }
 
         /* Search Section */
@@ -101,7 +127,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
-    <header>Alwatani Quality Control</header>
+    <header>
+        <a href="https://alwatani-backoffice.netlify.app/qualitycontrol.html" class="qc-button">Quality Control</a>
+        Alwatani Quality Control
+    </header>
+
     <div class="search-container">
         <input type="text" id="employee" placeholder="Enter Assignee Name">
         <input type="date" id="start-date"> to 
