@@ -148,12 +148,16 @@
     
     <table class="results-table" id="results-table">
         <thead>
-            <tr>
-                <th>Assignee</th>
-                <th>Ticket Number</th>
-                <th>Modified Date</th>
-            </tr>
-        </thead>
+    <tr>
+        <th>Assignee</th>
+        <th>Ticket Number</th>
+        <th>Modified Date</th>
+        <th>Evaluation ID</th>
+        <th>Final Comment</th>
+        <th>Final Score</th>
+    </tr>
+</thead>
+
         <tbody></tbody>
     </table>
 
@@ -173,39 +177,44 @@
         const quantityDisplay = document.getElementById("quantity-display");
 
         searchButton.addEventListener("click", async () => {
-            const selectedEmployee = employeeInput.value.trim();
-            const startDate = startDateInput.value;
-            const endDate = endDateInput.value;
+    const selectedEmployee = employeeInput.value.trim();
+    const startDate = startDateInput.value;
+    const endDate = endDateInput.value;
 
-            if (!selectedEmployee || !startDate || !endDate) {
-                alert("⚠️ Please enter an assignee name and select a date range!");
-                return;
-            }
+    if (!selectedEmployee || !startDate || !endDate) {
+        alert("⚠️ Please enter an assignee name and select a date range!");
+        return;
+    }
 
-            let { data, error } = await supabase
-                .from("qualitydone")
-                .select("assignee, number, modified_on")
-                .ilike("assignee", `%${selectedEmployee}%`)
-                .gte("modified_on", startDate)
-                .lte("modified_on", endDate);
+    let { data, error } = await supabase
+        .from("qualitydone")
+        .select("assignee, number, modified_on, evaluation_id, final_comment, final_score")
+        .ilike("assignee", `%${selectedEmployee}%`)
+        .gte("modified_on", startDate)
+        .lte("modified_on", endDate);
 
-            if (error) {
-                console.error("Error fetching data:", error);
-                alert("❌ Error fetching data!");
-                return;
-            }
+    if (error) {
+        console.error("Error fetching data:", error);
+        alert("❌ Error fetching data!");
+        return;
+    }
 
-            resultsTableBody.innerHTML = "";
-            data.forEach((row, index) => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `<td>${row.assignee}</td><td>${row.number}</td><td>${row.modified_on}</td>`;
-                resultsTableBody.appendChild(tr);
-            });
-            
-            // Display quantity as a simple number, not in a table cell
-            quantityDisplay.textContent = `Total Cases Found: ${data.length}`;
-        });
+    resultsTableBody.innerHTML = "";
+    data.forEach((row) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${row.assignee}</td>
+            <td>${row.number}</td>
+            <td>${row.modified_on}</td>
+            <td>${row.evaluation_id || "N/A"}</td>
+            <td>${row.final_comment || "N/A"}</td>
+            <td>${row.final_score || "N/A"}</td>
+        `;
+        resultsTableBody.appendChild(tr);
     });
+
+    quantityDisplay.textContent = `Total Cases Found: ${data.length}`;
+});
     </script>
 </body>
 </html>
