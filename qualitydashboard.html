@@ -123,6 +123,34 @@
             background-color: #333;
         }
 
+
+.clickable-row {
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.clickable-row:hover {
+    background: rgba(0, 122, 204, 0.2);
+}
+
+.details-row td {
+    background: #2b2b2b;
+    padding: 15px;
+}
+
+.details-container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    line-height: 1.5;
+}
+
+.details-container p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+
         /* Quantity Display */
         #quantity-display {
             margin-top: 20px;
@@ -164,58 +192,106 @@
     
 
     <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-        const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+document.addEventListener("DOMContentLoaded", async () => {
+    const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const employeeInput = document.getElementById("employee");
-        const startDateInput = document.getElementById("start-date");
-        const endDateInput = document.getElementById("end-date");
-        const searchButton = document.getElementById("search-btn");
-        const resultsTableBody = document.querySelector("#results-table tbody");
-        const quantityDisplay = document.getElementById("quantity-display");
+    const employeeInput = document.getElementById("employee");
+    const startDateInput = document.getElementById("start-date");
+    const endDateInput = document.getElementById("end-date");
+    const searchButton = document.getElementById("search-btn");
+    const resultsTableBody = document.querySelector("#results-table tbody");
+    const quantityDisplay = document.getElementById("quantity-display");
 
-        searchButton.addEventListener("click", async () => {
-            const selectedEmployee = employeeInput.value.trim();
-            const startDate = startDateInput.value;
-            const endDate = endDateInput.value;
+    searchButton.addEventListener("click", async () => {
+        const selectedEmployee = employeeInput.value.trim();
+        const startDate = startDateInput.value;
+        const endDate = endDateInput.value;
 
-            if (!selectedEmployee || !startDate || !endDate) {
-                alert("⚠️ Please enter an assignee name and select a date range!");
-                return;
-            }
+        if (!selectedEmployee || !startDate || !endDate) {
+            alert("⚠️ Please enter an assignee name and select a date range!");
+            return;
+        }
 
-            let { data, error } = await supabase
-                .from("qualitydone")
-                .select("assignee, number, modified_on, evaliuation_id, final_comment, final_score")
-                .ilike("assignee", `%${selectedEmployee}%`)
-                .gte("modified_on", startDate)
-                .lte("modified_on", endDate);
+        let { data, error } = await supabase
+            .from("qualitydone")
+            .select("assignee, number, modified_on, evaliuation_id, final_comment, final_score")
+            .ilike("assignee", `%${selectedEmployee}%`)
+            .gte("modified_on", startDate)
+            .lte("modified_on", endDate);
 
-            if (error) {
-                console.error("Error fetching data:", error);
-                alert("❌ Error fetching data!");
-                return;
-            }
+        if (error) {
+            console.error("Error fetching data:", error);
+            alert("❌ Error fetching data!");
+            return;
+        }
 
-            resultsTableBody.innerHTML = "";
-            data.forEach((row) => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${row.assignee}</td>
-                    <td>${row.number}</td>
-                    <td>${row.modified_on}</td>
-                    <td>${row.evaliuation_id || "N/A"}</td>
-                    <td>${row.final_comment || "N/A"}</td>
-                    <td>${row.final_score || "N/A"}</td>
-                `;
-                resultsTableBody.appendChild(tr);
-            });
+        resultsTableBody.innerHTML = "";
+        data.forEach((row) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${row.assignee}</td>
+                <td>${row.number}</td>
+                <td>${row.modified_on}</td>
+                <td>${row.evaliuation_id || "N/A"}</td>
+                <td>${row.final_comment || "N/A"}</td>
+                <td>${row.final_score || "N/A"}</td>
+            `;
+            tr.dataset.evalId = row.evaliuation_id; // Store evaluation ID for fetching details
+            tr.classList.add("clickable-row");
 
-            quantityDisplay.textContent = `Total Cases Found: ${data.length}`;
-        }); // <-- This is the missing closing bracket for the event listener
-    }); // <-- This is the closing bracket for the DOMContentLoaded event listener
+            resultsTableBody.appendChild(tr);
+        });
+
+        quantityDisplay.textContent = `Total Cases Found: ${data.length}`;
+    });
+
+    // Handle row clicks for expanding details
+    resultsTableBody.addEventListener("click", async (event) => {
+        const clickedRow = event.target.closest(".clickable-row");
+        if (!clickedRow) return;
+
+        const evalId = clickedRow.dataset.evalId;
+        if (!evalId || evalId === "N/A") return;
+
+        // Check if details already exist to toggle them
+        if (clickedRow.nextElementSibling && clickedRow.nextElementSibling.classList.contains("details-row")) {
+            clickedRow.nextElementSibling.remove(); // Remove details if already open
+            return;
+        }
+
+        // Fetch additional evaluation details from Supabase
+        let { data, error } = await supabase
+            .from("qualitydone")
+            .select("answer_ending, answer_ending_score, case, case_score, communication_skills, communication_skills_score, inquiries, inquiries_score, diagnosis, diagnosis_score, problem_solve, problem_solve_score")
+            .eq("evaliuation_id", evalId)
+            .single();
+
+        if (error || !data) {
+            console.error("Error fetching details:", error);
+            return;
+        }
+
+        // Create an expandable row
+        const detailsRow = document.createElement("tr");
+        detailsRow.classList.add("details-row");
+        detailsRow.innerHTML = `
+            <td colspan="6">
+                <div class="details-container">
+                    <p><strong>Answer & Ending:</strong> ${data.answer_ending || "N/A"} (${data.answer_ending_score || "N/A"})</p>
+                    <p><strong>Case:</strong> ${data.case || "N/A"} (${data.case_score || "N/A"})</p>
+                    <p><strong>Communication Skills:</strong> ${data.communication_skills || "N/A"} (${data.communication_skills_score || "N/A"})</p>
+                    <p><strong>Inquiries:</strong> ${data.inquiries || "N/A"} (${data.inquiries_score || "N/A"})</p>
+                    <p><strong>Diagnosis:</strong> ${data.diagnosis || "N/A"} (${data.diagnosis_score || "N/A"})</p>
+                    <p><strong>Problem Solve:</strong> ${data.problem_solve || "N/A"} (${data.problem_solve_score || "N/A"})</p>
+                </div>
+            </td>
+        `;
+
+        clickedRow.after(detailsRow);
+    });
+});
 </script>
 </body>
 </html>
