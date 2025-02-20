@@ -155,17 +155,14 @@
         <div id="result"></div>
     </div>
     
-    <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzvxhKtb36cJ7RozuW2dWEHRUO9Jb15jUuZtjpWYaYj_oITViMcLZpeLNIOLXP5Auyd/exec";
-    
-        // Set default date to today
-        document.getElementById('date').valueAsDate = new Date();
-    
-        // Fetch employee names
+      <script>
+        // تصحيح الرابط وإضافة التخويل
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzR_otRqvBc6vb93FC5fb4fet4xXovT0HkSbgGh9uJPAti1es_OPTyqux-iUGf7Yvw/exec";
+
+        // تصحيح جلب الموظفين
         window.onload = async function() {
             try {
-                const response = await fetch(`${https://script.google.com/macros/s/AKfycbzvxhKtb36cJ7RozuW2dWEHRUO9Jb15jUuZtjpWYaYj_oITViMcLZpeLNIOLXP5Auyd/exec?action=getEmployees
-}?action=getEmployees`);
+                const response = await fetch(`${SCRIPT_URL}?action=getEmployees`);
                 if (!response.ok) throw new Error('Failed to fetch data');
                 const employees = await response.json();
                 
@@ -173,7 +170,6 @@
                 employees.forEach(emp => {
                     const option = document.createElement('option');
                     option.value = emp;
-                    option.textContent = emp;
                     datalist.appendChild(option);
                 });
             } catch (error) {
@@ -182,42 +178,44 @@
                     "<span style='color: #FF7B72'>Error loading employee list</span>";
             }
         };
-    
-        // Fetch task
+
+        // تصحيح جلب المهام مع إدارة الأخطاء
         async function fetchTask() {
             const employee = document.getElementById('employee').value;
             const date = document.getElementById('date').value;
             const resultDiv = document.getElementById('result');
-    
-            if (!employee || !date) {
-                resultDiv.innerHTML = "<span style='color: #FF7B72'>Please enter all required fields</span>";
-                return;
-            }
-    
+
             try {
                 resultDiv.innerHTML = "<span style='color: #8B949E'>Searching...</span>";
                 
-                const response = await fetch(`${SCRIPT_URL}?action=getTask&employee=${encodeURIComponent(employee)}&date=${date}`);
+                const response = await fetch(
+                    `${SCRIPT_URL}?action=getTask&employee=${encodeURIComponent(employee)}&date=${date}`,
+                    { redirect: 'follow' }
+                );
                 
-                if (!response.ok) throw new Error('Failed to fetch task');
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
                 const task = await response.text();
                 
-                if (task) {
+                // معالجة الحالات المختلفة
+                if (task === "No task found") {
+                    resultDiv.innerHTML = "<span style='color: #8B949E'>No tasks found for selected criteria</span>";
+                } else if (task) {
                     resultDiv.innerHTML = `
                         <div style="border-bottom: 1px solid #30363D; padding-bottom: 10px; margin-bottom: 15px;">
-                            <span style="color: #58A6FF">Task:</span>
+                            <span style="color: #58A6FF">Task Details:</span>
                         </div>
                         <div style="white-space: pre-wrap">${task}</div>
                     `;
                 } else {
-                    resultDiv.innerHTML = "<span style='color: #8B949E'>No tasks recorded for this day</span>";
+                    resultDiv.innerHTML = "<span style='color: #FF7B72'>Invalid response format</span>";
                 }
             } catch (error) {
-                console.error("Error:", error);
+                console.error("Fetch Error:", error);
                 resultDiv.innerHTML = `
                     <span style='color: #FF7B72'>
-                        Error fetching data: ${error.message}
+                        Error: ${error.message}<br>
+                        Check console for details
                     </span>
                 `;
             }
