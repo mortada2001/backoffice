@@ -286,23 +286,36 @@
             }
 
             processZones(data) {
-                L.geoJSON(data, {
-                    style: { color: '#ff7800', weight: 2 },
-                    onEachFeature: (feature, layer) => {
-                        if (feature.properties.Zone_ID) {
-                            const center = layer.getBounds().getCenter();
-                            L.marker(center, {
-                                icon: L.divIcon({
-                                    className: 'zone-label',
-                                     html: `<span style="color: black; font-weight: bold;">${feature.properties.Zone_ID}</span>`,
-                                    iconSize: [50, 20],
-                                    iconAnchor: [25, 10]
-                                })
-                            }).addTo(this.map);
-                        }
-                    }
-                }).addTo(this.map);
+    const zoneLabels = L.layerGroup(); // مجموعة جديدة لحفظ التسميات
+
+    L.geoJSON(data, {
+        style: { color: '#ff7800', weight: 2 },
+        onEachFeature: (feature, layer) => {
+            if (feature.properties.Zone_ID) {
+                const center = layer.getBounds().getCenter();
+                const label = L.divIcon({
+                    className: 'zone-label',
+                    html: `<span style="color: black; font-weight: bold; font-size: 12px;">${feature.properties.Zone_ID}</span>`,
+                    iconSize: [50, 20],
+                    iconAnchor: [25, 10]
+                });
+
+                const labelMarker = L.marker(center, { icon: label });
+                zoneLabels.addLayer(labelMarker);
             }
+        }
+    }).addTo(this.map);
+
+    this.map.addLayer(zoneLabels);
+
+    // تحديث حجم الخط عند التكبير
+    this.map.on('zoomend', () => {
+        const zoomLevel = this.map.getZoom();
+        document.querySelectorAll('.zone-label span').forEach(el => {
+            el.style.fontSize = `${Math.max(12, zoomLevel * 1.2)}px`; // تكبير النص مع التكبير
+        });
+    });
+}
 
             processPoles(data) {
                 if (!this.markers) {
