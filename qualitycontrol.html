@@ -9,29 +9,40 @@
             font-family: Arial, sans-serif;
             background-color: #1e1e1e;
             color: #ffffff;
+            margin: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             height: 100vh;
-            margin: 0;
+        }
+
+        .header {
+            width: 100%;
+            background-color: #252526;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .container {
-            background-color: #252526;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            background-color: rgba(37, 37, 38, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
             text-align: center;
-            width: 350px;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-            font-size: 22px;
+            width: 400px;
+            margin-top: 120px;
+            backdrop-filter: blur(10px);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: left;
         }
 
@@ -41,23 +52,25 @@
 
         input {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             margin-top: 5px;
             background-color: #333;
             color: #fff;
             border: 1px solid #555;
             border-radius: 5px;
+            font-size: 16px;
         }
 
         button {
             background-color: #007acc;
             color: white;
-            padding: 10px;
+            padding: 12px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             width: 100%;
-            font-size: 16px;
+            font-size: 18px;
+            transition: background 0.3s;
         }
 
         button:hover {
@@ -73,8 +86,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
+    <div class="header">Alwatani Quality Control</div>
     <div class="container">
-        <h1>Alwatani Quality Control</h1>
         <div class="form-group">
             <label for="employee">Enter Employee Name:</label>
             <input type="text" id="employee" placeholder="Type employee name">
@@ -86,6 +99,7 @@
         <button id="show-case">Show Case</button>
         <div id="result"></div>
     </div>
+
 
     <script>
 document.addEventListener("DOMContentLoaded", async () => {
