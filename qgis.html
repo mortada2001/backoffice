@@ -16,10 +16,12 @@
 
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --accent: #e74c3c;
-            --background: #f8f9fa;
+            --primary: #58A6FF;
+            --secondary: #1F6FEB;
+            --accent: #D32F2F;
+            --background: #0D1117;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
         }
 
         * {
@@ -31,7 +33,7 @@
         body {
             font-family: 'Tajawal', sans-serif;
             background: var(--background);
-            color: var(--primary);
+            color: white;
             line-height: 1.6;
             overflow-x: hidden;
         }
@@ -46,22 +48,25 @@
             text-align: center;
             margin-bottom: 2rem;
             padding: 2rem;
-            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(245,245,245,0.9) 100%);
+            background: var(--glass-bg);
             border-radius: 1.5rem;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid var(--glass-border);
+            position: relative;
         }
 
         .header h1 {
             font-size: 2.8rem;
             margin-bottom: 0.5rem;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .header p {
-            color: #666;
+            color: #ccc;
             font-size: 1.1rem;
             max-width: 600px;
             margin: 0 auto;
@@ -73,40 +78,47 @@
             gap: 1rem;
             margin-bottom: 2rem;
             position: relative;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 1.5rem;
+            border: 1px solid var(--glass-border);
         }
 
         #coordinates {
             width: 100%;
             max-width: 500px;
             padding: 1rem;
-            border: 2px solid #eee;
+            border: 2px solid var(--glass-border);
             border-radius: 1rem;
             font-size: 1.1rem;
             transition: all 0.3s ease;
-            background: rgba(255,255,255,0.9);
+            background: var(--glass-bg);
+            color: white;
         }
 
         #coordinates:focus {
             outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 15px rgba(52, 152, 219, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(88, 166, 255, 0.2);
         }
 
         #navigate-btn {
             padding: 1rem 2rem;
-            background: var(--secondary);
+            background: var(--primary);
             color: white;
             border: none;
             border-radius: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
         }
 
         #navigate-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 6px 20px rgba(88, 166, 255, 0.4);
         }
 
         #map {
@@ -115,7 +127,8 @@
             width: 100%;
             border-radius: 1.5rem;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            background: white;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
         }
 
         .loading-overlay {
@@ -124,7 +137,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255,255,255,0.9);
+            background: rgba(13, 17, 23, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -138,7 +151,7 @@
             width: 50px;
             height: 50px;
             border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--secondary);
+            border-top: 4px solid var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -159,12 +172,37 @@
             padding: 1rem;
             border-radius: 1rem;
         }
+
+        /* زر Home */
+        .home-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(88, 166, 255, 0.8);
+            color: white;
+            border: 2px solid white;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .home-button:hover {
+            background: white;
+            color: var(--background);
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <h1>QGIS PRO</h1>
+            <!-- زر Home -->
+            <button class="home-button" onclick="window.location.href='index.html'">Home</button>
+            <h1>Mini QGIS Pro</h1>
             <p>⚠️يوجد الان صيانة عل الموقع نعتذر لازعجكم⚠️</p>
         </header>
 
