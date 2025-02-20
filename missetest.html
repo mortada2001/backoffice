@@ -9,51 +9,179 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
 
-    <style>
-        body {
-            background: #0D1117;
-            color: white;
-            font-family: 'Tajawal', sans-serif;
-            text-align: center;
-        }
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 20px;
-        }
-        #map {
-            height: 70vh;
-            width: 100%;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .input-section {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-        #coordinates {
-            padding: 10px;
-            width: 250px;
-            border-radius: 5px;
-            border: 1px solid gray;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-        #navigate-btn {
-            padding: 10px 20px;
-            background: #58A6FF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        #navigate-btn:hover {
-            background: #1F6FEB;
-        }
-    </style>
+      <style>
+            :root {
+                --primary: #58A6FF;
+                --secondary: #1F6FEB;
+                --accent: #D32F2F;
+                --background: #0D1117;
+                --glass-bg: rgba(255, 255, 255, 0.1);
+                --glass-border: rgba(255, 255, 255, 0.2);
+            }
+    
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family: 'Tajawal', sans-serif;
+            }
+    
+            body {
+                background: var(--background);
+                color: white;
+                line-height: 1.6;
+                overflow-x: hidden;
+            }
+    
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 2rem 1rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+            }
+    
+            .header {
+                text-align: center;
+                padding: 2rem;
+                background: var(--glass-bg);
+                border-radius: 1rem;
+                backdrop-filter: blur(12px);
+                box-shadow: 0 6px 20px rgba(255,255,255,0.1);
+                border: 1px solid var(--glass-border);
+                width: 100%;
+                max-width: 800px;
+            }
+    
+            .header h1 {
+                font-size: 2.5rem;
+                background: linear-gradient(45deg, var(--primary), var(--secondary));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+    
+            .input-section {
+                display: flex;
+                gap: 1rem;
+                background: var(--glass-bg);
+                padding: 1rem;
+                border-radius: 1rem;
+                border: 1px solid var(--glass-border);
+                box-shadow: 0 4px 15px rgba(255, 255, 255, 0.05);
+                width: 100%;
+                max-width: 600px;
+            }
+    
+            #coordinates {
+                flex: 1;
+                padding: 0.8rem;
+                border: 2px solid var(--glass-border);
+                border-radius: 8px;
+                background: var(--glass-bg);
+                color: white;
+                font-size: 1.1rem;
+                transition: 0.3s;
+            }
+    
+            #coordinates:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 10px rgba(88, 166, 255, 0.4);
+            }
+    
+            #navigate-btn {
+                padding: 0.8rem 1.5rem;
+                background: var(--primary);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: 0.3s;
+                font-size: 1.1rem;
+                font-weight: bold;
+            }
+    
+            #navigate-btn:hover {
+                background: var(--secondary);
+                transform: translateY(-2px);
+            }
+    
+            #map {
+                height: 70vh;
+                width: 100%;
+                border-radius: 1rem;
+                border: 1px solid var(--glass-border);
+                box-shadow: 0 6px 20px rgba(255,255,255,0.1);
+            }
+    
+            .home-button {
+                position: absolute;
+                top: 15px;
+                left: 15px;
+                background: rgba(88, 166, 255, 0.8);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 8px 15px;
+                font-size: 1rem;
+                font-weight: bold;
+                transition: 0.3s;
+                cursor: pointer;
+            }
+    
+            .home-button:hover {
+                background: white;
+                color: var(--background);
+                transform: scale(1.1);
+            }
+    
+            .loading-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(13, 17, 23, 0.9);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s;
+            }
+    
+            .spinner {
+                width: 40px;
+                height: 40px;
+                border: 4px solid white;
+                border-top: 4px solid var(--primary);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+    
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+    
+            .leaflet-control-zoom {
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+            }
+    
+            .custom-popup .leaflet-popup-content {
+                min-width: 200px;
+                padding: 1rem;
+                border-radius: 8px;
+                background: var(--glass-bg);
+                box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+                border: 1px solid var(--glass-border);
+            }
+        </style>
 </head>
 <body>
 
