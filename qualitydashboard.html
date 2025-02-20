@@ -19,26 +19,25 @@
             height: 100vh;
         }
 
-      
         /* Header Styles */
-header {
-    width: 100%;
-    position: fixed;
-    top: 0; /* Moves header to the very top */
-    left: 0;
-    background: linear-gradient(135deg, #007acc, #005a9e);
-    text-align: center;
-    padding: 20px 0;
-    font-size: 2rem;
-    font-weight: bold;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        header {
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, #007acc, #005a9e);
+            text-align: center;
+            padding: 20px 0;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-       .qc-button {
+        .qc-button {
             position: absolute;
             top: 20px;
             left: 20px;
@@ -123,6 +122,14 @@ header {
         .results-table tr:hover {
             background-color: #333;
         }
+
+        /* Quantity Display */
+        #quantity-display {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
@@ -150,6 +157,8 @@ header {
         <tbody></tbody>
     </table>
 
+    <div id="quantity-display"></div>
+
     <script>
     document.addEventListener("DOMContentLoaded", async () => {
         const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co";
@@ -161,6 +170,7 @@ header {
         const endDateInput = document.getElementById("end-date");
         const searchButton = document.getElementById("search-btn");
         const resultsTableBody = document.querySelector("#results-table tbody");
+        const quantityDisplay = document.getElementById("quantity-display");
 
         searchButton.addEventListener("click", async () => {
             const selectedEmployee = employeeInput.value.trim();
@@ -185,21 +195,15 @@ header {
                 return;
             }
 
-            if (data.length === 0) {
-                alert("ℹ️ No cases found for this selection.");
-                return;
-            }
-
             resultsTableBody.innerHTML = "";
-            data.forEach((row) => {
+            data.forEach((row, index) => {
                 const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${row.assignee}</td>
-                    <td>${row.number}</td>
-                    <td>${row.modified_on}</td>
-                `;
+                tr.innerHTML = `<td>${row.assignee}</td><td>${row.number}</td><td>${row.modified_on}</td>`;
                 resultsTableBody.appendChild(tr);
             });
+            
+            // Display quantity as a simple number, not in a table cell
+            quantityDisplay.textContent = `Total Cases Found: ${data.length}`;
         });
     });
     </script>
