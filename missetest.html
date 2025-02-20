@@ -327,20 +327,21 @@
                     });
                 }
 
-L.geoJSON(data, {
-    pointToLayer: (feature, latlng) => {
-        return L.circleMarker(latlng, {
-            radius: 6, // حجم النقطة
-            fillColor: "black", // لون التعبئة أسود
-            color: "#000", // لون الحدود أسود
-            weight: 1, // سماكة الحدود
-            fillOpacity: 1 // جعل اللون غير شفاف
-        }).bindPopup(`<b> FAT ${feature.properties.Pole_No}</b>`);
-    }
-}).eachLayer(layer => this.markers.addLayer(layer));
+                L.geoJSON(data, {
+                    pointToLayer: (feature, latlng) => {
+                        return L.marker(latlng, {
+                            icon: L.divIcon({
+                                className: 'pole-label',
+                                html: feature.properties.Pole_No || 'N/A',
+                                iconSize: [60, 20],
+                                iconAnchor: [30, 10]
+                            })
+                        }).bindPopup(`<b> FAT ${feature.properties.Pole_No}</b>`);
+                    }
+                }).eachLayer(layer => this.markers.addLayer(layer));
 
-this.map.addLayer(this.markers);
-
+                this.map.addLayer(this.markers);
+            }
 
             handleNavigation() {
                 const input = document.getElementById('coordinates').value.trim();
