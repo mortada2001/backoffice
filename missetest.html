@@ -335,7 +335,7 @@ L.geoJSON(data, {
             color: "#000", // لون الحدود أسود
             weight: 1, // سماكة الحدود
             fillOpacity: 1 // جعل اللون غير شفاف
-        }).bindPopup(`<b>العمود ${feature.properties.Pole_No}</b>`);
+        }).bindPopup(`<b> FAT ${feature.properties.Pole_No}</b>`);
     }
 }).eachLayer(layer => this.markers.addLayer(layer));
 
