@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alwatani QC Dashboard</title>
+    <title>Alwatani Quality Control</title>
     <style>
         /* General Styles */
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #121212;
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
             color: #ffffff;
             margin: 0;
             padding: 0;
@@ -19,72 +19,67 @@
             height: 100vh;
         }
 
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            padding: 20px;
-            background: #1e1e1e;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-        }
-
         /* Header Styles */
         header {
-            text-align: center;
-            padding: 20px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
             background: linear-gradient(135deg, #007acc, #005a9e);
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-
-        header h1 {
+            text-align: center;
+            padding: 20px 0;
             font-size: 2rem;
-            margin: 0;
-            color: #ffffff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-weight: bold;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
         }
 
-        /* Search Bar */
-        .search-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
+        /* Search Section */
+        .search-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            margin-top: 100px;
         }
 
-        .search-bar input {
-            padding: 10px;
-            background-color: #2c2c2c;
-            color: #fff;
-            border: 1px solid #555;
-            border-radius: 6px;
-            font-size: 1rem;
-        }
-
-        .search-bar button {
-            padding: 10px 20px;
-            background-color: #007acc;
-            color: white;
+        .search-container input, .search-container button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 8px;
             border: none;
-            border-radius: 6px;
-            cursor: pointer;
             font-size: 1rem;
+        }
+
+        .search-container input {
+            background: #333;
+            color: #fff;
+        }
+
+        .search-container button {
+            background: #007acc;
+            color: white;
+            cursor: pointer;
             transition: 0.3s;
         }
 
-        .search-bar button:hover {
-            background-color: #005a9e;
+        .search-container button:hover {
+            background: #005a9e;
         }
 
-        /* Table */
+        /* Table Styles */
         .results-table {
-            width: 100%;
-            border-collapse: collapse;
+            width: 90%;
+            max-width: 800px;
             margin-top: 20px;
-            background: #252526;
-            border-radius: 12px;
+            border-collapse: collapse;
+            background-color: #252526;
+            border-radius: 10px;
             overflow: hidden;
         }
 
@@ -106,56 +101,53 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Alwatani Quality Control</h1>
-        </header>
-
-        <div class="search-bar">
-            <input type="text" id="employee" placeholder="Enter Assignee Name">
-            <input type="date" id="start-date" placeholder="Start Date">
-            <input type="date" id="end-date" placeholder="End Date">
-            <button id="search-btn">Search</button>
-        </div>
-
-        <table class="results-table" id="results-table">
-            <thead>
-                <tr>
-                    <th>Assignee</th>
-                    <th>Ticket Number</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+    <header>Alwatani Quality Control</header>
+    <div class="search-container">
+        <input type="text" id="employee" placeholder="Enter Assignee Name">
+        <input type="date" id="start-date"> to 
+        <input type="date" id="end-date">
+        <button id="search-btn">Search</button>
     </div>
+    
+    <table class="results-table" id="results-table">
+        <thead>
+            <tr>
+                <th>Assignee</th>
+                <th>Ticket Number</th>
+                <th>Modified Date</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
     <script>
     document.addEventListener("DOMContentLoaded", async () => {
-        const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co"; 
+        const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        document.getElementById("search-btn").addEventListener("click", async () => {
-            const employee = document.getElementById("employee").value.trim();
-            const startDate = document.getElementById("start-date").value;
-            const endDate = document.getElementById("end-date").value;
-            const resultsTableBody = document.querySelector("#results-table tbody");
+        const employeeInput = document.getElementById("employee");
+        const startDateInput = document.getElementById("start-date");
+        const endDateInput = document.getElementById("end-date");
+        const searchButton = document.getElementById("search-btn");
+        const resultsTableBody = document.querySelector("#results-table tbody");
 
-            if (!employee || !startDate || !endDate) {
-                alert("⚠️ Please enter all fields!");
+        searchButton.addEventListener("click", async () => {
+            const selectedEmployee = employeeInput.value.trim();
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+
+            if (!selectedEmployee || !startDate || !endDate) {
+                alert("⚠️ Please enter an assignee name and select a date range!");
                 return;
             }
 
-            console.log("Searching for", employee, "from", startDate, "to", endDate);
-
             let { data, error } = await supabase
                 .from("qualitydone")
-                .select("assignee, number")
-                .ilike("assignee", `%${employee}%`)
+                .select("assignee, number, modified_on")
+                .ilike("assignee", `%${selectedEmployee}%`)
                 .gte("modified_on", startDate)
                 .lte("modified_on", endDate);
-
-            console.log("Supabase response:", data);
 
             if (error) {
                 console.error("Error fetching data:", error);
@@ -169,9 +161,13 @@
             }
 
             resultsTableBody.innerHTML = "";
-            data.forEach(row => {
+            data.forEach((row) => {
                 const tr = document.createElement("tr");
-                tr.innerHTML = `<td>${row.assignee}</td><td>${row.number}</td>`;
+                tr.innerHTML = `
+                    <td>${row.assignee}</td>
+                    <td>${row.number}</td>
+                    <td>${row.modified_on}</td>
+                `;
                 resultsTableBody.appendChild(tr);
             });
         });
