@@ -294,7 +294,7 @@
                             L.marker(center, {
                                 icon: L.divIcon({
                                     className: 'zone-label',
-                                    html: feature.properties.Zone_ID,
+                                     html: `<span style="color: black; font-weight: bold;">${feature.properties.Zone_ID}</span>`,
                                     iconSize: [50, 20],
                                     iconAnchor: [25, 10]
                                 })
