@@ -60,8 +60,8 @@
     <div class="container">
         <h1>Mini QGIS</h1>
         <div class="input-section">
-            <input type="text" id="coordinates" placeholder="Enter coordinates (33.2625977,44.4070566)">
-            <button id="navigate-btn">Search</button>
+            <input type="text" id="coordinates" placeholder="33.2625977, 44.4070566">
+            <button id="navigate-btn">بحث</button>
         </div>
         <div id="map"></div>
     </div>
@@ -74,8 +74,9 @@
             constructor() {
                 this.map = null;
                 this.markers = null;
-                this.zonesLayer = null; // تخزين طبقة المناطق
+                this.zonesLayer = null;
                 this.dataCache = new Map();
+                this.currentMarker = null;
                 this.init();
             }
 
@@ -180,11 +181,15 @@
                     return;
                 }
 
+                this.map.flyTo(coords, 20, { animate: true, duration: 1.5 });
+
+                if (this.currentMarker) {
+                    this.map.removeLayer(this.currentMarker);
+                }
+
                 const targetZone = this.findZoneByCoordinates(coords);
 
-                this.map.flyTo(coords, 22, { animate: true, duration: 1.5 });
-
-                L.marker(coords)
+                this.currentMarker = L.marker(coords)
                     .addTo(this.map)
                     .bindPopup(`<b>الموقع المستهدف</b><br>العرض: ${coords[0]}<br>الطول: ${coords[1]}<br><b>المنطقة:</b> ${targetZone || 'غير معروف'}`)
                     .openPopup();
@@ -211,3 +216,4 @@
 
 </body>
 </html>
+
