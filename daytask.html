@@ -77,25 +77,29 @@
 
     <script>
         // رابط نشر الويب آب من Google Script
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNhCqNBprk_vvGCi_Vm88uTqTXNVnXZJozDaPYpejFHNsmbfaz86SkQ1gISyhdNYL2/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxbVFYvXhN54SMepBP-OrWussxR2vjgXUoUx_03Ju7mr38jUiROzBdOVBdVHsAGKP1_/exec";
 
         // جلب أسماء الموظفين عند تحميل الصفحة
-        window.onload = async function() {
-            try {
-                const response = await fetch(`${SCRIPT_URL}?action=getEmployees`);
-                const employees = await response.json();
-                
-                const select = document.getElementById('employee');
-                employees.forEach(emp => {
-                    const option = document.createElement('option');
-                    option.value = emp;
-                    option.textContent = emp;
-                    select.appendChild(option);
-                });
-            } catch (error) {
-                console.error("حدث خطأ أثناء جلب أسماء الموظفين:", error);
-            }
-        }
+     // التعديل في جزء جلب البيانات
+window.onload = async function() {
+  try {
+    const response = await fetch(`${SCRIPT_URL}?action=getEmployees`);
+    if (!response.ok) throw new Error('فشل الجلب');
+    const employees = await response.json();
+    
+    const select = document.getElementById('employee');
+    employees.forEach(emp => {
+      const option = document.createElement('option');
+      option.value = emp;
+      option.textContent = emp;
+      select.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    document.getElementById('result').innerHTML = "خطأ في جلب البيانات";
+  }
+}
+        
 
         // دالة جلب المهمة
         async function fetchTask() {
