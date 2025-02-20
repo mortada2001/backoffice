@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alwatani Quality Control</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: linear-gradient(135deg, #007acc, #005a9e);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Search Bar Styles */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .search-bar input::placeholder {
+            color: #aaa;
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            background-color: #007acc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background-color: #005a9e;
+        }
+
+        /* Table Styles */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #252526;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        .results-table th {
+            background-color: #007acc;
+            color: white;
+            font-weight: bold;
+        }
+
+        .results-table tr:hover {
+            background-color: #333;
+        }
+
+        .results-table td {
+            color: #ddd;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>Alwatani Quality Control</h1>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="employee" placeholder="Enter Assignee Name">
+            <input type="date" id="date">
+            <button id="search-btn">Search</button>
+        </div>
+
+        <!-- Results Table -->
+        <table class="results-table" id="results-table">
+            <thead>
+                <tr>
+                    <th>Assignee</th>
+                    <th>Ticket Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+document.addEventListener("DOMContentLoaded", async () => {
+    const SUPABASE_URL = "https://yypcsibilseoghyadbul.supabase.co"; 
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cGNzaWJpbHNlb2doeWFkYnVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3MjU1MDAsImV4cCI6MjA1NTMwMTUwMH0.rn95k6_TQU1NlMoFImW-pnvl12kSBnRmnxsIgHbTGEQ";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const employeeInput = document.getElementById("employee");
+    const dateInput = document.getElementById("date");
+    const searchButton = document.getElementById("search-btn");
+    const resultsTableBody = document.querySelector("#results-table tbody");
+
+    searchButton.addEventListener("click", async () => {
+        const selectedEmployee = employeeInput.value.trim();
+        const selectedDate = dateInput.value;
+
+        if (!selectedEmployee || !selectedDate) {
+            alert("⚠️ Please enter an assignee name and select a date!");
+            return;
+        }
+
+        console.log("Searching for assignee:", selectedEmployee, "on date:", selectedDate);
+
+        // Fetch data from the "qualitydone" table
+        let { data, error } = await supabase
+            .from("qualitydone")
+            .select("assignee, number") // Select assignee and ticket number
+            .ilike("assignee", `%${selectedEmployee}%`) // Case-insensitive search for assignee
+            .eq("modified_on", selectedDate); // Match the exact date
+
+        // Log the data and error for debugging
+        console.log("Supabase response:", data);
+        console.log("Supabase error:", error);
+
+        if (error) {
+            console.error("Error fetching data:", error);
+            alert("❌ Error fetching data!");
+            return;
+        }
+
+        if (data.length === 0) {
+            alert("ℹ️ No cases found for this selection.");
+            return;
+        }
+
+        // Clear the table before adding new rows
+        resultsTableBody.innerHTML = "";
+
+        // Add rows to the table
+        data.forEach((row) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${row.assignee}</td>
+                <td>${row.number}</td>
+            `;
+            resultsTableBody.appendChild(tr);
+        });
+    });
+});
+    </script>
+</body>
+</html>
