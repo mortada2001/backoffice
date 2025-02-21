@@ -311,12 +311,12 @@ detailsRow.classList.add("details-row");
 detailsRow.innerHTML = `
     <td colspan="6">
         <div class="details-container">
-            <p><strong>Answer & Ending:</strong> ${details.answer_ending || "N/A"} (${details.answer_ending_score || "N/A"})</p>
-            <p><strong>Case:</strong> ${details.case || "N/A"} (${details.case_score || "N/A"})</p>
-            <p><strong>Communication Skills:</strong> ${details.communication_skills || "N/A"} (${details.communication_skills_score || "N/A"})</p>
-            <p><strong>Inquiries:</strong> ${details.inquiries || "N/A"} (${details.inquiries_score || "N/A"})</p>
-            <p><strong>Diagnosis:</strong> ${details.diagnosis || "N/A"} (${details.diagnosis_score || "N/A"})</p>
-            <p><strong>Problem Solve:</strong> ${details.problem_solve || "N/A"} (${details.problem_solve_score || "N/A"})</p>
+            <p><strong>Answer & Ending:</strong> ${details.answer_ending || "N/A"} (${details.answer_ending_score || "N/A"}/5)</p>
+            <p><strong>Case:</strong> ${details.case || "N/A"} (${details.case_score || "N/A"}/15)</p>
+            <p><strong>Communication Skills:</strong> ${details.communication_skills || "N/A"} (${details.communication_skills_score || "N/A"}/15)</p>
+            <p><strong>Inquiries:</strong> ${details.inquiries || "N/A"} (${details.inquiries_score || "N/A"}/15)</p>
+            <p><strong>Diagnosis:</strong> ${details.diagnosis || "N/A"} (${details.diagnosis_score || "N/A"}/20)</p>
+            <p><strong>Problem Solve:</strong> ${details.problem_solve || "N/A"} (${details.problem_solve_score || "N/A"}/30)</p>
         </div>
     </td>
 `;
