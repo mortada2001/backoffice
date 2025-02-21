@@ -174,6 +174,7 @@
         <button id="search-btn">Search</button>
     </div>
     <div id="quantity-display"></div>
+    <div id="avg-score-display"></div>
     <table class="results-table" id="results-table">
         <thead>
     <tr>
@@ -227,7 +228,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        resultsTableBody.innerHTML = "";
+        resultsTableBody.innerHTML = ""; // Clear the table before adding new rows
+
+        let totalScore = 0;
+        let validScoreCount = 0;
+
         data.forEach((row) => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
@@ -242,9 +247,30 @@ document.addEventListener("DOMContentLoaded", async () => {
             tr.classList.add("clickable-row");
 
             resultsTableBody.appendChild(tr);
+
+            // Convert final_score to a number and accumulate valid values
+            if (row.final_score && !isNaN(row.final_score)) {
+                totalScore += parseFloat(row.final_score);
+                validScoreCount++;
+            }
         });
 
         quantityDisplay.textContent = `Total Cases Found: ${data.length}`;
+
+        // Calculate and display average final score
+        const avgFinalScore = validScoreCount > 0 ? (totalScore / validScoreCount).toFixed(2) : "N/A";
+        const avgScoreDisplay = document.getElementById("avg-score-display");
+
+        if (!avgScoreDisplay) {
+            const newAvgDisplay = document.createElement("p");
+            newAvgDisplay.id = "avg-score-display";
+            newAvgDisplay.style.fontWeight = "bold";
+            newAvgDisplay.style.marginTop = "10px";
+            newAvgDisplay.textContent = `Average Final Score: ${avgFinalScore}`;
+            quantityDisplay.parentNode.appendChild(newAvgDisplay);
+        } else {
+            avgScoreDisplay.textContent = `Average Final Score: ${avgFinalScore}`;
+        }
     });
 
     // Handle row clicks for expanding details
@@ -263,33 +289,39 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // Fetch additional evaluation details from Supabase
         let { data, error } = await supabase
-            .from("qualitydone")
-            .select("answer_ending, answer_ending_score, case, case_score, communication_skills, communication_skills_score, inquiries, inquiries_score, diagnosis, diagnosis_score, problem_solve, problem_solve_score")
-            .eq("evaliuation_id", evalId)
-            .single();
+    .from("qualitydone")
+    .select("answer_ending, answer_ending_score, case, case_score, communication_skills, communication_skills_score, inquiries, inquiries_score, diagnosis, diagnosis_score, problem_solve, problem_solve_score")
+    .eq("evaliuation_id", evalId);
 
-        if (error || !data) {
-            console.error("Error fetching details:", error);
-            return;
-        }
+if (error) {
+    console.error("Error fetching details:", error);
+    return;
+}
 
-        // Create an expandable row
-        const detailsRow = document.createElement("tr");
-        detailsRow.classList.add("details-row");
-        detailsRow.innerHTML = `
-            <td colspan="6">
-                <div class="details-container">
-                    <p><strong>Answer & Ending:</strong> ${data.answer_ending || "N/A"} (${data.answer_ending_score || "N/A"})</p>
-                    <p><strong>Case:</strong> ${data.case || "N/A"} (${data.case_score || "N/A"})</p>
-                    <p><strong>Communication Skills:</strong> ${data.communication_skills || "N/A"} (${data.communication_skills_score || "N/A"})</p>
-                    <p><strong>Inquiries:</strong> ${data.inquiries || "N/A"} (${data.inquiries_score || "N/A"})</p>
-                    <p><strong>Diagnosis:</strong> ${data.diagnosis || "N/A"} (${data.diagnosis_score || "N/A"})</p>
-                    <p><strong>Problem Solve:</strong> ${data.problem_solve || "N/A"} (${data.problem_solve_score || "N/A"})</p>
-                </div>
-            </td>
-        `;
+       if (!data || data.length === 0) {
+    console.error("No details found for this evaluation ID.");
+    return;
+}
 
-        clickedRow.after(detailsRow);
+// Take the first result
+const details = data[0]; 
+
+const detailsRow = document.createElement("tr");
+detailsRow.classList.add("details-row");
+detailsRow.innerHTML = `
+    <td colspan="6">
+        <div class="details-container">
+            <p><strong>Answer & Ending:</strong> ${details.answer_ending || "N/A"} (${details.answer_ending_score || "N/A"})</p>
+            <p><strong>Case:</strong> ${details.case || "N/A"} (${details.case_score || "N/A"})</p>
+            <p><strong>Communication Skills:</strong> ${details.communication_skills || "N/A"} (${details.communication_skills_score || "N/A"})</p>
+            <p><strong>Inquiries:</strong> ${details.inquiries || "N/A"} (${details.inquiries_score || "N/A"})</p>
+            <p><strong>Diagnosis:</strong> ${details.diagnosis || "N/A"} (${details.diagnosis_score || "N/A"})</p>
+            <p><strong>Problem Solve:</strong> ${details.problem_solve || "N/A"} (${details.problem_solve_score || "N/A"})</p>
+        </div>
+    </td>
+`;
+
+clickedRow.after(detailsRow);
     });
 });
 </script>
