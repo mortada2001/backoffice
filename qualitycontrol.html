@@ -198,94 +198,122 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dateInput = document.getElementById("date");
     const showCaseButton = document.getElementById("show-case");
     const resultDiv = document.getElementById("result");
-
-
-
-
-
-
     const evaluateButton = document.getElementById("evaluate");
 
+    // Get references to all score input fields
+    const scoreInputs = [
+        document.getElementById("field1_score"), // Answer Ending Score
+        document.getElementById("field2_score"), // Case Score
+        document.getElementById("field3_score"), // Communication Skills Score
+        document.getElementById("field4_score"), // Diagnosis Score
+        document.getElementById("field5_score"), // Inquiries Score
+        document.getElementById("field6_score")  // Problem Solve Score
+    ];
+
+    // Get reference to the Final Score field
+    const finalScoreInput = document.getElementById("field9");
+
+    // Function to calculate and update the Final Score
+    const updateFinalScore = () => {
+        let totalScore = 0;
+
+        // Sum up all the individual scores
+        scoreInputs.forEach(input => {
+            const score = parseFloat(input.value) || 0; // Convert to number, default to 0 if empty or invalid
+            totalScore += score;
+        });
+
+        // Ensure the Final Score does not exceed 100
+        totalScore = Math.min(totalScore, 100);
+
+        // Update the Final Score field
+        finalScoreInput.value = totalScore.toFixed(2); // Display with 2 decimal places
+    };
+
+    // Add event listeners to all score fields
+    scoreInputs.forEach(input => {
+        input.addEventListener("input", updateFinalScore);
+    });
+
+    // Evaluate button click handler
     evaluateButton.addEventListener("click", async () => {
-    const ticketNumber = document.getElementById("field7_ticket").value.trim();
-    const assignee = document.getElementById("field7_assignee").value.trim();
-    const answerEnding = document.getElementById("field1").value.trim();
-    const answerEndingScore = document.getElementById("field1_score").value.trim();
-    const caseText = document.getElementById("field2").value.trim();
-    const caseScore = document.getElementById("field2_score").value.trim();
-    const communicationSkills = document.getElementById("field3").value.trim();
-    const communicationSkillsScore = document.getElementById("field3_score").value.trim();
-    const diagnosis = document.getElementById("field4").value.trim();
-    const diagnosisScore = document.getElementById("field4_score").value.trim();
-    const inquiries = document.getElementById("field5").value.trim();
-    const inquiriesScore = document.getElementById("field5_score").value.trim();
-    const problemSolve = document.getElementById("field6").value.trim();
-    const problemSolveScore = document.getElementById("field6_score").value.trim();
-    const finalComment = document.getElementById("field7").value.trim(); // FIXED ID REFERENCE
-    const evaluationID = document.getElementById("field8").value.trim();
-    const finalScore = document.getElementById("field9").value.trim();
+        const ticketNumber = document.getElementById("field7_ticket").value.trim();
+        const assignee = document.getElementById("field7_assignee").value.trim();
+        const answerEnding = document.getElementById("field1").value.trim();
+        const answerEndingScore = document.getElementById("field1_score").value.trim();
+        const caseText = document.getElementById("field2").value.trim();
+        const caseScore = document.getElementById("field2_score").value.trim();
+        const communicationSkills = document.getElementById("field3").value.trim();
+        const communicationSkillsScore = document.getElementById("field3_score").value.trim();
+        const diagnosis = document.getElementById("field4").value.trim();
+        const diagnosisScore = document.getElementById("field4_score").value.trim();
+        const inquiries = document.getElementById("field5").value.trim();
+        const inquiriesScore = document.getElementById("field5_score").value.trim();
+        const problemSolve = document.getElementById("field6").value.trim();
+        const problemSolveScore = document.getElementById("field6_score").value.trim();
+        const finalComment = document.getElementById("field7").value.trim();
+        const evaluationID = document.getElementById("field8").value.trim();
+        const finalScore = document.getElementById("field9").value.trim();
 
-    if (!ticketNumber || !assignee) {
-        alert("⚠️ Please enter both Ticket Number and Assignee before evaluating!");
-        return;
-    }
+        if (!ticketNumber || !assignee) {
+            alert("⚠️ Please enter both Ticket Number and Assignee before evaluating!");
+            return;
+        }
 
-    // Search for the ticket in `qualitydone`
-    let { data, error } = await supabase
-        .from("qualitydone")
-        .select("*")
-        .eq("number", ticketNumber)
-        .eq("assignee", assignee);
+        // Search for the ticket in `qualitydone`
+        let { data, error } = await supabase
+            .from("qualitydone")
+            .select("*")
+            .eq("number", ticketNumber)
+            .eq("assignee", assignee);
 
-    if (error) {
-        console.error("Error searching for ticket:", error);
-        alert("❌ Error searching for ticket!");
-        return;
-    }
+        if (error) {
+            console.error("Error searching for ticket:", error);
+            alert("❌ Error searching for ticket!");
+            return;
+        }
 
-    if (data.length === 0) {
-        alert("⚠️ No matching record found with this Ticket Number and Assignee.");
-        return;
-    }
+        if (data.length === 0) {
+            alert("⚠️ No matching record found with this Ticket Number and Assignee.");
+            return;
+        }
 
-    // Update the exact matching record in `qualitydone`
-    let { error: updateError } = await supabase
-        .from("qualitydone")
-        .update({
-            answer_ending: answerEnding,  
-            answer_ending_score: answerEndingScore,
-            case: caseText,
-            case_score: caseScore,
-            communication_skills: communicationSkills,
-            communication_skills_score: communicationSkillsScore,
-            diagnosis: diagnosis,
-            diagnosis_score: diagnosisScore,
-            inquiries: inquiries,
-            inquiries_score: inquiriesScore,
-            problem_solve: problemSolve,
-            problem_solve_score: problemSolveScore,
-            final_comment: finalComment,
-            evaliuation_id: evaluationID,
-            final_score: finalScore
-        })
-        .eq("number", ticketNumber)
-        .eq("assignee", assignee);
+        // Update the exact matching record in `qualitydone`
+        let { error: updateError } = await supabase
+            .from("qualitydone")
+            .update({
+                answer_ending: answerEnding,
+                answer_ending_score: answerEndingScore,
+                case: caseText,
+                case_score: caseScore,
+                communication_skills: communicationSkills,
+                communication_skills_score: communicationSkillsScore,
+                diagnosis: diagnosis,
+                diagnosis_score: diagnosisScore,
+                inquiries: inquiries,
+                inquiries_score: inquiriesScore,
+                problem_solve: problemSolve,
+                problem_solve_score: problemSolveScore,
+                final_comment: finalComment,
+                evaliuation_id: evaluationID,
+                final_score: finalScore
+            })
+            .eq("number", ticketNumber)
+            .eq("assignee", assignee);
 
-    if (updateError) {
-        console.error("Error updating ticket:", updateError);
-        alert("❌ Error updating ticket!");
-        return;
-    }
+        if (updateError) {
+            console.error("Error updating ticket:", updateError);
+            alert("❌ Error updating ticket!");
+            return;
+        }
 
-    alert("✅ Ticket successfully updated!");
-});
+        alert("✅ Ticket successfully updated!");
+    });
 
-
-
-
+    // Show Case button click handler
     showCaseButton.addEventListener("click", async () => {
         const selectedEmployee = employeeInput.value.trim();
-        const selectedDate = dateInput.value; // Get the selected date from the date picker
+        const selectedDate = dateInput.value;
 
         if (!selectedEmployee || !selectedDate) {
             resultDiv.innerHTML = "⚠️ Please enter an employee name and select a date!";
@@ -297,11 +325,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Fetch data from Supabase based on employee name and date
         let { data, error } = await supabase
             .from("quality")
-            .select("number, assignee, modified_on, modified_by") // Select all required columns
+            .select("number, assignee, modified_on, modified_by")
             .ilike("assignee", `%${selectedEmployee}%`)
-            .eq("modified_on", selectedDate); // Match the exact date
+            .eq("modified_on", selectedDate);
 
-        // Log the data and error for debugging
         console.log("Supabase response:", data);
         console.log("Supabase error:", error);
 
@@ -324,7 +351,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Move the case to the "qualitydone" table
         const { error: moveError } = await supabase
             .from("qualitydone")
-            .insert([randomCase]); // Insert the entire row into "qualitydone"
+            .insert([randomCase]);
 
         if (moveError) {
             console.error("Error moving case to qualitydone:", moveError);
@@ -338,7 +365,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const { error: deleteError } = await supabase
             .from("quality")
             .delete()
-            .eq("number", randomCase.number); // Delete the case by its number
+            .eq("number", randomCase.number);
 
         if (deleteError) {
             console.error("Error deleting case from quality:", deleteError);
