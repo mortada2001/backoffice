@@ -151,6 +151,33 @@
 }
 
 
+/* Summary Box Styles */
+.summary-box {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 800px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.summary-box p {
+    margin: 10px 0;
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+.summary-box strong {
+    color: #007acc;
+}
+
+
+
+
         /* Quantity Display */
         #quantity-display {
             margin-top: 20px;
@@ -173,8 +200,9 @@
         <input type="date" id="end-date">
         <button id="search-btn">Search</button>
     </div>
-    <div id="quantity-display"></div>
-    <div id="avg-score-display"></div>
+    <div id="summary-box" class="summary-box">
+    <div id="summary-content"></div>
+</div>
     <table class="results-table" id="results-table">
         <thead>
     <tr>
@@ -203,7 +231,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const endDateInput = document.getElementById("end-date");
     const searchButton = document.getElementById("search-btn");
     const resultsTableBody = document.querySelector("#results-table tbody");
-    const quantityDisplay = document.getElementById("quantity-display");
+    const summaryContent = document.getElementById("summary-content");
 
     searchButton.addEventListener("click", async () => {
         const selectedEmployee = employeeInput.value.trim();
@@ -215,9 +243,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
+        // Fetch all relevant data
         let { data, error } = await supabase
             .from("qualitydone")
-            .select("assignee, number, modified_on, evaliuation_id, final_comment, final_score")
+            .select("assignee, number, modified_on, evaliuation_id, final_comment, final_score, answer_ending_score, case_score, communication_skills_score, diagnosis_score, inquiries_score, problem_solve_score")
             .ilike("assignee", `%${selectedEmployee}%`)
             .gte("modified_on", startDate)
             .lte("modified_on", endDate);
@@ -232,6 +261,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         let totalScore = 0;
         let validScoreCount = 0;
+
+        // Initialize variables to calculate averages for individual scores
+        let totalAnswerEndingScore = 0;
+        let totalCaseScore = 0;
+        let totalCommunicationSkillsScore = 0;
+        let totalDiagnosisScore = 0;
+        let totalInquiriesScore = 0;
+        let totalProblemSolveScore = 0;
+        let validAnswerEndingCount = 0;
+        let validCaseCount = 0;
+        let validCommunicationSkillsCount = 0;
+        let validDiagnosisCount = 0;
+        let validInquiriesCount = 0;
+        let validProblemSolveCount = 0;
 
         data.forEach((row) => {
             const tr = document.createElement("tr");
@@ -253,24 +296,54 @@ document.addEventListener("DOMContentLoaded", async () => {
                 totalScore += parseFloat(row.final_score);
                 validScoreCount++;
             }
+
+            // Accumulate individual scores
+            if (row.answer_ending_score && !isNaN(row.answer_ending_score)) {
+                totalAnswerEndingScore += parseFloat(row.answer_ending_score);
+                validAnswerEndingCount++;
+            }
+            if (row.case_score && !isNaN(row.case_score)) {
+                totalCaseScore += parseFloat(row.case_score);
+                validCaseCount++;
+            }
+            if (row.communication_skills_score && !isNaN(row.communication_skills_score)) {
+                totalCommunicationSkillsScore += parseFloat(row.communication_skills_score);
+                validCommunicationSkillsCount++;
+            }
+            if (row.diagnosis_score && !isNaN(row.diagnosis_score)) {
+                totalDiagnosisScore += parseFloat(row.diagnosis_score);
+                validDiagnosisCount++;
+            }
+            if (row.inquiries_score && !isNaN(row.inquiries_score)) {
+                totalInquiriesScore += parseFloat(row.inquiries_score);
+                validInquiriesCount++;
+            }
+            if (row.problem_solve_score && !isNaN(row.problem_solve_score)) {
+                totalProblemSolveScore += parseFloat(row.problem_solve_score);
+                validProblemSolveCount++;
+            }
         });
 
-        quantityDisplay.textContent = `Total Cases Found: ${data.length}`;
-
-        // Calculate and display average final score
+        // Calculate averages
         const avgFinalScore = validScoreCount > 0 ? (totalScore / validScoreCount).toFixed(2) : "N/A";
-        const avgScoreDisplay = document.getElementById("avg-score-display");
+        const avgAnswerEndingScore = validAnswerEndingCount > 0 ? (totalAnswerEndingScore / validAnswerEndingCount).toFixed(2) : "N/A";
+        const avgCaseScore = validCaseCount > 0 ? (totalCaseScore / validCaseCount).toFixed(2) : "N/A";
+        const avgCommunicationSkillsScore = validCommunicationSkillsCount > 0 ? (totalCommunicationSkillsScore / validCommunicationSkillsCount).toFixed(2) : "N/A";
+        const avgDiagnosisScore = validDiagnosisCount > 0 ? (totalDiagnosisScore / validDiagnosisCount).toFixed(2) : "N/A";
+        const avgInquiriesScore = validInquiriesCount > 0 ? (totalInquiriesScore / validInquiriesCount).toFixed(2) : "N/A";
+        const avgProblemSolveScore = validProblemSolveCount > 0 ? (totalProblemSolveScore / validProblemSolveCount).toFixed(2) : "N/A";
 
-        if (!avgScoreDisplay) {
-            const newAvgDisplay = document.createElement("p");
-            newAvgDisplay.id = "avg-score-display";
-            newAvgDisplay.style.fontWeight = "bold";
-            newAvgDisplay.style.marginTop = "10px";
-            newAvgDisplay.textContent = `Average Final Score: ${avgFinalScore}`;
-            quantityDisplay.parentNode.appendChild(newAvgDisplay);
-        } else {
-            avgScoreDisplay.textContent = `Average Final Score: ${avgFinalScore}`;
-        }
+        // Update the summary box
+        summaryContent.innerHTML = `
+            <p><strong>Total Cases Found:</strong> ${data.length}</p>
+            <p><strong>Average Final Score:</strong> ${avgFinalScore}</p>
+            <p><strong>Average Answer & Ending Score:</strong> ${avgAnswerEndingScore}/5</p>
+            <p><strong>Average Case Score:</strong> ${avgCaseScore}/15</p>
+            <p><strong>Average Communication Skills Score:</strong> ${avgCommunicationSkillsScore}/15</p>
+            <p><strong>Average Diagnosis Score:</strong> ${avgDiagnosisScore}/20</p>
+            <p><strong>Average Inquiries Score:</strong> ${avgInquiriesScore}/15</p>
+            <p><strong>Average Problem Solve Score:</strong> ${avgProblemSolveScore}/30</p>
+        `;
     });
 
     // Handle row clicks for expanding details
@@ -289,39 +362,37 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // Fetch additional evaluation details from Supabase
         let { data, error } = await supabase
-    .from("qualitydone")
-    .select("answer_ending, answer_ending_score, case, case_score, communication_skills, communication_skills_score, inquiries, inquiries_score, diagnosis, diagnosis_score, problem_solve, problem_solve_score")
-    .eq("evaliuation_id", evalId);
+            .from("qualitydone")
+            .select("answer_ending, answer_ending_score, case, case_score, communication_skills, communication_skills_score, inquiries, inquiries_score, diagnosis, diagnosis_score, problem_solve, problem_solve_score")
+            .eq("evaliuation_id", evalId);
 
-if (error) {
-    console.error("Error fetching details:", error);
-    return;
-}
+        if (error) {
+            console.error("Error fetching details:", error);
+            return;
+        }
 
-       if (!data || data.length === 0) {
-    console.error("No details found for this evaluation ID.");
-    return;
-}
+        if (!data || data.length === 0) {
+            console.error("No details found for this evaluation ID.");
+            return;
+        }
 
-// Take the first result
-const details = data[0]; 
+        const details = data[0];
+        const detailsRow = document.createElement("tr");
+        detailsRow.classList.add("details-row");
+        detailsRow.innerHTML = `
+            <td colspan="6">
+                <div class="details-container">
+                    <p><strong>Answer & Ending:</strong> ${details.answer_ending || "N/A"} (${details.answer_ending_score || "N/A"}/5)</p>
+                    <p><strong>Case:</strong> ${details.case || "N/A"} (${details.case_score || "N/A"}/15)</p>
+                    <p><strong>Communication Skills:</strong> ${details.communication_skills || "N/A"} (${details.communication_skills_score || "N/A"}/15)</p>
+                    <p><strong>Inquiries:</strong> ${details.inquiries || "N/A"} (${details.inquiries_score || "N/A"}/15)</p>
+                    <p><strong>Diagnosis:</strong> ${details.diagnosis || "N/A"} (${details.diagnosis_score || "N/A"}/20)</p>
+                    <p><strong>Problem Solve:</strong> ${details.problem_solve || "N/A"} (${details.problem_solve_score || "N/A"}/30)</p>
+                </div>
+            </td>
+        `;
 
-const detailsRow = document.createElement("tr");
-detailsRow.classList.add("details-row");
-detailsRow.innerHTML = `
-    <td colspan="6">
-        <div class="details-container">
-            <p><strong>Answer & Ending:</strong> ${details.answer_ending || "N/A"} (${details.answer_ending_score || "N/A"}/5)</p>
-            <p><strong>Case:</strong> ${details.case || "N/A"} (${details.case_score || "N/A"}/15)</p>
-            <p><strong>Communication Skills:</strong> ${details.communication_skills || "N/A"} (${details.communication_skills_score || "N/A"}/15)</p>
-            <p><strong>Inquiries:</strong> ${details.inquiries || "N/A"} (${details.inquiries_score || "N/A"}/15)</p>
-            <p><strong>Diagnosis:</strong> ${details.diagnosis || "N/A"} (${details.diagnosis_score || "N/A"}/20)</p>
-            <p><strong>Problem Solve:</strong> ${details.problem_solve || "N/A"} (${details.problem_solve_score || "N/A"}/30)</p>
-        </div>
-    </td>
-`;
-
-clickedRow.after(detailsRow);
+        clickedRow.after(detailsRow);
     });
 });
 </script>
